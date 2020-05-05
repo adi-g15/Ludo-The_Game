@@ -1,0 +1,5 @@
+.vscode
+*out
+*sh
+experimental*
+util/*.gch

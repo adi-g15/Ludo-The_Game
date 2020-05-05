@@ -1,158 +1,744 @@
-
 /*
 Programmer - Aditya Gupta (Techy15)
 Language - C++
 Program - LudO - The Game
 */
 
-/* PLANS- Add functionality for name of player */
-
-//IMP NOTE - See all notes, written in this form "//NOTE..."
-
-//NOTE- Mark 'R','G','B','Y' for gotis, ignore doubling for now
-//NOTE- Settings will have options: change default gameplay order(ie RBYG), change/give names to each colour
-//NOTE- Add code in case of attacks
-//NOTE- Add stops, and ways to show them distinct from others {may require grahics.h}
-
 #include<iostream>
+#include<vector>
+#include<map>
+#include<algorithm>
+#include<functional>
+#include "./util/terminalDimensions.hpp"
+#include "./util/util_func.hpp"
+#include<unordered_set>
 
-/* #include<fstream>
-   To be used in case save & resume to be used*/
-
-#include<cstdio>
-#include<cstdlib>
-using namespace std;
-
-// PLace within appropriate block ...
-	short diethrow(){
-	rethrow:
-	char temp=new char;
-	long double location=&temp;	/*PROblEM - Actually location of temp will be a hexadecimal location, how do we store hexadecimal 						locations*/	
-					//NOTE- then convert this hexadecimal number to a decimal number (say decnum)
-	...
-	decnum%=7; /*now decnum is any number between 0 to 6*/
-	if(decnum!=0) return decnum;
-	else goto rethrow;
-}
+#define stringify( name ) #name
+/*LEARNT - stringify() can turn any name into text, BUT remember, it ignores trailing and front spaces, for eg. in stringify( Hello World ), first and last space ignored*(Verified)/
 */
 
-int i=0,j=0;
-struct box{
-		box *next,*prev;
-		char curr, temp;	/* temp stores previous state of that box */
-					//NOTE- Initialize curr with NULL (or equivalent character that works as NULL pointer)
-		short flagp, flagu;	/* flagp for 'if any goti present'; flagu is an unified flag */
-					/* Unified Flag for 'kind of use' (flagu) - 
-						0 if 'not' usable (greyed out regions)
-						1 if 'normal' block (the usual path)
-						2 if 'locked home' (the place where we need 6 to get out)
-						3 if 'home path' (the goti colour specific path)*/
-					//NOTE- Maybe flagp can be used in case of knowing 'dual/multiple goti presence also'
-					//NOTE- flagr and temp collectively used to display to user who removed whom
-		bool flagr;		/*flagr for 'if previous was removed/attacked' ; */	
-		box(){ next=prev=NULL; curr=//NOTE- Something that is equavalent to NULL' in pointers 
-			temp=//null character
-			flagr=0; flagp=0;	//NOTE- If locked home position is causing problem this maybe the error, ie. initializing them also with flagp=0
-			flagu=1;
-			}
-		~box();
-	};
+/*LEARNT - The component type of STL containers like vectors must be 'asignable'.
+			References are NOT assignable, ie. we can only initialise them once, and,
+			you can't make them reference something else later (you can't assign it to reference any other vairable, and even after equating 2 references, only the values of variable they reference is changed, not the addresses they both refer to)
+			Due to same reason, other non-assignable types are also not allowed as components of containers, for eg. vector<const int> not allowed
+*/
 
-struct dice{
-		short flag; /*'1' if not 6, '2' to store 2 numbers, '3' to store 3...*/ 
-		short out[10]; /*stores max 10 die throw result*/
-				//NOTE- Initialize all elements of out[] with 0
-		char user; //either of RGBY
-				//NOTE- Add conditions for 3 sixes... for eg. if(out[3]!=0) then directly consider out[3] onwards...BUT this will not always be true... think
-	};
+typedef intTuple coordinates;
 
-class game{
-	box Board[15][15]; //BOARD WILL BE AN ARRAY OF ALL BOXES
-	public:
-		~game();
-		game(){
-			/*Setting unified flag as 0*/
-			for(i=0; i<6; i++)
-				for(j=0; j<6; j++) Board[i][j]->flagu=0;
-			for(i=0; i>8,i<15; i++)
-				for(j=0; j<6; j++) Board[i][j]->flagu=0;
-			for(i=0; i<6; i++)
-				for(j=0; j>8,j<15; j++) Board[i][j]->flagu=0;
-			for(i=0; i>8,i<15; i++)
-				for(j=0; j>8,j<15; j++) Board[i][j]->flagu=0;
-			for(i=0; i>5,i<9; i++)
-				for(j=0; j>5,j<9; j++) Board[i][j]->flagu=0;			
+using namespace std;
 
-			/*Setting unified flag as 2*/
-			for(i=1; i<5; i+=3)
-				for(j=1;j<5;j+=3) Bonus[i][j]->flagu=2;
-			for(i=10; i<14; i+=3)
-				for(j=1; j<5; j+=3) Bonus[i][j]->flagu=2;		
-			for(i=1; i<5; i+=2)
-				for(j=10;j<14;j+=3) Bonus[i][j]->flagu=2;
-			for(i=10; i<14; i++=2)
-				for(j=10; j<14; j+=3) Bonus[i][j]->flagu=2;
+//Replace all 'intTuple' to 'intTuple'
+// vector<intTuple> corners, stops;	////[NOTE]: Accessing these gives error: this declaration has no storage class or type specifier
+// vector<tmp_startXY_class> start_coords;
+// vector<simpleTuple<colours,intTuple>> start_coords;
+///Use map for these
 
-			/*Setting unified flag as 3*/
+class box;
+class goti;
+
+	vector<vector<box>> board(15);
+	unordered_set<player> activePlayers;	//Actually order is necessary, but that will be managed by 'to be' friend takeIntro()
+	map<colours, player> ColourMap;
+	map<player, pair< string,pair<colours ,vector< reference_wrapper<goti> >> >> playerMap;
+/*
+	PLAYER MAP
+	======================
+	PlayerID(enum)  ----> string PlayerName
+						  	colour GotiColour
+						  	vector of Gotis
+
+	Similarly, a more complex ColourMap MAYBE implemented, but for now the 'players' and 'colours' enum correspond
+*/
+
+	int goti_per_user = 4;
+	int num_laalGoti = 0; 
+	int num_hariGoti = 0; 
+	int num_peeliGoti = 0; 
+	int num_neeliGoti = 0; 
+
+	void global_destructor(); //... iterator through whole board, and 'delete goti initialised with startGoti()'
+
+class coord_class{
+public:
+	vector<intTuple> stops;	//[NOTE]: Accessing these gives error: this declaration has no storage class or type specifier
+
+	vector<pair<intTuple, direction>> outer_corners, inner_turns;
+	vector<pair<intTuple, direction>> home_turns;
+	// vector<pair<colours,intTuple>> start_coords;
+	map<colours,intTuple> start_coords;
+
+	coord_class(){
+		
+		
+		outer_corners.insert( outer_corners.begin(), {	//[NOTE] - This ensures, the game is 'unidirectional'
+				pair<intTuple, direction>(intTuple(0,6), NORTH),
+				pair<intTuple, direction>(intTuple(0,8), EAST),
+				pair<intTuple, direction>(intTuple(14,6), WEST),
+				pair<intTuple, direction>(intTuple(14,8), SOUTH),
+				pair<intTuple, direction>(intTuple(6,0), NORTH),
+				pair<intTuple, direction>(intTuple(8,0), WEST),
+				pair<intTuple, direction>(intTuple(6,14), EAST),
+				pair<intTuple, direction>(intTuple(8,14), SOUTH)
+		});
+		inner_turns.insert( inner_turns.begin(), {
+				pair<intTuple, direction>(intTuple(6,6), WEST),
+				pair<intTuple, direction>(intTuple(6,8), NORTH),
+				pair<intTuple, direction>(intTuple(8,6), SOUTH),
+				pair<intTuple, direction>(intTuple(8,8), EAST)
+		});
+
+		stops.insert( stops.begin(), {
 			
-			}		
+		});
+
+		start_coords.insert({			
+			pair<colours, intTuple>(ColourLAAL, intTuple(6,1)),
+			pair<colours, intTuple>(ColourHARA, intTuple(1,8)),
+			pair<colours, intTuple>(ColourNEELA, intTuple(8,13)),
+			pair<colours, intTuple>(ColourPEELA, intTuple(13,6)),
+		});
+	}
+}publicCoords;
+
+class _BoardPrinter{ //Only for use by updateDisplay() function
+
+    void type1(int,int) const;
+    void type2(int,int) const;
+    void type3(int,int) const;
+    void type4(int,int) const;
+    void type5(int,int) const;
+    void type6(int,int) const;
+
+    friend void updateDisplay();
+
+}_boardprinterVar;
+
+class box{
+	vector<reference_wrapper<goti>> inBoxGotis;
+	string content;
+
+	//Corner specification
+	bool isOuterCorner;
+	bool isRectCorner;
+	direction turnDir;
+
+public:
+	reference_wrapper<goti> getGoti(colours);	//Do have null check
+					//ALTERNATE NULL CHECK -> For checking if passed goti is valid, check it's colour and/or coords to be valid
+	bool removeGoti(colours);
+	bool appendGoti(goti&);
+	string get_box_content();
+
+	box(){
+			content = " ";	//one charachter, or two
+		}
 };
 
-//PIECES OF GAME... (that have to be arranged later)
-1. Way to input: //Check Page 3-bottom and page 4 (for explained)
-	Show the results of die throw (ie. basically list all non zero entries in out[])
-	And, then list locations of all gotis (of current player), then let the user chose among them
-		a. If 'only' out[0]!=0 (ie. all others are zeroes... ie. no six, no attack, no finish), move selected one
-		b. In case of multiple non zero entries take two inputs goti number(choice from list) and distance by which it is to be moved then check if sum of any possible permutations of the die results equals the distance input... then move, and then give list again
+///Complete this function
+bool dir_to_turn_ifCoord_in_CornerCoordsVec(const intTuple& curr_coords, const pair<intTuple, direction> &cornerCoord);
+void updateDisplay();
+void moveGoti(goti& inGoti, unsigned int dist);
+void startGoti(const colours gotiColour);	//use startGoti here
+box& getBox(const goti&);	//May make this a 'private' function in a class
+void takeIntro();
+bool isPlayerPlaying(player);
 
-2. RGBY classes:
-
-	class R{
-			box *goti1,*goti2,*goti3,*goti4;
-			short locknum; /*number of locked beads (used to replace beads in locked home {by default in anti-clockwise})*/
-			short disthpath[4], distnextturn[4]; /*both distances excludes current tile; distance from homepath is from last tile before home'path'*/
-							     /*can be used to calculate distance from finish*/
-
-					//NOTE - SEE PG. 11 & 12-up; For ways to prevent gotis from reprogressing again at normal path instead of home path
-			public:
-				R(){ goti1=&board[4][4]; goti2=&board[1][4]; goti3=&board[1][1]; goti4=&board[4][1]; locknum=4; }
-				~R(){}
-		};
-/*
-//NOTE- USE THIS in Actual Program (locked beads link to NULL, better and wont cause problems since locknum will be used to show the locked beads)
-	class R{
-			box *goti1,*goti2,*goti3,*goti4;
-			short locknum; 
-			public:
-				class gotiloc{ box *front, *rear; 
-						public:
-							gotiloc(){front=rear=NULL; createlist(); }
-							void createlist(); };
-				R(){ goti1=NULL; goti2=NULL; goti3=NULL; goti4=NULL; locknum=4; } //QUESTION- NULL is a pointer or a location? ie *ptr=NULL, ptr=&NULL or ptr=NULL??? Which one's correct??
-				~R(){}
-void R::gotiloc::createlist()
-{
-	front=goti1; goti1->prev=front; goti2->prev=goti1; goti3->prev=goti2; goti4->prev=goti3; goti1->next=goti2; goti2->next=goti3; goti3->next=goti4; rear=goti4;
+inline intTuple get_initCoords(colours gotiColour){
+	for(auto &&i : publicCoords.start_coords){
+		if( i.first == gotiColour )
+			return i.second;
+	}
+	
+	return intTuple(0,0);
 }
-		};*/
-	class B{
-			box *goti1,*goti2,*goti3,*goti4;
-			short locknum; /*number of locked beads (used to replace beads in locked home {by default in anti-clockwise})*/
-			public:
-				B(){ goti1=&board[13][4]; goti2=&board[10][4]; goti3=&board[10][1]; goti4=&board[13][1]; locknum=4; }
-				~B(){}
-		};
-	class Y{
-			box *goti1,*goti2,*goti3,*goti4;
-			short locknum; /*number of locked beads (used to replace beads in locked home {by default in anti-clockwise})*/
-			public:
-				Y(){ goti1=&board[13][13]; goti2=&board[10][13]; goti3=&board[10][10]; goti4=&board[13][10]; locknum=4; }
-				~Y(){}
-		};
-	class G{
-			box *goti1,*goti2,*goti3,*goti4;
-			short locknum; /*number of locked beads (used to replace beads in locked home {by default in anti-clockwise})*/
-			public:
-				G(){ goti1=&board[4][13]; goti2=&board[1][13]; goti3=&board[1][10]; goti4=&board[4][10]; locknum=4; }
-				~G(){}
-		};
+
+//[LEARNT_KNOW_MORE] - 'abstract' isn't a keyword in C++
+class goti{
+protected:
+	colours gotiColour;	//an enum variable
+	direction curr_direction;	//[FUTURE] - Likely chose between having coordinates, or pointer to goti(consider the NULL checks)
+	box* curr_box;
+	intTuple curr_coords;	//ERROR_SOLVED - Showing error : expected identifier before numeric constant intTuple coords(0,0);
+									/*LEARNT - We can't call the constructor of a datatype right at declaration, "in a class outside any method"
+											But, we can braces{} instead of () to initialize right at declaration, BUT... by passing a constructed object
+												vector<int> v(5);	//Wrong
+												vector<int> v{vector<int>(5)}; //Right
+												
+											So, first declare then, call their constructors in constructor(See this class's constructor)*/
+
+public:	//public Getters maybe used to ensure that private mamber can't be modified from outside
+	const intTuple getCoords() const{
+		if(curr_coords.getKey() == 0 && curr_coords.getVal()==0){
+			cerr<<"Coordinates of Goti are corrupt (0,0)\n"<<endl;
+		}
+		return curr_coords;
+	}
+	direction get_curr_direction() const{
+		return curr_direction;
+	}
+	//[DONE][NOTE] - Improve security of this function, else coordinates being private wont be useful... Solution used... made moveGoti a friend function
+	
+	goti() : curr_coords(0,0) {	//Initializing using constructor
+		gotiColour = UnknownColour;
+	}
+
+	colours get_gotiColour(void) const{
+		return gotiColour;
+	}
+
+	// friend void moveGoti(reference_wrapper<goti>, unsigned int);
+	friend void moveGoti(goti&, unsigned int);
+
+};	//Have abstract functions in it too
+
+class laalGoti : public goti {
+public:
+	laalGoti(){
+		gotiColour = ColourLAAL;
+	}
+};
+
+class hariGoti : public goti{
+public:
+	hariGoti(){
+		gotiColour = ColourHARA;
+		// this->curr_coords = get_initCoords(ColourHARA);
+	}
+};
+
+class peeliGoti : public goti{
+public:
+	peeliGoti(){
+		gotiColour = ColourPEELA;
+		// this->curr_coord = get_initCoords(ColourPEELA);
+	}
+};
+
+class neeliGoti : public goti{
+public:
+	neeliGoti(){
+		gotiColour = ColourNEELA;
+		// this->curr_coord = get_initCoords(ColourNEELA);
+	}
+};
+
+int rolldie(){
+	bool *b= new bool;
+	uintptr_t retval = reinterpret_cast<uintptr_t>(b);
+	delete b;	//Should statically be deleted as well, without 'delete'
+
+	return (retval%6)+1;
+}
+
+int main(int argc, char const *argv[]) {
+
+	takeIntro();	//Initialises the PlayerMap
+
+	//Initialising Board
+	board.reserve(15);
+	for (size_t i = 0; i < 15; i++) {
+		board.emplace_back(vector<box>());
+		for (size_t j = 0; j < 15; j++) {
+			board[i].emplace_back(box());
+		}
+	}
+
+	player currentPlayer = *activePlayers.begin();
+	colours currentGotiColour = playerMap[currentPlayer].second.first;
+	int dieNumber;
+
+	//GamePlay Starts
+	takeIntro();
+	while (true){
+
+		currentGotiColour = playerMap[currentPlayer].second.first;
+		
+		updateDisplay();
+		cin.get();
+
+		startGoti(currentGotiColour);	//ie. it was a 6
+		
+		///Update current Player here
+		
+		moveGoti(board[1][6].getGoti(currentGotiColour),5);
+
+	}
+
+	return 0;
+}
+	/*[LEARNT] - Nesting functions (ie. function declaration inside function) is not supported by standards in C/C++
+				 But, gcc supports it as a 'non-standard' extension
+				 BUT, in C++ mode, it's not allowed, 'Local Functions' aren't supported
+				 BUT, FROM C++11, IT IS SUPPORTED, using LAMDAs {Imp. - Lambdas have a semicolon at end}*/
+/*LAMBDAs - 1. Have a ';' at end
+			2. '[]' is the "capture clause", also called 'lambda-introducer'
+			3. parameter list '()' is optional
+			4. These are the parts:
+					[] () mutable throw() -> int {//body//}
+					 |  |   |        |       |    
+		capture clause  |  optional  |  trailing-return-type(optional)
+					parameters   exception specification(optional)
+*/
+
+void updateDisplay(){
+	// reUpdate:	//[NOTE] - To prevent this function from 'recursing' too much, due to the while loop
+		//used do-while loop instead of this
+	int boxlen = 0;
+	intTuple tmpDimen(0,0);
+
+	do{	
+		tmpDimen = getTerminalDimen();
+		boxlen = (min(tmpDimen[0],tmpDimen[1]) - 16)/15;
+
+	}while( min(tmpDimen[0],tmpDimen[1]) < 16 || max(tmpDimen[0],tmpDimen[1]) < 31 );
+		//QUestion - Why didnt this lambda work?
+	// }while ( (tmpDimen.getKey() < 31 || tmpDimen.getVal() < 31) ? true : []{	//Lamda Function (used to declare this 'local' function)
+	// 	cerr<<"INSUFFICIENT HEIGHT/WIDTH FOR DISPLAY!"<<endl;
+	// 	return false;
+	// } );
+
+	for (size_t i = 0; i <(boxlen+1)*15 + 1; i++)
+	{
+		cout<<'-';
+	}
+	
+	_boardprinterVar.type1(boxlen,0);
+	_boardprinterVar.type2(boxlen,1);
+	_boardprinterVar.type3(boxlen,2);
+	_boardprinterVar.type1(boxlen,3);
+	_boardprinterVar.type2(boxlen,4);
+	_boardprinterVar.type4(boxlen,5);
+
+	_boardprinterVar.type5(boxlen,6);
+	_boardprinterVar.type6(boxlen,7);
+	_boardprinterVar.type5(boxlen,8);
+
+	_boardprinterVar.type4(boxlen,9);
+	_boardprinterVar.type2(boxlen,10);
+	_boardprinterVar.type1(boxlen,11);
+	_boardprinterVar.type3(boxlen,12);
+	_boardprinterVar.type2(boxlen,13);
+	_boardprinterVar.type1(boxlen,14);
+
+	cout<<'\n\nCONSOLE\n';
+	for (size_t i = 0; i < tmpDimen[1]; i++)
+	{
+		cout<<'-';
+	}
+	cout<<"\nPress Enter to roll the die...";
+
+}
+
+void startGoti(colours gotiColour){
+
+	//[FUN][FUTURE] - if(number of that colour gotis = 0 earlier), then
+	//Congratulate THE USER "Chal yaar, ek goti to nikli ;-)"
+
+	if(num_laalGoti >= goti_per_user || num_hariGoti >= goti_per_user || num_peeliGoti >= goti_per_user || num_neeliGoti >= goti_per_user){
+		cerr<<"Goti request makes the number of goti of RedColour more than "<<goti_per_user<<endl;
+		return;
+	}
+	else if (gotiColour == UnknownColour)
+	{
+		cerr<<"startGoti() request made for Unknown Colour"<<endl;
+		return;
+	}	
+	else{
+		board[publicCoords.start_coords[gotiColour][0]][publicCoords.start_coords[gotiColour][1]];
+	}
+}
+
+box& getBox(const goti& inGoti){
+	if(inGoti.getCoords().getKey() < 15 || inGoti.getCoords().getVal() < 15 || inGoti.getCoords().getKey() >= 0 || inGoti.getCoords().getVal() >= 0){
+		throw OutOfBoundException("Board");
+	}
+	return board[inGoti.getCoords().getKey()][inGoti.getCoords().getVal()];
+}
+
+direction dir_to_turn_ifCoord_in_CornerCoordsVec(const intTuple& curr_coords, const vector<pair<intTuple, direction>> &corner_vec){
+	for ( auto corner : corner_vec ){
+		if(curr_coords == corner.first){
+			return corner.second;
+		}
+	}
+	return NO_TURN;
+}
+
+// void moveGoti(reference_wrapper<goti> the_goti, unsigned int dist){
+void moveGoti(goti& the_goti, unsigned int dist){
+	int x_increment=0, y_increment=0;	//[NOTE] - Can store these in the box class itself, besides the corner specification
+	direction turnDirection;
+
+	the_goti.curr_box = NULL;	//Removing from box
+	board[the_goti.curr_coords.getKey()][the_goti.curr_coords.getVal()].removeGoti(the_goti.gotiColour);
+
+	while(dist--){
+
+		x_increment = y_increment = 0;
+
+		turnDirection = dir_to_turn_ifCoord_in_CornerCoordsVec(the_goti.getCoords(), publicCoords.inner_turns);
+		if(turnDirection != NO_TURN){
+			if(turnDirection == NORTH){
+				x_increment = 2;
+				y_increment = 1;
+			}
+			else if(turnDirection == EAST){
+				x_increment = 1;
+				y_increment = -2;
+			}
+			else if(turnDirection == WEST){
+				x_increment = -1;
+				y_increment = 2;
+			}
+			else if(turnDirection == SOUTH){
+				x_increment = -2;
+				y_increment = -1;
+			}
+		}
+		else{
+
+			turnDirection = dir_to_turn_ifCoord_in_CornerCoordsVec(the_goti.getCoords(), publicCoords.outer_corners);
+			if(turnDirection != NO_TURN){
+				if(turnDirection == NORTH){
+					x_increment = 0;
+					y_increment = 1;
+				}
+				else if(turnDirection == EAST){
+					x_increment = 1;
+					y_increment = 0;
+				}
+				else if(turnDirection == WEST){
+					x_increment = -1;
+					y_increment = 0;
+				}
+				else if(turnDirection == SOUTH){
+					x_increment = 0;
+					y_increment = -1;
+				}
+			}
+
+			else{
+				if(the_goti.get_curr_direction() == NORTH){
+					x_increment = 0;
+					y_increment = 1;
+				}
+				else if(the_goti.get_curr_direction() == EAST){
+					x_increment = 1;
+					y_increment = 0;
+				}
+				else if(the_goti.get_curr_direction() == WEST){
+					x_increment = -1;
+					y_increment = 0;
+				}
+				else if(the_goti.get_curr_direction() == SOUTH){
+					x_increment = 0;
+					y_increment = -1;
+				}
+			}
+		}
+	}
+
+	board[the_goti.curr_coords[0]][the_goti.curr_coords[1]].appendGoti(the_goti);
+	updateDisplay();
+
+}
+
+reference_wrapper<goti> box::getGoti(colours gotiColour){
+	
+	for (auto &&i : inBoxGotis)
+	{
+		if(i.get.get_gotiColour() == gotiColour){
+			return i;
+		}
+	}		
+
+	throw GotiNotAvailableException(gotiColour);
+}
+
+/*[LEARNT] - The error "pointer to incomplete class type is not allowed", generally related to header files, when "I forward declared the class in the header, and failed to include the full header for the class"
+			AND, "An 'incomplete class' is one that is declared but not defined"
+			ALSO, If your class is defined as a typedef: "typedef struct struct{};", and then try to refer to it as 'struct myclass' anywhere else, you'll get many such errors, to solve it, remove 'class/struct' from variable declarations, ie. 'mystruct *var = value;' instead of 'struct mystruct *var=value'*/
+
+bool box::removeGoti(colours gotiColour){
+	vector<reference_wrapper<goti>>::const_iterator i = inBoxGotis.begin();
+	for ( ; i < inBoxGotis.end(); ++i)
+	{
+		if( i->get.get_gotiColour() == gotiColour){
+			inBoxGotis.erase(i);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool box::appendGoti(goti& in_goti){
+	if( in_goti.get_gotiColour() != UnknownColour && in_goti.getCoords() != intTuple(0,0) ){
+		inBoxGotis.push_back(ref(in_goti));
+		return true;
+	}
+	cerr<<"Can't append Goti, invalid parameters"<<endl;
+	return false;
+}
+
+string box::get_box_content(){
+	return content;
+}
+
+
+void _BoardPrinter::type1(int boxlen, int nrow) const{
+	string content;
+
+	//Actual-Row Start
+	for(size_t j=0; j<boxlen; ++j){
+		cout<<'|';
+		for (size_t i = 0; i < (boxlen+1)*6 - 1; i++)
+			cout<<'\\';
+
+		cout<<'|';
+
+		for (size_t i = 0; i < 3; i++){
+			align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			cout<<'|';
+		}
+
+		for (size_t i = 0; i < (boxlen+1)*6 - 1; i++)	cout<<'\\';
+		cout<<"|\n";
+	}
+	//Actual-Row End
+
+	//Inter-Row line Start
+	cout<<'|';
+	for (size_t i = 0; i < boxlen; i++)	cout<<'\\';
+	for (size_t i = 0; i < boxlen+2; i++) cout<<'-';
+	for (size_t i = 0; i < (boxlen)*2 + 1; i++)	cout<<'\\';
+	for (size_t i = 0; i < boxlen+2; i++) cout<<'-';
+	for (size_t i = 0; i < boxlen; i++) cout<<'\\';
+	cout<<'|';
+
+	for (size_t i = 0; i < (boxlen+1)*3-1; i++) cout<<'-';
+
+	cout<<'|';
+	for (size_t i = 0; i < boxlen; i++)	cout<<'\\';
+	for (size_t i = 0; i < boxlen+2; i++) cout<<'-';
+	for (size_t i = 0; i < (boxlen)*2 + 1; i++)	cout<<'\\';
+	for (size_t i = 0; i < boxlen+2; i++) cout<<'-';
+	for (size_t i = 0; i < boxlen; i++) cout<<'\\';
+	cout<<"|\n";
+	//Inter-Row Line end
+}
+
+void _BoardPrinter::type2(int boxlen, int nrow) const{
+	//Actual-Row Start
+	for(size_t j=0; j<boxlen; ++j){
+		cout<<'|';
+		for (size_t i = 0; i < boxlen; i++)	cout<<'\\';
+		for (size_t i = 0; i < boxlen+2; i++) cout<<' ';
+		for (size_t i = 0; i < (boxlen)*2 + 1; i++)	cout<<'\\';
+		for (size_t i = 0; i < boxlen+2; i++) cout<<' ';
+		for (size_t i = 0; i < boxlen; i++) cout<<'\\';
+		cout<<'|';
+
+
+		for (size_t i = 0; i < 3; i++){
+			align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			cout<<'|';
+		}
+
+		for (size_t i = 0; i < boxlen; i++)	cout<<'\\';
+		for (size_t i = 0; i < boxlen+2; i++) cout<<' ';
+		for (size_t i = 0; i < (boxlen)*2 + 1; i++)	cout<<'\\';
+		for (size_t i = 0; i < boxlen+2; i++) cout<<' ';
+		for (size_t i = 0; i < boxlen; i++) cout<<'\\';
+		cout<<"\n";
+	}
+	//Actual-Row End
+
+	//Inter-Row line Start
+	cout<<'|';
+	for (size_t i = 0; i < boxlen; i++)	cout<<'\\';
+	for (size_t i = 0; i < boxlen+2; i++) cout<<'-';
+	for (size_t i = 0; i < (boxlen)*2 + 1; i++)	cout<<'\\';
+	for (size_t i = 0; i < boxlen+2; i++) cout<<'-';
+	for (size_t i = 0; i < boxlen; i++) cout<<'\\';
+	cout<<'|';
+
+	for (size_t i = 0; i < (boxlen+1)*3-1; i++) cout<<'-';
+
+	cout<<'|';
+	for (size_t i = 0; i < boxlen; i++)	cout<<'\\';
+	for (size_t i = 0; i < boxlen+2; i++) cout<<'-';
+	for (size_t i = 0; i < (boxlen)*2 + 1; i++)	cout<<'\\';
+	for (size_t i = 0; i < boxlen+2; i++) cout<<'-';
+	for (size_t i = 0; i < boxlen; i++) cout<<'\\';
+	cout<<"|\n";
+	//Inter-Row Line end
+
+}
+
+void _BoardPrinter::type3(int boxlen, int nrow) const{
+	//Actual-Row Start
+	for(size_t j=0; j<boxlen; ++j){
+		cout<<'|';
+		for (size_t i = 0; i < (boxlen+1)*6-1; i++)	cout<<'\\';
+		cout<<'|';
+
+
+		for (size_t i = 0; i < 3; i++){
+			align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			cout<<'|';
+		}
+
+		for (size_t i = 0; i < (boxlen+1)*6-1; i++)	cout<<'\\';
+		cout<<"|\n";
+	}
+	//Actual-Row End
+
+	//Inter-Row line Start
+	cout<<'|';
+	for (size_t i = 0; i < (boxlen+1)*6-1; i++)	cout<<'\\';
+	cout<<'|';
+
+	for (size_t i = 0; i < (boxlen+1)*3-1; i++) cout<<'-';
+
+	cout<<'|';
+	for (size_t i = 0; i < (boxlen+1)*6-1; i++)	cout<<'\\';
+	cout<<"|\n";
+	//Inter-Row Line end
+}
+
+void _BoardPrinter::type4(int boxlen, int nrow) const{
+	//Actual-Row Start
+	for(size_t j=0; j<boxlen; ++j){
+		cout<<'|';
+		for (size_t i = 0; i < (boxlen+1)*6-1; i++)	cout<<'\\';
+		cout<<'|';
+
+
+		for (size_t i = 0; i < 3; i++){
+			align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			cout<<'|';
+		}
+
+		for (size_t i = 0; i < (boxlen+1)*6-1; i++)	cout<<'\\';
+		cout<<"|\n";
+	}
+	//Actual-Row End
+
+	//Inter-Row line Start
+	cout<<'|';
+	for (size_t i = 0; i < (boxlen+1)*6-1; i++)	cout<<'-';
+
+	for (size_t i = 0; i < (boxlen+1)*3-1+2; i++) cout<<'-';
+
+	for (size_t i = 0; i < (boxlen+1)*6-1; i++)	cout<<'-';
+	cout<<"|\n";
+	//Inter-Row Line end
+}
+
+void _BoardPrinter::type5(int boxlen, int nrow) const{
+	//Actual-Row Start
+	for(size_t j=0; j<boxlen; ++j){
+		cout<<'|';
+		for (size_t i = 0; i < 6; i++){
+			align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			cout<<'|';
+		}
+
+		for (size_t i = 0; i < (boxlen+1)*3 -1; i++) cout<<' ';	
+		cout<<'|';
+
+		for (size_t i = 0; i < 6; i++){
+			align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			cout<<'|';
+		}
+	}
+	//Actual-Row End
+
+	//Inter-Row line Start
+	cout<<'|';
+	for (size_t i = 0; i < (boxlen+1)*6-1; i++) cout<<'-';
+	cout<<'|';
+
+	for (size_t i = 0; i < (boxlen+1)*3 -1; i++) cout<<' ';	
+	cout<<'|';
+
+	for (size_t i = 0; i < (boxlen+1)*6-1; i++) cout<<'-';
+	cout<<'|';
+	//Inter-Row Line end
+}
+
+void _BoardPrinter::type6(int boxlen, int nrow) const{
+	//Actual-Row Start
+	for(size_t j=0; j<boxlen; ++j){
+		cout<<'|';
+			align_text_center(boxlen, board[nrow][6].get_box_content());
+			cout<<'|';
+		for (size_t i = 0; i < 5; i++){
+			align_text_center(boxlen, board[nrow][7+i].get_box_content());
+			cout<<' ';
+		}
+
+		for (size_t i = 0; i < (boxlen+1)*3 -1; i++) cout<<' ';	
+		cout<<'|';
+
+		for (size_t i = 0; i < 4; i++){
+			align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			cout<<' ';
+		}
+		for (size_t i = 0; i < 2; i++){
+			align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			cout<<'|';
+		}
+
+	}
+	//Actual-Row End
+	//Inter-Row line Start
+	cout<<'|';
+	for (size_t i = 0; i < (boxlen+1)*6-1; i++) cout<<'-';
+	cout<<'|';
+
+	for (size_t i = 0; i < (boxlen+1)*3 -1; i++) cout<<' ';	
+	cout<<'|';
+
+	for (size_t i = 0; i < (boxlen+1)*6-1; i++) cout<<'-';
+	cout<<'|';
+	//Inter-Row Line end	
+}
+
+void takeIntro(){
+	intTuple tmpDimen(0,0);
+
+	do{	
+		tmpDimen = getTerminalDimen();
+
+	}while( min(tmpDimen[0],tmpDimen[1]) < 16 || max(tmpDimen[0],tmpDimen[1]) < 31 );
+
+	align_text_center(tmpDimen[1], string("Welcome to \"Ludo-The Game\""));
+	cout<<endl;
+	for (size_t i = 0; i < tmpDimen[1]; i++)
+	{
+		cout<<'=';
+	}
+	
+	string playerName;
+	player i=Player1;
+	cout<<"\n\nEnter names of the Players (0 if not playing) : \n";
+	
+	while(i<=Player4){
+		cout<<"Player"<<i<<" - ";
+		
+		getline(cin, playerName);		
+		if(trimString(playerName) != "0"){
+			playerMap.insert(make_pair(i,make_pair(playerName,make_pair((colours)i,vector<reference_wrapper<goti>>()))));
+			activePlayers.insert(i);
+		}
+	}
+
+	cout<<endl<<"\nPress Enter to go to the board...";
+	cin.get();
+}
+
+bool isPlayerPlaying(player p){
+	return playerMap.find(p) != playerMap.end();
+}

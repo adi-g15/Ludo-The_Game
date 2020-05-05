@@ -1,0 +1,1 @@
+#define _LUDO_GOTI
