@@ -1,45 +1,28 @@
+#define CUSTOM_EXCEPTION 1
+#pragma once
+
 #include<exception>
 
-#ifndef _GLIBCXX_DEBUG_STRING
+#ifndef _GLIBCXX_STRING
   #include<string>
 #endif
 
-#include "./enumerations.hpp"
-
-#define CUSTOM_EXCEPTION true
+#ifndef CUSTOM_ENUMERATIONS
+  #include "enumerations.hpp"
+#endif
 
 class OutOfBoundException : std::exception{
-  std::string source = "Array";
+  std::string source;
 public:
-  const char* what(){
-    return (source + " Index out of Bound").c_str();
-  }
-  OutOfBoundException(const char* source){
-    this->source = source;
-  }
-  OutOfBoundException() = delete;
+  const char* what(); //@returns char array denoting description of problem
+  OutOfBoundException(const char*); //@params DataStructure name, in which the exception occured
+  OutOfBoundException() = delete; //deleted so as to make giving a reason mandatory
 };
 
 class GotiNotAvailableException : std::exception{
   colours Colour;
   public:
-   const char* what(){
-      if(Colour == UnknownColour){
-        return "INVALID getGoti() REQUEST!!\n";
-      }else if (Colour == ColourLAAL)
-      {
-        return "LAALgoti not in the box... INVALID getGoti() REQUEST!!\n";
-      }else if (Colour == ColourHARA)
-      {
-        return "HARAgoti not in the box... INVALID getGoti() REQUEST!!\n";
-      }else if (Colour == ColourPEELA)
-      {
-        return "PEELAgoti not in the box... INVALID getGoti() REQUEST!!\n";
-      }else if (Colour == ColourNEELA)
-      {
-        return "NEELAgoti not in the box... INVALID getGoti() REQUEST!!\n";
-      }
-  }
-  GotiNotAvailableException(colours gotiColour) : Colour(gotiColour){}
-  GotiNotAvailableException() = delete;
+    const char* what();
+    GotiNotAvailableException(colours);
+    GotiNotAvailableException() = delete;
 };

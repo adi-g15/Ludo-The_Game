@@ -1,3 +1,5 @@
+#define CUSTOM_ENUMERATIONS 1
+
 enum colours{	//they get values starting from 0
 					/*[LEARNT] - Defining enum data type, and having variables of this user defined type
 					"enumerator value must have integral or unscoped enumeration type"

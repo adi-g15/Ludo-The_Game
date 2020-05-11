@@ -1,5 +1,6 @@
-#include<iostream>
+#define CUSTOM_BOARD 1
 
-#ifdef _LUDO_GOTI
-    #include "./goti.hpp"
+#ifndef CUSTOM_LUDO_GOTI
+    #include "./ludo_goti.hpp"
 #endif
+
