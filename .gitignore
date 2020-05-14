@@ -2,4 +2,6 @@
 *out
 *sh
 experimental*
-util/*.gch
+includes/*.gch
+build/game*
+build/object_files/*
