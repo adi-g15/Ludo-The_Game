@@ -2,6 +2,7 @@
 
 #include<iostream>
 #include "exceptions.hpp"
+#include<utility>	//ONLY for creating a temp pair, in appendGoti()
 
 using namespace std;
 
@@ -33,8 +34,8 @@ bool ludo_box::removeGoti(colours gotiColour){
 	return false;
 }
 
-bool ludo_box::appendGoti(ludo_goti& in_goti){
-	if( in_goti.get_gotiColour() != UnknownColour && in_goti.getCoords() != intTuple(0,0) ){
+bool ludo_box::appendGoti(std::reference_wrapper<ludo_goti> in_goti){
+	if( in_goti.get().get_gotiColour() != UnknownColour && in_goti.get().getCoords() != std::make_pair(0,0) ){
 		inBoxGotis.push_back(ref(in_goti));
 		return true;
 	}
