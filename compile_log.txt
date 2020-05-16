@@ -1,0 +1,170 @@
+This is the log after running 'make'
+
+g++ -c includes/utilities.cpp -Iincludes -o build/object_files/utilities.o
+g++ -c includes/exceptions.cpp -Iincludes -o build/object_files/exceptions.o
+g++ -E includes/board.cpp -Iincludes > board
+g++ -c includes/board.cpp -Iincludes -o build/object_files/board.o
+g++ -c includes/ludo_box.cpp -Iincludes -o build/object_files/ludo_box.o
+g++ -E includes/ludo_goti.cpp -Iincludes > ludo_goti
+g++ -c includes/ludo_goti.cpp -Iincludes -o build/object_files/ludo_goti.o
+g++ -E main.cpp -Iincludes > main
+g++ -c main.cpp -Iincludes -o build/main.o
+ar rvs libs/libludo_static.a build/object_files/board.o build/object_files/ludo_box.o build/object_files/ludo_goti.o
+r - build/object_files/board.o
+r - build/object_files/ludo_box.o
+r - build/object_files/ludo_goti.o
+ar rvs libs/libutil.a build/object_files/utilities.o build/object_files/exceptions.o
+r - build/object_files/utilities.o
+r - build/object_files/exceptions.o
+g++ build/main.o build/object_files/board.o \
+                    build/object_files/ludo_box.o \
+				build/object_files/ludo_goti.o \
+				build/object_files/utilities.o \
+				build/object_files/exceptions.o \
+	-o build/game
+build/object_files/board.o:(.bss+0x0): multiple definition of `ludo_coords::stops'
+build/main.o:(.bss+0x0): first defined here
+build/object_files/board.o:(.bss+0x20): multiple definition of `ludo_coords::outer_corners'
+build/main.o:(.bss+0x20): first defined here
+build/object_files/board.o:(.bss+0x60): multiple definition of `ludo_coords::inner_turns'
+build/main.o:(.bss+0x60): first defined here
+build/object_files/board.o:(.bss+0xa0): multiple definition of `ludo_coords::home_turns'
+build/main.o:(.bss+0xa0): first defined here
+build/object_files/board.o:(.bss+0xe0): multiple definition of `ludo_coords::start_coords'
+build/main.o:(.bss+0xe0): first defined here
+build/object_files/ludo_goti.o:(.bss+0x0): multiple definition of `ludo_coords::stops'
+build/main.o:(.bss+0x0): first defined here
+build/object_files/ludo_goti.o:(.bss+0x20): multiple definition of `ludo_coords::outer_corners'
+build/main.o:(.bss+0x20): first defined here
+build/object_files/ludo_goti.o:(.bss+0x60): multiple definition of `ludo_coords::inner_turns'
+build/main.o:(.bss+0x60): first defined here
+build/object_files/ludo_goti.o:(.bss+0xa0): multiple definition of `ludo_coords::home_turns'
+build/main.o:(.bss+0xa0): first defined here
+build/object_files/ludo_goti.o:(.bss+0xe0): multiple definition of `ludo_coords::start_coords'
+build/main.o:(.bss+0xe0): first defined here
+build/object_files/board.o: In function `game::moveGoti(ludo_goti&, unsigned int)':
+board.cpp:(.text+0x17ad): undefined reference to `utility::simpleTuple<int, int>::getVal() const'
+board.cpp:(.text+0x17c0): undefined reference to `utility::simpleTuple<int, int>::getKey() const'
+build/object_files/board.o: In function `game::getBox(ludo_goti const&)':
+board.cpp:(.text+0x1bf4): undefined reference to `utility::simpleTuple<int, int>::getKey() const'
+board.cpp:(.text+0x1c15): undefined reference to `utility::simpleTuple<int, int>::getVal() const'
+board.cpp:(.text+0x1c36): undefined reference to `utility::simpleTuple<int, int>::getKey() const'
+board.cpp:(.text+0x1c56): undefined reference to `utility::simpleTuple<int, int>::getVal() const'
+board.cpp:(.text+0x1cb8): undefined reference to `utility::simpleTuple<int, int>::getVal() const'
+board.cpp:(.text+0x1cd7): undefined reference to `utility::simpleTuple<int, int>::getKey() const'
+build/object_files/board.o: In function `dir_to_turn_ifCoord_in_CornerCoordsVec(utility::homoTuple<int> const&, std::map<utility::homoTuple<int>, direction, std::less<utility::homoTuple<int> >, std::allocator<std::pair<utility::homoTuple<int> const, direction> > > const&)':
+board.cpp:(.text+0x36b7): undefined reference to `utility::homoTuple<int>::operator==(utility::homoTuple<int> const&) const'
+build/object_files/board.o: In function `utility::homoTuple<int>::operator=(utility::homoTuple<int>&&)':
+board.cpp:(.text._ZN7utility9homoTupleIiEaSEOS1_[_ZN7utility9homoTupleIiEaSEOS1_]+0x1f): undefined reference to `utility::simpleTuple<int, int>::operator=(utility::simpleTuple<int, int> const&)'
+build/object_files/board.o: In function `std::less<utility::homoTuple<int> >::operator()(utility::homoTuple<int> const&, utility::homoTuple<int> const&) const':
+board.cpp:(.text._ZNKSt4lessIN7utility9homoTupleIiEEEclERKS2_S5_[_ZNKSt4lessIN7utility9homoTupleIiEEEclERKS2_S5_]+0x23): undefined reference to `utility::homoTuple<int>::operator<(utility::homoTuple<int> const&) const'
+build/object_files/ludo_box.o: In function `ludo_box::appendGoti(ludo_goti&)':
+ludo_box.cpp:(.text+0x2b3): undefined reference to `utility::homoTuple<int>::operator!=(utility::homoTuple<int> const&) const'
+build/object_files/ludo_goti.o: In function `ludo_goti::getCoords() const':
+ludo_goti.cpp:(.text+0x18): undefined reference to `utility::simpleTuple<int, int>::getKey() const'
+ludo_goti.cpp:(.text+0x2c): undefined reference to `utility::simpleTuple<int, int>::getVal() const'
+build/object_files/ludo_goti.o: In function `laalGoti::laalGoti()':
+ludo_goti.cpp:(.text+0x107): undefined reference to `ludo_coords::get_startCoords(colours)'
+build/object_files/ludo_goti.o: In function `hariGoti::hariGoti()':
+ludo_goti.cpp:(.text+0x175): undefined reference to `ludo_coords::get_startCoords(colours)'
+build/object_files/ludo_goti.o: In function `peeliGoti::peeliGoti()':
+ludo_goti.cpp:(.text+0x1e3): undefined reference to `ludo_coords::get_startCoords(colours)'
+build/object_files/ludo_goti.o: In function `neeliGoti::neeliGoti()':
+ludo_goti.cpp:(.text+0x251): undefined reference to `ludo_coords::get_startCoords(colours)'
+collect2: error: ld returned 1 exit status
+Makefile:26: recipe for target 'build/game' failed
+make: *** [build/game] Error 1
+
+
+SOME COMMAND OUTPUTS - 
+1..
+
+mint@mint:/media/mint/Elements/AG15/Repositories/Ludo-The_Game$ nm build/main.o | grep ludo_coords
+000000000000396b t _GLOBAL__sub_I__ZN11ludo_coords5stopsE
+0000000000002c1b T _ZN11ludo_coords10InitCoordsEv
+00000000000000a0 B _ZN11ludo_coords10home_turnsE
+0000000000000060 B _ZN11ludo_coords11inner_turnsE
+00000000000000e0 B _ZN11ludo_coords12start_coordsE
+0000000000000020 B _ZN11ludo_coords13outer_cornersE
+0000000000000000 B _ZN11ludo_coords5stopsE
+mint@mint:/media/mint/Elements/AG15/Repositories/Ludo-The_Game$ nm build/object_files/board.o | grep ludo_coords
+00000000000037fc t _GLOBAL__sub_I__ZN11ludo_coords5stopsE
+0000000000002c1b T _ZN11ludo_coords10InitCoordsEv
+00000000000000a0 B _ZN11ludo_coords10home_turnsE
+0000000000000060 B _ZN11ludo_coords11inner_turnsE
+00000000000000e0 B _ZN11ludo_coords12start_coordsE
+0000000000000020 B _ZN11ludo_coords13outer_cornersE
+0000000000000000 B _ZN11ludo_coords5stopsE
+mint@mint:/media/mint/Elements/AG15/Repositories/Ludo-The_Game$ nm build/object_files/ludo_goti.o | grep ludo_coords
+0000000000000396 t _GLOBAL__sub_I__ZN11ludo_coords5stopsE
+                 U _ZN11ludo_coords10InitCoordsEv
+00000000000000a0 B _ZN11ludo_coords10home_turnsE
+0000000000000060 B _ZN11ludo_coords11inner_turnsE
+00000000000000e0 B _ZN11ludo_coords12start_coordsE
+0000000000000020 B _ZN11ludo_coords13outer_cornersE
+                 U _ZN11ludo_coords15get_startCoordsE7colours
+0000000000000000 B _ZN11ludo_coords5stopsE
+
+
+2..
+
+mint@mint:/media/mint/Elements/AG15/Repositories/Ludo-The_Game$ nm build/main.o | grep take
+0000000000001d36 T _ZN4game9takeIntroEv
+mint@mint:/media/mint/Elements/AG15/Repositories/Ludo-The_Game$ nm build/object_files/board.o | grep take
+0000000000001d36 T _ZN4game9takeIntroEv
+
+
+3..
+
+g++ -c includes/utilities.cpp -Iincludes -o build/object_files/utilities.o
+g++ -c includes/exceptions.cpp -Iincludes -o build/object_files/exceptions.o
+g++ -E includes/board.cpp -Iincludes > board
+g++ -c includes/board.cpp -Iincludes -o build/object_files/board.o
+g++ -c includes/ludo_box.cpp -Iincludes -o build/object_files/ludo_box.o
+g++ -E includes/ludo_goti.cpp -Iincludes > ludo_goti
+g++ -c includes/ludo_goti.cpp -Iincludes -o build/object_files/ludo_goti.o
+g++ -E main.cpp -Iincludes > main
+g++ -c main.cpp -Iincludes -o build/main.o
+ar rvs libs/libludo_static.a build/object_files/board.o build/object_files/ludo_box.o build/object_files/ludo_goti.o
+r - build/object_files/board.o
+r - build/object_files/ludo_box.o
+r - build/object_files/ludo_goti.o
+ar rvs libs/libutil.a build/object_files/utilities.o build/object_files/exceptions.o
+r - build/object_files/utilities.o
+r - build/object_files/exceptions.o
+g++ build/main.o -Llibs -lutil -lludo_static -o build/game
+libs/libludo_static.a(board.o): In function `_BoardPrinter::type1(int, int, std::vector<std::vector<ludo_box, std::allocator<ludo_box> >, std::allocator<std::vector<ludo_box, std::allocator<ludo_box> > > > const&)':
+board.cpp:(.text+0x12d): undefined reference to `utility::align_text_center(int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)'
+libs/libludo_static.a(board.o): In function `_BoardPrinter::type2(int, int, std::vector<std::vector<ludo_box, std::allocator<ludo_box> >, std::allocator<std::vector<ludo_box, std::allocator<ludo_box> > > > const&)':
+board.cpp:(.text+0x6b4): undefined reference to `utility::align_text_center(int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)'
+libs/libludo_static.a(board.o): In function `_BoardPrinter::type3(int, int, std::vector<std::vector<ludo_box, std::allocator<ludo_box> >, std::allocator<std::vector<ludo_box, std::allocator<ludo_box> > > > const&)':
+board.cpp:(.text+0xbdd): undefined reference to `utility::align_text_center(int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)'
+libs/libludo_static.a(board.o): In function `_BoardPrinter::type4(int, int, std::vector<std::vector<ludo_box, std::allocator<ludo_box> >, std::allocator<std::vector<ludo_box, std::allocator<ludo_box> > > > const&)':
+board.cpp:(.text+0xe97): undefined reference to `utility::align_text_center(int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)'
+libs/libludo_static.a(board.o): In function `_BoardPrinter::type5(int, int, std::vector<std::vector<ludo_box, std::allocator<ludo_box> >, std::allocator<std::vector<ludo_box, std::allocator<ludo_box> > > > const&)':
+board.cpp:(.text+0x10e2): undefined reference to `utility::align_text_center(int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)'
+libs/libludo_static.a(board.o):board.cpp:(.text+0x11b4): more undefined references to `utility::align_text_center(int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)' follow
+libs/libludo_static.a(board.o): In function `game::moveGoti(ludo_goti&, unsigned int)':
+board.cpp:(.text+0x182e): undefined reference to `ludo_coords::inner_turns'
+board.cpp:(.text+0x18bc): undefined reference to `ludo_coords::outer_corners'
+libs/libludo_static.a(board.o): In function `game::startGoti(colours)':
+board.cpp:(.text+0x1b59): undefined reference to `ludo_coords::start_coords'
+board.cpp:(.text+0x1b7e): undefined reference to `ludo_coords::start_coords'
+libs/libludo_static.a(board.o): In function `game::takeIntro()':
+board.cpp:(.text+0x1d72): undefined reference to `utility::getTerminalDimen()'
+board.cpp:(.text+0x1e6e): undefined reference to `utility::align_text_center(int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)'
+board.cpp:(.text+0x1f87): undefined reference to `utility::trimString(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)'
+libs/libludo_static.a(board.o): In function `game::updateDisplay()':
+board.cpp:(.text+0x22ce): undefined reference to `utility::getTerminalDimen()'
+libs/libludo_static.a(board.o): In function `ludo_coords::InitCoords()':
+board.cpp:(.text+0x2c93): undefined reference to `ludo_coords::stops'
+board.cpp:(.text+0x30ad): undefined reference to `ludo_coords::outer_corners'
+board.cpp:(.text+0x3303): undefined reference to `ludo_coords::inner_turns'
+board.cpp:(.text+0x3548): undefined reference to `ludo_coords::start_coords'
+libs/libludo_static.a(board.o): In function `ludo_coords::get_startCoords(colours)':
+board.cpp:(.text+0x364f): undefined reference to `ludo_coords::start_coords'
+libs/libludo_static.a(board.o): In function `utility::homoTuple<int>::operator=(utility::homoTuple<int>&&)':
+board.cpp:(.text._ZN7utility9homoTupleIiEaSEOS1_[_ZN7utility9homoTupleIiEaSEOS1_]+0x1f): undefined reference to `utility::simpleTuple<int, int>::operator=(utility::simpleTuple<int, int> const&)'
+collect2: error: ld returned 1 exit status
+make: *** [build/game] Error 1
+Makefile:30: recipe for target 'build/game' failed

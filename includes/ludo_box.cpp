@@ -1,21 +1,7 @@
 #include "ludo_box.hpp"  
 
-// #ifndef CUSTOM_SIMPLETUPLE
-//     #include "simpleTuple.hpp"
-// #endif
-// #ifndef CUSTOM_EXCEPTIONS
-//     #include "exceptions.hpp"
-// #endif
-
-// #ifndef _GLIBCXX_FUNCTIONAL
-//     #include<functional>
-// #endif
-// #ifndef _GLIBCXX_IOSTREAM
-//     #include<iostream>
-// #endif
-
 #include<iostream>
-#include<exceptions.hpp>
+#include "exceptions.hpp"
 
 using namespace std;
 
