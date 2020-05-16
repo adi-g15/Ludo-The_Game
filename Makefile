@@ -12,7 +12,8 @@ I1 = includes
 
 LIBS_OBJECT_FILES = $(B1)/board.o \
                     $(B1)/ludo_box.o \
-					$(B1)/ludo_goti.o
+					$(B1)/ludo_goti.o \
+					$(B1)/ludo_coords.o
 
 UTIL_OBJECT_FILES = $(B1)/utilities.o \
 					$(B1)/exceptions.o
@@ -35,7 +36,7 @@ build/main.o: main.cpp
 
 ##LIBRARY_ OBJECT_ FILES START
 $(B1)/board.o : $(I1)/board.cpp
-	g++ -E $(I1)/board.cpp -Iincludes > board
+	# g++ -E $(I1)/board.cpp -Iincludes > board
 	g++ -c $(I1)/board.cpp -Iincludes -o $(B1)/board.o
 
 $(B1)/exceptions.o : $(I1)/exceptions.cpp
@@ -45,11 +46,14 @@ $(B1)/ludo_box.o : $(I1)/ludo_box.cpp
 	g++ -c $(I1)/ludo_box.cpp -Iincludes -o $(B1)/ludo_box.o
 
 $(B1)/ludo_goti.o : $(I1)/ludo_goti.cpp
-	g++ -E $(I1)/ludo_goti.cpp -Iincludes > ludo_goti
+	# g++ -E $(I1)/ludo_goti.cpp -Iincludes > ludo_goti
 	g++ -c $(I1)/ludo_goti.cpp -Iincludes -o $(B1)/ludo_goti.o
 
 $(B1)/utilities.o : $(I1)/utilities.cpp
 	g++ -c $(I1)/utilities.cpp -Iincludes -o $(B1)/utilities.o
+
+$(B1)/ludo_coords.o : $(I1)/ludo_coords.cpp
+	g++ -c $(I1)/ludo_coords.cpp -Iincludes -o $(B1)/ludo_coords.o	
 ##LIBRARY_ OBJECT_ FILES END
 
 ##Creating Libraries START

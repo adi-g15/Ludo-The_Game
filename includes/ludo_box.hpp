@@ -2,7 +2,7 @@
 
 #include "ludo_goti.hpp"
 #include<vector>
-#include<functional>
+// #include<functional>
 #include<string>
 
 class ludo_box{
@@ -17,7 +17,7 @@ class ludo_box{
 public:
 	std::reference_wrapper<ludo_goti> getGoti(colours);
     bool removeGoti(colours);
-	bool appendGoti(ludo_goti&);
+	bool appendGoti(std::reference_wrapper<ludo_goti>);
 	std::string get_box_content() const;
 
 	ludo_box();

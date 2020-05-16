@@ -18486,7 +18486,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
 
 
 
-namespace utility{
+namespace customUtil{
 
 
     template <class T1, class T2>
@@ -18529,14 +18529,14 @@ namespace utility{
 
 
 
-typedef utility::homoTuple<int> intTuple;
-typedef utility::homoTuple<char> charTuple;
-typedef utility::homoTuple<float> floatTuple;
-typedef utility::homoTuple<double> doubleTuple;
+typedef customUtil::homoTuple<int> intTuple;
+typedef customUtil::homoTuple<char> charTuple;
+typedef customUtil::homoTuple<float> floatTuple;
+typedef customUtil::homoTuple<double> doubleTuple;
 
 
 
-namespace utility
+namespace customUtil
 {
     intTuple getTerminalDimen();
     bool align_text_center(int max_length,const std::string&);
@@ -34337,7 +34337,7 @@ class GotiNotAvailableException : std::exception{
 };
 
 
-namespace utility{
+namespace customUtil{
 
     template <class T1, class T2>
     simpleTuple<T1,T2>::simpleTuple(T1 K, T2 V){
@@ -35802,7 +35802,7 @@ int getentropy (void *__buffer, size_t __length) ;
 
 
 
-intTuple utility::getTerminalDimen(){
+intTuple customUtil::getTerminalDimen(){
   intTuple retTuple(0,0);
 
     winsize windowsSize;
@@ -35816,7 +35816,7 @@ intTuple utility::getTerminalDimen(){
   return retTuple;
 }
 
-bool utility::align_text_center(int max_length,const std::string& str){
+bool customUtil::align_text_center(int max_length,const std::string& str){
     if(max_length < str.size()){
         return false;
     }
@@ -35829,7 +35829,7 @@ bool utility::align_text_center(int max_length,const std::string& str){
 
 }
 
-std::string utility::trimString(const std::string &s){
+std::string customUtil::trimString(const std::string &s){
     std::string str_out(s);
     auto lambda = [](char ch){
         return ! isspace(ch);
