@@ -1,10 +1,11 @@
 #include "board.hpp"
 
 #include<iostream>
+#include<memory>
 #include "exceptions.hpp"
-#include<utilities.hpp>
-#include<exceptions.hpp>
-#include<vector>
+#include "utilities.hpp"
+#include "ludo_coords.hpp"	//Used only by startGoti()
+// #include<vector>
 
 using namespace std;
 
@@ -21,7 +22,7 @@ void _BoardPrinter::type1(int boxlen, int nrow,const std::vector<std::vector<lud
 		std::cout<<'|';
 
 		for (size_t i = 0; i < 3; i++){
-			utility::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			customUtil::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 			std::cout<<'|';
 		}
 
@@ -64,7 +65,7 @@ void _BoardPrinter::type2(int boxlen, int nrow,const std::vector<std::vector<lud
 
 
 		for (size_t i = 0; i < 3; i++){
-			utility::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			customUtil::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 			std::cout<<'|';
 		}
 
@@ -108,7 +109,7 @@ void _BoardPrinter::type3(int boxlen, int nrow,const std::vector<std::vector<lud
 
 
 		for (size_t i = 0; i < 3; i++){
-			utility::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			customUtil::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 			std::cout<<'|';
 		}
 
@@ -139,7 +140,7 @@ void _BoardPrinter::type4(int boxlen, int nrow,const std::vector<std::vector<lud
 
 
 		for (size_t i = 0; i < 3; i++){
-			utility::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			customUtil::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 			std::cout<<'|';
 		}
 
@@ -164,7 +165,7 @@ void _BoardPrinter::type5(int boxlen, int nrow,const std::vector<std::vector<lud
 	for(size_t j=0; j<boxlen; ++j){
 		std::cout<<'|';
 		for (size_t i = 0; i < 6; i++){
-			utility::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			customUtil::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 			std::cout<<'|';
 		}
 
@@ -172,7 +173,7 @@ void _BoardPrinter::type5(int boxlen, int nrow,const std::vector<std::vector<lud
 		std::cout<<'|';
 
 		for (size_t i = 0; i < 6; i++){
-			utility::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			customUtil::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 			std::cout<<'|';
 		}
 	}
@@ -195,10 +196,10 @@ void _BoardPrinter::type6(int boxlen, int nrow,const std::vector<std::vector<lud
 	//Actual-Row Start
 	for(size_t j=0; j<boxlen; ++j){
 		std::cout<<'|';
-			utility::align_text_center(boxlen, board[nrow][6].get_box_content());
+			customUtil::align_text_center(boxlen, board[nrow][6].get_box_content());
 			std::cout<<'|';
 		for (size_t i = 0; i < 5; i++){
-			utility::align_text_center(boxlen, board[nrow][7+i].get_box_content());
+			customUtil::align_text_center(boxlen, board[nrow][7+i].get_box_content());
 			std::cout<<' ';
 		}
 
@@ -206,11 +207,11 @@ void _BoardPrinter::type6(int boxlen, int nrow,const std::vector<std::vector<lud
 		std::cout<<'|';
 
 		for (size_t i = 0; i < 4; i++){
-			utility::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			customUtil::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 			std::cout<<' ';
 		}
 		for (size_t i = 0; i < 2; i++){
-			utility::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			customUtil::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 			std::cout<<'|';
 		}
 
@@ -239,13 +240,13 @@ void game::moveGoti(ludo_goti& the_goti, unsigned int dist){
 	int x_increment=0, y_increment=0;	//[NOTE] - Can store these in the ludo_box class itself, besides the corner specification
 	direction turnDirection;
 
-	board[the_goti.curr_coords.getKey()][the_goti.curr_coords.getVal()].removeGoti(the_goti.gotiColour);
+	getBoardBox(the_goti.curr_coords).removeGoti(the_goti.gotiColour);
 
 	while(dist--){
 
 		x_increment = y_increment = 0;
 
-		turnDirection = dir_to_turn_ifCoord_in_CornerCoordsVec(the_goti.getCoords(), ludo_coords::inner_turns);
+		turnDirection = ludo_coords::dir_to_turn_ifCoord_in_CornerCoordsVec(the_goti.getCoords(), ludo_coords::inner_turns);
 		if(turnDirection != NO_TURN){
 			if(turnDirection == NORTH){
 				x_increment = 2;
@@ -266,7 +267,7 @@ void game::moveGoti(ludo_goti& the_goti, unsigned int dist){
 		}
 		else{
 
-			turnDirection = dir_to_turn_ifCoord_in_CornerCoordsVec(the_goti.getCoords(), ludo_coords::outer_corners);
+			turnDirection = ludo_coords::dir_to_turn_ifCoord_in_CornerCoordsVec(the_goti.getCoords(), ludo_coords::outer_corners);
 			if(turnDirection != NO_TURN){
 				if(turnDirection == NORTH){
 					x_increment = 0;
@@ -307,7 +308,7 @@ void game::moveGoti(ludo_goti& the_goti, unsigned int dist){
 		}
 	}
 
-	board[the_goti.curr_coords[0]][the_goti.curr_coords[1]].appendGoti(the_goti);
+	getBoardBox(the_goti.curr_coords).appendGoti(the_goti);
 	updateDisplay();
 
 }
@@ -323,28 +324,25 @@ void game::startGoti(colours gotiColour){
 		return;
 	}	
 	else{
-		board[ludo_coords::start_coords[gotiColour][0]][ludo_coords::start_coords[gotiColour][1]];
+		getBoardBox( ludo_coords::start_coords[gotiColour] ).appendGoti( std::ref(std::unique_ptr<ludo_goti>(new ludo_goti(gotiColour)).operator*() ));
 	}
 }
 
-ludo_box& game::getBox(const ludo_goti& inGoti){
-	if(inGoti.getCoords().getKey() < 15 || inGoti.getCoords().getVal() < 15 || inGoti.getCoords().getKey() >= 0 || inGoti.getCoords().getVal() >= 0){
-		throw OutOfBoundException("Board");
-	}
-	return board[inGoti.getCoords().getKey()][inGoti.getCoords().getVal()];
+ludo_box& game::getBoardBox(std::pair<int,int>& coords){
+	return board[ coords.first ][ coords.second ];
 }
 
 void game::takeIntro(){
-	intTuple tmpDimen(0,0);
+	std::pair<int,int> tmpDimen(0,0);
 
 	do{	
-		tmpDimen = utility::getTerminalDimen();
+		tmpDimen = customUtil::getTerminalDimen();
 
-	}while( min(tmpDimen[0],tmpDimen[1]) < 16 || max(tmpDimen[0],tmpDimen[1]) < 31 );
+	}while( std::min(tmpDimen.first, tmpDimen.second) < 16 || max(tmpDimen.first,tmpDimen.second) < 31 );
 
-	utility::align_text_center(tmpDimen[1], string("Welcome to \"Ludo-The Game\""));
+	customUtil::align_text_center(tmpDimen.first, string("Welcome to \"Ludo-The Game\""));
 	cout<<endl;
-	for (size_t i = 0; i < tmpDimen[1]; i++)
+	for (size_t i = 0; i < tmpDimen.second; i++)
 	{
 		cout<<'=';
 	}
@@ -357,7 +355,7 @@ void game::takeIntro(){
 		cout<<"Player"<<i<<" - ";
 		
 		getline(cin, playerName);		
-		if(utility::trimString(playerName) != "0"){
+		if(customUtil::trimString(playerName) != "0"){
 			playerMap.insert(make_pair(i,make_pair(playerName,make_pair((colours)i,vector<reference_wrapper<ludo_goti>>()))));
 			activePlayers.insert(i);
 		}
@@ -382,13 +380,13 @@ int game::rolldie(){
 
 void game::updateDisplay(){
 	int boxlen = 0;
-	intTuple tmpDimen(0,0);
+	std::pair<int,int> tmpDimen(0,0);
 
 	do{	
-		tmpDimen = utility::getTerminalDimen();
-		boxlen = (min(tmpDimen[0],tmpDimen[1]) - 16)/15;
+		tmpDimen = customUtil::getTerminalDimen();
+		boxlen = (min(tmpDimen.first,tmpDimen.second) - 16)/15;
 
-	}while( min(tmpDimen[0],tmpDimen[1]) < 16 || max(tmpDimen[0],tmpDimen[1]) < 31 );
+	}while( min(tmpDimen.first,tmpDimen.second) < 16 || max(tmpDimen.first,tmpDimen.second) < 31 );
 
 	for (size_t i = 0; i <(boxlen+1)*15 + 1; i++)
 	{
@@ -414,7 +412,7 @@ void game::updateDisplay(){
 	_BoardPrinter::type1(boxlen,14,board);
 
 	cout<<"\n\nCONSOLE\n";
-	for (size_t i = 0; i < tmpDimen[1]; i++)
+	for (size_t i = 0; i < tmpDimen.second; i++)
 	{
 		cout<<'-';
 	}
@@ -514,59 +512,6 @@ game::game(){
 game::~game(){}
 
 //GAME_CLASS_DEFINTIONS END
-
-//COORD_CLASS_DEFINTIONS START
-
-void ludo_coords::InitCoords(){
-
-		stops = std::vector<intTuple>({
-
-		});
-
-		outer_corners = std::map<intTuple,direction>({
-			std::make_pair(intTuple(0,6), NORTH),
-			std::make_pair(intTuple(0,8), EAST),
-			std::make_pair(intTuple(14,6), WEST),
-			std::make_pair(intTuple(14,8), SOUTH),
-			std::make_pair(intTuple(6,0), NORTH),
-			std::make_pair(intTuple(8,0), WEST),
-			std::make_pair(intTuple(6,14), EAST),
-			std::make_pair(intTuple(8,14), SOUTH)
-		});
-			
-		inner_turns = std::map<intTuple,direction>({
-			std::make_pair(intTuple(6,6), WEST),
-			std::make_pair(intTuple(6,8), NORTH),
-			std::make_pair(intTuple(8,6), SOUTH),
-			std::make_pair(intTuple(8,8), EAST)
-		});
-
-		start_coords = std::map<colours,intTuple>({
-			std::make_pair(ColourLAAL, intTuple(6,1)),
-			std::make_pair(ColourHARA, intTuple(1,8)),
-			std::make_pair(ColourNEELA, intTuple(8,13)),
-			std::make_pair(ColourPEELA, intTuple(13,6)),
-		});
-	}
-
-intTuple ludo_coords::get_startCoords(colours gotiColour){
-	for(auto &&i : ludo_coords::start_coords){
-		if( i.first == gotiColour )
-			return i.second;
-	}
-	
-	return intTuple(0,0);
-}
-
-direction dir_to_turn_ifCoord_in_CornerCoordsVec(const intTuple& curr_coords, const std::map<intTuple, direction> &corner_vec){
-	for ( auto corner : corner_vec ){
-		if(curr_coords == corner.first){
-			return corner.second;
-		}
-	}
-	return NO_TURN;
-}
-//COORD_CLASS_DEFINTIONS START
 
 //  LEARNT|+QUESTIONS  //
 /*[LEARNT] - Nesting functions (ie. function declaration inside function) is not supported by standards in C/C++

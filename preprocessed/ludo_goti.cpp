@@ -18518,7 +18518,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
 
 
 
-namespace utility{
+namespace customUtil{
 
 
     template <class T1, class T2>
@@ -18561,14 +18561,14 @@ namespace utility{
 
 
 
-typedef utility::homoTuple<int> intTuple;
-typedef utility::homoTuple<char> charTuple;
-typedef utility::homoTuple<float> floatTuple;
-typedef utility::homoTuple<double> doubleTuple;
+typedef customUtil::homoTuple<int> intTuple;
+typedef customUtil::homoTuple<char> charTuple;
+typedef customUtil::homoTuple<float> floatTuple;
+typedef customUtil::homoTuple<double> doubleTuple;
 
 
 
-namespace utility
+namespace customUtil
 {
     intTuple getTerminalDimen();
     bool align_text_center(int max_length,const std::string&);
