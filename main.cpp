@@ -5,11 +5,7 @@ Program - LudO - The Game
 */
 
 #include<iostream>
-#include<exception>
-
-// #include "util/header_includer.hpp"
-
-#include<board.hpp>
+#include "board.hpp"
 
 int main(int argc, char const *argv[]) {
 
@@ -34,3 +30,5 @@ int main(int argc, char const *argv[]) {
 
 	return 0;
 }
+
+//[LEARNT] - In C++ if an object is constant, then it is totally CONSTANT, not like Java, where we can change contents of object, even with const reference

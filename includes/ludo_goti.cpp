@@ -1,35 +1,15 @@
 #include "ludo_goti.hpp"
 
-// #ifndef CUSTOM_ENUMERATIONS
-//     #include "enumerations.hpp"
-// #endif
-// #ifndef TMP
-//     #include "global.hpp"
-// #endif
-// #ifndef CUSTOM_SIMPLETUPLE
-//     #include "simpleTuple.hpp"
-// #endif
-// #ifndef CUSTOM_EXCEPTIONS
-//     #include "exceptions.hpp"
-// #endif
-// #ifndef _GLIBCXX_FUNCTIONAL
-//     #include<functional>
-// #endif
-// #ifndef _GLIBCXX_IOSTREAM
-//     #include<iostream>
-// #endif
-
 #include<iostream>
-#include<board.hpp>
-
-using namespace std;
+#include "board.hpp"
 
 const intTuple ludo_goti::getCoords() const{
     if(curr_coords.getKey() == 0 && curr_coords.getVal()==0){
-        cerr<<"Coordinates of Goti are corrupt (0,0)\n"<<endl;
+        std::cerr<<"Coordinates of Goti are corrupt (0,0)\n"<<std::endl;
     }
     return curr_coords;
 }
+
 direction ludo_goti::get_curr_direction() const{
     return curr_direction;
 }

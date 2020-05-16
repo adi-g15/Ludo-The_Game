@@ -1,8 +1,10 @@
 #include "board.hpp"
 
 #include<iostream>
-#include<util_func.hpp>
+#include "exceptions.hpp"
+#include<utilities.hpp>
 #include<exceptions.hpp>
+#include<vector>
 
 using namespace std;
 
@@ -19,7 +21,7 @@ void _BoardPrinter::type1(int boxlen, int nrow,const std::vector<std::vector<lud
 		std::cout<<'|';
 
 		for (size_t i = 0; i < 3; i++){
-			util_func::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			utility::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 			std::cout<<'|';
 		}
 
@@ -62,7 +64,7 @@ void _BoardPrinter::type2(int boxlen, int nrow,const std::vector<std::vector<lud
 
 
 		for (size_t i = 0; i < 3; i++){
-			util_func::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			utility::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 			std::cout<<'|';
 		}
 
@@ -106,7 +108,7 @@ void _BoardPrinter::type3(int boxlen, int nrow,const std::vector<std::vector<lud
 
 
 		for (size_t i = 0; i < 3; i++){
-			util_func::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			utility::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 			std::cout<<'|';
 		}
 
@@ -137,7 +139,7 @@ void _BoardPrinter::type4(int boxlen, int nrow,const std::vector<std::vector<lud
 
 
 		for (size_t i = 0; i < 3; i++){
-			util_func::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			utility::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 			std::cout<<'|';
 		}
 
@@ -162,7 +164,7 @@ void _BoardPrinter::type5(int boxlen, int nrow,const std::vector<std::vector<lud
 	for(size_t j=0; j<boxlen; ++j){
 		std::cout<<'|';
 		for (size_t i = 0; i < 6; i++){
-			util_func::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			utility::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 			std::cout<<'|';
 		}
 
@@ -170,7 +172,7 @@ void _BoardPrinter::type5(int boxlen, int nrow,const std::vector<std::vector<lud
 		std::cout<<'|';
 
 		for (size_t i = 0; i < 6; i++){
-			util_func::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			utility::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 			std::cout<<'|';
 		}
 	}
@@ -193,10 +195,10 @@ void _BoardPrinter::type6(int boxlen, int nrow,const std::vector<std::vector<lud
 	//Actual-Row Start
 	for(size_t j=0; j<boxlen; ++j){
 		std::cout<<'|';
-			util_func::align_text_center(boxlen, board[nrow][6].get_box_content());
+			utility::align_text_center(boxlen, board[nrow][6].get_box_content());
 			std::cout<<'|';
 		for (size_t i = 0; i < 5; i++){
-			util_func::align_text_center(boxlen, board[nrow][7+i].get_box_content());
+			utility::align_text_center(boxlen, board[nrow][7+i].get_box_content());
 			std::cout<<' ';
 		}
 
@@ -204,11 +206,11 @@ void _BoardPrinter::type6(int boxlen, int nrow,const std::vector<std::vector<lud
 		std::cout<<'|';
 
 		for (size_t i = 0; i < 4; i++){
-			util_func::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			utility::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 			std::cout<<' ';
 		}
 		for (size_t i = 0; i < 2; i++){
-			util_func::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+			utility::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 			std::cout<<'|';
 		}
 
@@ -336,11 +338,11 @@ void game::takeIntro(){
 	intTuple tmpDimen(0,0);
 
 	do{	
-		tmpDimen = util_func::getTerminalDimen();
+		tmpDimen = utility::getTerminalDimen();
 
 	}while( min(tmpDimen[0],tmpDimen[1]) < 16 || max(tmpDimen[0],tmpDimen[1]) < 31 );
 
-	util_func::align_text_center(tmpDimen[1], string("Welcome to \"Ludo-The Game\""));
+	utility::align_text_center(tmpDimen[1], string("Welcome to \"Ludo-The Game\""));
 	cout<<endl;
 	for (size_t i = 0; i < tmpDimen[1]; i++)
 	{
@@ -355,7 +357,7 @@ void game::takeIntro(){
 		cout<<"Player"<<i<<" - ";
 		
 		getline(cin, playerName);		
-		if(util_func::trimString(playerName) != "0"){
+		if(utility::trimString(playerName) != "0"){
 			playerMap.insert(make_pair(i,make_pair(playerName,make_pair((colours)i,vector<reference_wrapper<ludo_goti>>()))));
 			activePlayers.insert(i);
 		}
@@ -383,7 +385,7 @@ void game::updateDisplay(){
 	intTuple tmpDimen(0,0);
 
 	do{	
-		tmpDimen = util_func::getTerminalDimen();
+		tmpDimen = utility::getTerminalDimen();
 		boxlen = (min(tmpDimen[0],tmpDimen[1]) - 16)/15;
 
 	}while( min(tmpDimen[0],tmpDimen[1]) < 16 || max(tmpDimen[0],tmpDimen[1]) < 31 );
@@ -506,43 +508,48 @@ game::game(){
 			board[i].emplace_back(ludo_box());
 		}
 	}
+
 }
+
+game::~game(){}
+
 //GAME_CLASS_DEFINTIONS END
 
 //COORD_CLASS_DEFINTIONS START
+
 void ludo_coords::InitCoords(){
 
-	ludo_coords::stops = std::vector<intTuple>({
+		stops = std::vector<intTuple>({
 
-	});
+		});
 
-	ludo_coords::outer_corners = std::map<intTuple,direction>({
-		std::make_pair(intTuple(0,6), NORTH),
-		std::make_pair(intTuple(0,8), EAST),
-		std::make_pair(intTuple(14,6), WEST),
-		std::make_pair(intTuple(14,8), SOUTH),
-		std::make_pair(intTuple(6,0), NORTH),
-		std::make_pair(intTuple(8,0), WEST),
-		std::make_pair(intTuple(6,14), EAST),
-		std::make_pair(intTuple(8,14), SOUTH)
-	});
-		
-	ludo_coords::inner_turns = std::map<intTuple,direction>({
-		std::make_pair(intTuple(6,6), WEST),
-		std::make_pair(intTuple(6,8), NORTH),
-		std::make_pair(intTuple(8,6), SOUTH),
-		std::make_pair(intTuple(8,8), EAST)
-	});
+		outer_corners = std::map<intTuple,direction>({
+			std::make_pair(intTuple(0,6), NORTH),
+			std::make_pair(intTuple(0,8), EAST),
+			std::make_pair(intTuple(14,6), WEST),
+			std::make_pair(intTuple(14,8), SOUTH),
+			std::make_pair(intTuple(6,0), NORTH),
+			std::make_pair(intTuple(8,0), WEST),
+			std::make_pair(intTuple(6,14), EAST),
+			std::make_pair(intTuple(8,14), SOUTH)
+		});
+			
+		inner_turns = std::map<intTuple,direction>({
+			std::make_pair(intTuple(6,6), WEST),
+			std::make_pair(intTuple(6,8), NORTH),
+			std::make_pair(intTuple(8,6), SOUTH),
+			std::make_pair(intTuple(8,8), EAST)
+		});
 
-	ludo_coords::start_coords = std::map<colours,intTuple>({
-		std::make_pair(ColourLAAL, intTuple(6,1)),
-		std::make_pair(ColourHARA, intTuple(1,8)),
-		std::make_pair(ColourNEELA, intTuple(8,13)),
-		std::make_pair(ColourPEELA, intTuple(13,6)),
-	});
-}
+		start_coords = std::map<colours,intTuple>({
+			std::make_pair(ColourLAAL, intTuple(6,1)),
+			std::make_pair(ColourHARA, intTuple(1,8)),
+			std::make_pair(ColourNEELA, intTuple(8,13)),
+			std::make_pair(ColourPEELA, intTuple(13,6)),
+		});
+	}
 
-inline intTuple get_initCoords(colours gotiColour){
+intTuple ludo_coords::get_startCoords(colours gotiColour){
 	for(auto &&i : ludo_coords::start_coords){
 		if( i.first == gotiColour )
 			return i.second;

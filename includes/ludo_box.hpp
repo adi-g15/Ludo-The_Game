@@ -1,25 +1,6 @@
 #pragma once
 
-#define CUSTOM_LUDO_BOX 1
-
-// #ifndef CUSTOM_ENUMERATIONS
-//     #include "enumerations.hpp"
-// #endif
-// #ifndef CUSTOM_LUDO_GOTI
-//     #include "ludo_goti.hpp"
-// #endif
-
-// #ifndef _GLIBCXX_STRING
-//     #include<vector>
-// #endif
-// #ifndef _GLIBCXX_STRING
-//     #include<string>
-// #endif
-// #ifndef _GLIBCXX_FUNCTIONAL
-//     #include<functional>
-// #endif
-
-#include<ludo_goti.hpp>
+#include "ludo_goti.hpp"
 #include<vector>
 #include<functional>
 #include<string>
