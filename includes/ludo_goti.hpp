@@ -18,36 +18,41 @@
 // #endif
 
 #include "enumerations.hpp"
-#include "utilities.hpp"
+#include<functional>
 
 class ludo_goti{
 protected:
 	colours gotiColour;
 	direction curr_direction;
-	intTuple curr_coords;	
+	std::pair<int,int> curr_coords;	
 
 public:
-	const intTuple getCoords() const;
+	const std::pair<int,int> getCoords() const;
     direction get_curr_direction() const;
     colours get_gotiColour(void) const;
 
 	friend class game;
 
-	ludo_goti();
+	ludo_goti() = delete;
+	ludo_goti(colours);
 };
 
-class laalGoti : public ludo_goti{
-	laalGoti();
-};
-class hariGoti : public ludo_goti{
-	hariGoti();
-};
-class peeliGoti : public ludo_goti{
-	peeliGoti();
-};
-class neeliGoti : public ludo_goti{
-	neeliGoti();
-};
+//FUTURE - May use these below different classes, combined with std::variant(), BUT in that case, 'override'(if possible) the gotiColour as static for them
+
+//Commented these out, after adding a constructor for the ludo_goti class
+
+// class laalGoti : public ludo_goti{
+// 	laalGoti();
+// };
+// class hariGoti : public ludo_goti{
+// 	hariGoti();
+// };
+// class peeliGoti : public ludo_goti{
+// 	peeliGoti();
+// };
+// class neeliGoti : public ludo_goti{
+// 	neeliGoti();
+// };
 
 
 //  FUTURE   //
