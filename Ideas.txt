@@ -1,0 +1,2 @@
+. [DONE] Have a map of corner_coordinates, and the direction in which the goti should turn(represented by ints)
+
