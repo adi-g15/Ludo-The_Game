@@ -18,11 +18,14 @@ colours ludo_goti::get_gotiColour(void) const{
     return gotiColour;
 }
 
-ludo_goti::ludo_goti(colours gotiColour){
-    this->gotiColour = gotiColour;
+bool ludo_goti::operator==(const ludo_goti& goti){
+    return (this->curr_coords == goti.curr_coords) && (this->gotiColour == goti.gotiColour);
+}
 
-    ludo_coords::InitCoords();
-    this->curr_coords = ludo_coords::start_coords[gotiColour];
+ludo_goti::ludo_goti(colours gotiColour,const std::pair<int,int>& coords, direction dir) : curr_coords(coords) {
+    this->gotiColour = gotiColour;
+    this->curr_direction = NO_TURN;
+    this->curr_direction = dir;
 }
 
 // laalGoti::laalGoti(){

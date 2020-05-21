@@ -24,17 +24,23 @@ class ludo_goti{
 protected:
 	colours gotiColour;
 	direction curr_direction;
-	std::pair<int,int> curr_coords;	
+	std::pair<int,int> curr_coords;
 
 public:
 	const std::pair<int,int> getCoords() const;
     direction get_curr_direction() const;
     colours get_gotiColour(void) const;
 
+	//TODO - Create a balance b/w friends, and private public
 	friend class game;
+	friend class ludo_box;
+	// bool friend ludo_box::removeGoti(std::shared_ptr<ludo_goti>& toBeRemoved);
+
+	bool operator==(const ludo_goti& goti);
 
 	ludo_goti() = delete;
-	ludo_goti(colours);
+	ludo_goti(colours) = delete;
+	ludo_goti(colours, const std::pair<int,int>&, direction = NO_TURN);
 };
 
 //FUTURE - May use these below different classes, combined with std::variant(), BUT in that case, 'override'(if possible) the gotiColour as static for them

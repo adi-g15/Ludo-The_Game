@@ -6,13 +6,44 @@
 
 #include<string>
 #include<functional>
+#include<iostream>
+
+#ifdef __linux__
+  #include<unistd.h>
+#else
+  #include<windows.h>
+#endif
+
+#define DEBUG_START	std::cout<<"[DEBUG] START :"<<endl;
+#define DEBUG_END	std::cout<<"\n: [DEBUG] PASSED"<<endl;
+
+/*SELF-THOUGHT AND IT IS JUST A BOON! CHECKS WHETHER A PARTICULAR FUNCTION, OR CODE RAN*/
+/*HELPFUL FOR GETTING TO THE SEG_FAULT SITE*/
+#define DEBUG_BLOCK(code) DEBUG_START \
+                          code \
+                          DEBUG_END
+
+// typedef std::pair<int,int> dimensions;
+// typedef std::pair<int,int> coordinates;
 
 //  FUNCTIONS START//
 namespace customUtil
 {
+    //NOTE - The bool values are generally for debugging purposes, and may/may not have been ignored in code
     std::pair<int,int> getTerminalDimen();
-    bool align_text_center(int max_length,const std::string&);
+    inline bool align_text_center(const std::string& = ""); //With empty string, it sets the cursor to the horizontal center
+    inline bool align_text_center(int max_length,const std::string& = ""); //NOTE - This functions does NOT add an extra '\n' at end
+    inline bool place_center(int max_length,const std::string& = "");
+    /*@brief Places the cursor at end of vertically centered printed string
+      @params Terminal Height, and the string to print
+      @returns bool indicating success or faiure to print the string
+      NOTE - the string is not horizontally centered, for that, first call place_v_center() with empty string, then align_text_center()*/
+    inline bool place_v_center(int v_length,const std::string& = "");
+    inline bool place_v_center(const std::string& = ""); //Places cursor at vecrtically middle line
     std::string trimString(const std::string&);   //@returns trimmed std::string, but doesnt modify original string
+	  std::string intTostring(int num);
+    inline void pause(int sec);
+    bool is_Sum_Permutation(unsigned short num, std::vector<unsigned short> Vec);  //Self Algo...
 }
 //  FUNCTIONS END//
 
@@ -22,7 +53,6 @@ namespace customUtil
 
 // #include "utilities.hpp"
 
-#include<iostream>
 #include<algorithm>
 #include "exceptions.hpp"
 
@@ -40,7 +70,8 @@ std::pair<int,int> customUtil::getTerminalDimen(){
   #ifdef __linux__
     winsize windowsSize;
     ioctl (STDOUT_FILENO, TIOCGWINSZ, &windowsSize);
-      outTuple = { windowsSize.ws_row , windowsSize.ws_col };
+    //   outTuple = { windowsSize.ws_row , windowsSize.ws_col };    //NOTE - It was returning y*x (considering downward height of terminal to be y)
+        outTuple = { windowsSize.ws_col , windowsSize.ws_row };
 
   #else //Windows API
     {
@@ -51,10 +82,25 @@ std::pair<int,int> customUtil::getTerminalDimen(){
 
   #endif
 
+    // std::cout<<"std::pair<int,int> - "<<outTuple.first<<'x'<<outTuple.second<<std::endl;    //[FOR DEBUG PURPOSES]
+
   return outTuple;
 }
 
+bool customUtil::align_text_center(const std::string& str){    //@returns bool indicating, if max_len is enough or not
+
+  return align_text_center(getTerminalDimen().first, str);
+}
+
 bool customUtil::align_text_center(int max_length,const std::string& str){    //@returns bool indicating, if max_len is enough or not
+    if( place_center(max_length, str) == true){
+      for (size_t i = 0; i < (max_length-str.size()) - (max_length-str.size())/2; i++)  std::cout<<' ';
+      return true;
+    }
+    return false;
+}
+
+bool customUtil::place_center(int max_length,const std::string& str){    //@returns bool indicating, if max_len is enough or not
     if(max_length < str.size()){
         return false;
     }
@@ -62,15 +108,31 @@ bool customUtil::align_text_center(int max_length,const std::string& str){    //
     {
         for (size_t i = 0; i < (max_length-str.size())/2; i++)  std::cout<<' ';
         std::cout<<str;
-        for (size_t i = 0; i < (max_length-str.size()) - (max_length-str.size())/2; i++)  std::cout<<' ';
     }
     return true;
+}
+
+bool customUtil::place_v_center(const std::string& str){
+  return place_v_center(getTerminalDimen().second, str);
+}
+
+bool customUtil::place_v_center(int vert_length, const std::string& str){
+  if(vert_length < 1)
+    return false;
+  
+  for (size_t i = 0; i < (vert_length/2) - 1; i++)
+  {
+    std::cout<<'\n';
+  }
+  std::cout<<str;
+
+  return true;
 }
 
 std::string customUtil::trimString(const std::string &s){
     std::string str_out(s);
     auto lambda = [](char ch){
-        return ! isspace(ch);
+        return !isspace(ch) || ch=='\n';
     };
 
     str_out.erase(std::find_if( str_out.rbegin(),str_out.rend(),lambda ).base(), str_out.end());
@@ -79,6 +141,45 @@ std::string customUtil::trimString(const std::string &s){
     return str_out;
 }
 
+std::string customUtil::intTostring(int num){
+	std::string outString;
+	while(num > 0){
+		outString.insert( outString.begin() , char(num%10 + 48) );
+    num/=10;
+  }
+
+  return outString;
+}
+
+void customUtil::pause(int seconds){  //Supports Win, Linux, Mac
+  #ifdef __linux__
+    usleep(1000000*seconds);
+  #else
+    Sleep(1000*seconds);
+  #endif
+}
+
+bool is_Sum_Permutation(unsigned short num, std::vector<unsigned short> Vec){ //BUG - It seems all recursive calls have num=9, how??
+	if(num == 0) return true;
+	else if(num<0 || Vec.empty()) return false;
+
+	std::sort(Vec.begin(), Vec.end());
+	for (auto i = Vec.begin(); i < Vec.end(); i++)
+	{
+		if( *i > num){
+			Vec.erase(i, Vec.end());
+			break;
+		}
+	}
+
+	auto j = Vec.begin();
+	while ( j<Vec.end() ){
+		Vec.erase(j);
+		if( is_Sum_Permutation(num, Vec) || is_Sum_Permutation(num-(*j), Vec)) return true;
+		++j;
+	}
+	return false;
+}
 //LEARNT+QUESTIONS BELOW//
 //ERROR - [in getTerminalDimen()] Replace std::pair<int,int> with simpleTuple<int,int> gives error : conversion from ‘simpleTuple<int, int>’ to non-scalar type ‘std::pair<int,int> {aka homoTuple<int>}’ requested
 /*LEARNT - ASCII value of integers 0-9 are actually 48-57*/
@@ -110,6 +211,6 @@ std::string customUtil::trimString(const std::string &s){
 /*[LEARNT] - In C++, protected members can't be accessed directly
                          In Java, protected members 'can' be accessed directly, but in same package*/
 /*NOTE, QUESTION - Did this to suppress this - In instantiation of ‘homoTuple<T>::homoTuple(T, T) [with T = int]’:
-./util/terminalDimensions.hpp:17:24:   required from here
+./util/terminalstd::pair<int,int>.hpp:17:24:   required from here
 ./util/./simpleTuple.hpp:70:30: error: no matching function for call to ‘simpleTuple<int, int>::simpleTuple()’
      homoTuple(T key, T value){ */

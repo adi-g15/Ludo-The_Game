@@ -29,3 +29,7 @@ class GotiNotAvailableException : std::exception{
     GotiNotAvailableException(colours);
     GotiNotAvailableException() = delete;
 };
+
+class DEBUG_COMPLETE_EXCEPTION : public std::exception{
+
+};
