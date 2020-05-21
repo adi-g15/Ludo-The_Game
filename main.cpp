@@ -6,6 +6,8 @@ Program - LudO - The Game
 
 #include<iostream>
 #include "board.hpp"
+#include "exceptions.hpp"
+#include<algorithm>
 
 int main(int argc, char const *argv[]) {
 
@@ -18,7 +20,7 @@ int main(int argc, char const *argv[]) {
 			std::cerr<<"Couldn't initiate the game... Exiting"<<std::endl;
 			return -1;		
 		}
-
+		
 		newGame.play();
 
 		std::cout<<"Enter 1 if you want to play again and reset\nEnter 2 if you want to play with same players\nAnything else to say GoodBye :-)\nYour Consent : ";

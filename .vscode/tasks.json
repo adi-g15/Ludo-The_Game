@@ -1,0 +1,42 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Build Repo",
+            "command": "cd ${fileDirname} && make",
+            "args": [],
+            "options": {
+                "cwd": "/usr/bin"
+            },
+            "problemMatcher": [],
+            "group": "build"
+        },
+        {
+            "type": "shell",
+            "label": "C/C++: g++-7 build active file",
+            "command": "/usr/bin/g++-7",
+            "args": [
+                "-Iincludes",
+                "-Llibs",
+                "-lutil",
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}",
+                "&&",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ],
+    "version": "2.0.0"
+}
