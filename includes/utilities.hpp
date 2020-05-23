@@ -7,6 +7,7 @@
 #include<string>
 #include<functional>
 #include<iostream>
+#include<vector>
 
 #ifdef __linux__
   #include<unistd.h>
@@ -23,13 +24,10 @@
                           code \
                           DEBUG_END
 
-// typedef std::pair<int,int> dimensions;
-// typedef std::pair<int,int> coordinates;
-
 //  FUNCTIONS START//
 namespace customUtil
 {
-    //NOTE - The bool values are generally for debugging purposes, and may/may not have been ignored in code
+    //! NOTE - The bool values are generally for debugging purposes, and may/may not have been ignored in code
     std::pair<int,int> getTerminalDimen();
     inline bool align_text_center(const std::string& = ""); //With empty string, it sets the cursor to the horizontal center
     inline bool align_text_center(int max_length,const std::string& = ""); //NOTE - This functions does NOT add an extra '\n' at end
@@ -50,9 +48,6 @@ namespace customUtil
 
 //////// UTILITIES.CPP BELOW    !!!!
 //This solved the 'undefined references' to the customUtil::functions in files
-
-// #include "utilities.hpp"
-
 #include<algorithm>
 #include "exceptions.hpp"
 
@@ -135,8 +130,8 @@ std::string customUtil::trimString(const std::string &s){
         return !isspace(ch) || ch=='\n';
     };
 
-    str_out.erase(std::find_if( str_out.rbegin(),str_out.rend(),lambda ).base(), str_out.end());
     str_out.erase(std::find_if( str_out.begin(),str_out.end(),lambda ), str_out.rend().base());
+    str_out.erase(std::find_if( str_out.rbegin(),str_out.rend(),lambda ).base(), str_out.end());
     
     return str_out;
 }

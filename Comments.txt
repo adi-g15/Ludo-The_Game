@@ -1,0 +1,145 @@
+includes/board.hpp
+---------------------------------------------------
+    FUTURE and TODOS
+    ================
+    //  FUTURE+ERRORS  //
+    //[FUTURE] - Consider the chances of using std::list or std::set in places where std::vector has been used...
+    //[FUN][FUTURE] - if(number of that colour gotis = 0 earlier), then
+    //Congratulate THE USER "Chal yaar, ek ludo_goti to nikli ;-)"
+
+    //[ERROR]: [at declaration of 'coord_class::stops'] Accessing these gives error: this declaration has no storage class or type specifier
+
+    COMMENTS
+    =========
+    //[DONE]TODO - Organize into private and public
+    //[DONE](using smart pointers) iterator through whole board, and 'delete ludo_goti initialised with unlockGoti()'
+    //[SOLVED]Bug - When non-static, these show mulitple 'definitions'
+    /*[LEARNT] random_device is slower than mt19937, but doesnt matter much, since its used to seed only once
+    the Mersenn(-_-) twister is about 10x faster than default C random generator*/
+    //[DONE]TODO - Append gotis to these locked Positions, using shared_ptr<ludo_goti>
+    //QUESTION - How to create an 'array' of reference_wrappers?? [ANSWER]Can't create one, since reference_wrapper can't be default initialised
+    //[LEARNT] We use random_device to seed the 'random generator' named 'mt'
+    /*[DONE]TODO - Lock the weak_ptr before passing the first argument of either attack or moveGoti*/
+
+includes/board.cpp
+---------------------------------------------------
+    FUTURE and TODOS
+    ================
+	//TODO - Remove cases of triple sixes
+	//TODO - Modify code such that instead of checking if enteredRoll is in dieNumbers, check whether it's a sum of elements or not
+
+    COMMENTS
+    =========
+    /*TODO - 
+		[DONE]Checking if move possible or not
+		[DONE]Checking at each loop, whether it is at stop, to update gotiStatus
+		[DONE]Checking at each loop, whether the coord is in home_turn, (to make algorithm better, check if dist remaining <= 6, if not return false straightaway)
+	*/
+    /*[LEARNT] - Nesting functions (ie. function declaration inside function) is not supported by standards in C/C++
+                    But, gcc supports it as a 'non-standard' extension
+                    BUT, in C++ mode, it's not allowed, 'Local Functions' aren't supported
+                    BUT, FROM C++11, IT IS SUPPORTED, using LAMDAs {Imp. - Lambdas have a semicolon at end}*/
+    /*LAMBDAs - 1. Have a ';' at end
+                2. '[]' is the "capture clause", also called 'lambda-introducer'
+                3. parameter list '()' is optional
+                4. These are the parts:
+                        [] () mutable throw() -> int {//body//}
+                        |  |   |        |       |    
+            capture clause  |  optional  |  trailing-return-type(optional)
+                        parameters   exception specification(optional)
+    */
+    /*Question - Why didnt this lambda work? [Solved, that brings a smile ;D]
+       }while ( (tmpDimen.getKey() < 31 || tmpDimen.getVal() < 31) ? true : []{	//Lamda Function (used to declare this 'local' function)
+       	cerr<<"INSUFFICIENT HEIGHT/WIDTH FOR DISPLAY!"<<endl;
+       	return false;
+       } );*/
+
+includes/enumerations.hpp
+---------------------------------------------------
+    COMMENTS
+    =========
+    /*[LEARNT] - Defining enum data type, they get values starting from 0, and having variables of this user defined type
+    "enumerator value must have integral or unscoped enumeration type"
+    3. Though they may have integer value, BUT we can't assign an integer to an enum variable, It shows this error - invalid conversion from ‘int’ to ‘colours’ [-fpermissive]
+    4. These identifiers will be available in the same scope as the declaration, eg. here, it's global scope*/
+
+includes/ludo_goti.hpp
+---------------------------------------------------
+    COMMENTS
+    =========
+    //[DONE]TODO - Create a balance b/w friends, and private public
+    //[DONE][FUTURE] - Likely chose between having coordinates, or pointer to ludo_goti(consider the NULL checks)
+    //[DONE][FUTURE] - Improve security of this function, else coordinates being private wont be useful... Solution used... made moveGoti a friend function
+
+includes/ludo_goti.cpp
+---------------------------------------------------
+    COMMENTS
+    =========
+    //[LEARNT_KNOW_MORE] - 'abstract' isn't a keyword in C++
+    //[LEARNT] - 	//public Getters maybe used to ensure that private mamber can't be modified from outside
+    //ERROR_SOLVED - Showing error : expected identifier before numeric constant std::pair<int,int> coords(0,0);
+                        /*LEARNT - We can't call the constructor of a datatype right at declaration, "in a class outside any method"
+                                But, we can braces{} instead of () to initialize right at declaration, BUT... by passing a constructed object
+                                    vector<int> v(5);	//Wrong
+                                    vector<int> v{vector<int>(5)}; //Right
+                                    
+                                So, first declare then, call their constructors in constructor(See this class's constructor)*/
+    //LEARNT - We can't define, 'implicitly-"declared" function/constructor', we have to explicitly declare the constructor in the header
+
+includes/ludo_coords
+---------------------------------------------------
+    FUTURE and TODOS
+    ================
+    //FUTURE - Shift to std::unordered_map from std::map
+
+    COMMENTS
+    =========
+    /*QUESTION - With 'static', the functions give 'umdefined references' linker errors
+				And, without 'static', the data members showed MULTIPLE DECLARATIONS (WHY ??)*/
+
+includes/simpleTuple
+---------------------------------------------------
+    COMMENTS
+    =========
+    /*[QUESTION_Answered] - This gives error without the 'this->'? Why?
+                            Answer - It is because unqualified lookup doesn't work here because the base is a template.
+                                      So, we need to use this-> to access inherited members in childs of template classes*/
+    /*[LEARNT] - Direct access through objects of Base Class, to protected members of Base Class,
+                                                              is only in methods of the Base class, not even in Child
+                                                              For. eg, you take an object of parent type (not 'this' object), then can't access in Child*/
+    //DOWNSIDE_C++, QUESTION - We can't have virtual templated member function
+    //LEARNT - In a templated function, if return types in if and blocks is different, then It wont be able to know the type
+    /*[LEARNT] - In C++, protected members can't be accessed directly
+                             In Java, protected members 'can' be accessed directly, but in same package*/
+
+    /*[SOLVED]BUG : 
+      Operator '<' is ONLY to solve this - 
+      In file included from /usr/include/c++/7/functional:49:0,
+                 from includes/ludo_box.hpp:24,
+                 from includes/board.hpp:9,
+                 from includes/board.cpp:1:
+/usr/include/c++/7/bits/stl_function.h: In instantiation of ‘constexpr bool std::less<_Tp>::operator()(const _Tp&, const _Tp&) const [with _Tp = homoTuple<int>]’:
+/usr/include/c++/7/bits/stl_tree.h:2141:8:   required from ‘std::pair<std::_Rb_tree_node_base*, std::_Rb_tree_node_base*> std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::_M_get_insert_hint_unique_pos(std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::const_iterator, const key_type&) [with _Key = homoTuple<int>; _Val = std::pair<const homoTuple<int>, direction>; _KeyOfValue = std::_Select1st<std::pair<const homoTuple<int>, direction> >; _Compare = std::less<homoTuple<int> >; _Alloc = std::allocator<std::pair<const homoTuple<int>, direction> >; std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::const_iterator = std::_Rb_tree_const_iterator<std::pair<const homoTuple<int>, direction> >; std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::key_type = homoTuple<int>]’
+/usr/include/c++/7/bits/stl_tree.h:2201:33:   required from ‘std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::iterator std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::_M_insert_unique_(std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::const_iterator, _Arg&&, _NodeGen&) [with _Arg = const std::pair<const homoTuple<int>, direction>&; _NodeGen = std::_Rb_tree<homoTuple<int>, std::pair<const homoTuple<int>, direction>, std::_Select1st<std::pair<const homoTuple<int>, direction> >, std::less<homoTuple<int> >, std::allocator<std::pair<const homoTuple<int>, direction> > >::_Alloc_node; _Key = homoTuple<int>; _Val = std::pair<const homoTuple<int>, direction>; _KeyOfValue = std::_Select1st<std::pair<const homoTuple<int>, direction> >; _Compare = std::less<homoTuple<int> >; _Alloc = std::allocator<std::pair<const homoTuple<int>, direction> >; std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::iterator = std::_Rb_tree_iterator<std::pair<const homoTuple<int>, direction> >; std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::const_iterator = std::_Rb_tree_const_iterator<std::pair<const homoTuple<int>, direction> >]’
+/usr/include/c++/7/bits/stl_tree.h:2452:21:   required from ‘void std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::_M_insert_unique(_II, _II) [with _InputIterator = const std::pair<const homoTuple<int>, direction>*; _Key = homoTuple<int>; _Val = std::pair<const homoTuple<int>, direction>; _KeyOfValue = std::_Select1st<std::pair<const homoTuple<int>, direction> >; _Compare = std::less<homoTuple<int> >; _Alloc = std::allocator<std::pair<const homoTuple<int>, direction> >]’
+/usr/include/c++/7/bits/stl_map.h:886:4:   required from ‘void std::map<_Key, _Tp, _Compare, _Alloc>::insert(_InputIterator, _InputIterator) [with _InputIterator = const std::pair<const homoTuple<int>, direction>*; _Key = homoTuple<int>; _Tp = direction; _Compare = std::less<homoTuple<int> >; _Alloc = std::allocator<std::pair<const homoTuple<int>, direction> >’
+/usr/include/c++/7/bits/stl_map.h:823:15:   required from ‘void std::map<_Key, _Tp, _Compare, _Alloc>::insert(std::initializer_list<std::pair<const _Key, _Tp> >) [with _Key = homoTuple<int>; _Tp = direction; _Compare = std::less<homoTuple<int> >; _Alloc = std::allocator<std::pair<const homoTuple<int>, direction> >]’
+includes/board.cpp:524:4:   required from here
+/usr/include/c++/7/bits/stl_function.h:386:20: error: no match for ‘operator<’ (operand types are ‘const homoTuple<int>’ and ‘const homoTuple<int>’)
+       { return __x < __y; }
+    */
+
+includes/ludo_box
+---------------------------------------------------
+    FUTURE and TODOS
+    ================
+
+    COMMENTS
+    =========
+    /*QUESTION - Is it OK to pass 'references' of weak_ptr, and not by value ?*/
+    /*QUESTION - When to use weak_ptr<> and when to use shared_ptr<> ?*/
+    /*[DONE][by forcing no invalid goti to be even created]FUTURE - Do have null check
+        ALTERNATE NULL CHECK -> For checking if passed ludo_goti is valid, check it's colour and/or coords to be valid
+    */
+
+
