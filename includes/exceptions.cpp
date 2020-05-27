@@ -1,4 +1,4 @@
-#include "exceptions.hpp"
+#include "exceptions.h"
 
 //OutOfBoundException START
 const char* OutOfBoundException::what(){
@@ -9,7 +9,6 @@ OutOfBoundException::OutOfBoundException(const char* source){
     this->source = source;
 }
 //OutOfBoundException END
-
 
 //GotiNotAvailableException START
 const char* GotiNotAvailableException::what(){

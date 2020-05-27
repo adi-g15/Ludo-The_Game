@@ -6,7 +6,7 @@ Program - Ludo - The Game
 
 #include<iostream>
 
-#include "board.hpp"
+#include "game.h"
 
 int main(int argc, char const *argv[]) {
 

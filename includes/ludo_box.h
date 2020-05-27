@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ludo_goti.hpp"
+#include "ludo_goti.h"
 #include<vector>
 #include<memory>
 #include<map>
@@ -19,11 +19,6 @@ enum BOX_TYPE{
 class ludo_box{
 	std::vector<std::shared_ptr<ludo_goti>> inBoxGotis;	//! Can make it a map too, but might be inefficient for such less data
 	std::string content;
-
-	//Corner specification
-	bool isOuterCorner;
-	bool isRectCorner;
-	direction turnDir;
 	std::pair<int,int> coords;
 
 	//! NOTE - Before calling this function, explicitly add the shared_ptr to lockedPositions
