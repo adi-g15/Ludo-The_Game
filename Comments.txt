@@ -142,4 +142,45 @@ includes/ludo_box
         ALTERNATE NULL CHECK -> For checking if passed ludo_goti is valid, check it's colour and/or coords to be valid
     */
 
+includes/utilities
+---------------------------------------------------
+    COMMENTS
+    =========
+    //ERROR - [in getTerminalDimen()] Replace std::pair<int,int> with simpleTuple<int,int> gives error : conversion from ‘simpleTuple<int, int>’ to non-scalar type ‘std::pair<int,int> {aka homoTuple<int>}’ requested
+    /*LEARNT - ASCII value of integers 0-9 are actually 48-57*/
+        /*Learnt - In case of only 1 argument passed to std::string::erase()...
+                    1. If we provide an index number, ALL including and after it are erased
+                    2. If we provide an iterator,    ONLY that position is removed*/
 
+        //LEARNT - algorithm -> find_if - Keep finding, until the predicate is true
+        //LEARNT - Using .base() on a reverse_iterator returns us the normal_iterator, BUT CAUTION- This isn't advisable, and might cause SEGFAULT, (for eg. accessing .rbegin().base())
+
+    /*LEARNT - stringify() can turn any name into text, BUT remember, it ignores trailing and front spaces, for eg. in stringify( Hello World ), first and last space ignored*(Verified)/
+    */
+
+    /*LEARNT - The component type of STL containers like vectors must be 'asignable'.
+                References are NOT assignable, ie. we can only initialise them once, and,
+                you can't make them reference something else later (you can't assign it to reference any other vairable, and even after equating 2 references, only the values of variable they reference is changed, not the addresses they both refer to)
+                Due to same reason, other non-assignable types are also not allowed as components of containers, for eg. vector<const int> not allowed
+    */
+
+    //LEARNT+QUESTIONS BELOW [SIMPLETUPLE]//
+     /*[QUESTION_Answered] - This gives error without the 'this->'? Why?
+                                Answer - It is because unqualified lookup doesn't work here because the base is a template.
+                                          So, we need to use this-> to access inherited members in childs of template classes*/
+    /*[LEARNT] - Direct access through objects of Base Class, to protected members of Base Class,
+                                                              is only in methods of the Base class, not even in Child
+                                                              For. eg, you take an object of parent type (not 'this' object), then can't access in Child*/
+      //DOWNSIDE_C++, QUESTION - We can't have virtual templated member function
+      //LEARNT - In a templated function, if return types in if and blocks is different, then It wont be able to know the type
+    /*[LEARNT] - In C++, protected members can't be accessed directly
+                             In Java, protected members 'can' be accessed directly, but in same package*/
+    /*NOTE, QUESTION - Did this to suppress this - In instantiation of ‘homoTuple<T>::homoTuple(T, T) [with T = int]’:
+    ./util/terminalstd::pair<int,int>.hpp:17:24:   required from here
+    ./util/./simpleTuple.hpp:70:30: error: no matching function for call to ‘simpleTuple<int, int>::simpleTuple()’
+         homoTuple(T key, T value){ */
+
+
+//LEARNT
+. Cannot create a non-constant pointer to a member function
+. To 'fully qualify' means to pass it as "&className::functionTryingToPass"

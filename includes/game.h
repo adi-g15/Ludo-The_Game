@@ -1,11 +1,11 @@
 #pragma once
 
-#include "ludo_box.hpp"
-#include "ludo_coords.hpp"
-#include<unordered_set>
-#include<array>
-#include<functional>
-#include<random>
+#include "ludo_coords.h"
+#include "ludo_box.h"
+#include <unordered_map>
+#include <unordered_set>
+#include <functional>
+#include <random>
 
 #define DEBUG_PRINTBOARD cout<<"------------DEBUG-------------";\
 							for(auto &i : board) {\
@@ -27,6 +27,8 @@ namespace Die{
 
 class game{
 private:
+	typedef void (*functionPointer)();
+
 	std::array<std::array<ludo_box,15>,15> board;
 	std::map<colours, std::vector<std::reference_wrapper<ludo_box>>> lockedPositions;
 	std::map<colours, std::vector<std::shared_ptr<ludo_goti>>> movingGotis;
@@ -49,6 +51,10 @@ private:
 	void takeIntro();	//! Initializes the PlayerMap
 
 public:	
+	std::unordered_map<std::string, void(*)(std::string)> shortcutsMap;
+	// std::unordered_map<std::string, functionPointer> shortcutsMap;
+	// functionPointer arr[10]; //Learnt - Array of 10 function pointers to functions taking nothing, and returning void
+
 	std::map<colours, player> coloursMap;
 /*  @guide
 	PLAYER std::map
@@ -80,34 +86,13 @@ public:
 	//!Bool return values are usually for debugging purposes
 	bool InitGame(short = 1);	//! Starts/Resets the game
 	void play(bool = true);
+	void settingsMenu(const std::string& source);
+	void notYetImplementedScr();
 	ludo_box& getBoardBox(const std::pair<int,int>& coords);
 
 	game();
 	~game();
 
 	friend class _BoardPrinter;
-
-};
-
-class _BoardPrinter{ //! @info Only for use by updateDisplay() & takeIntro()
-private:
-	/*@note Also clears the screen, so that the titlebar is at top
-	  @returns Terminalstd::pair<int,int> as pair<int,int>*/
-	static void titleBar(int width);
-	static void titleBar(); /*@brief Simply just calls titleBar with (terminalDimen().first)*/
-	static void errorScreen(std::string errMsg);
-    static void type1(int boxlen,int nrow,const std::array<std::array<ludo_box,15>,15>& board);
-    static void type1_2(int,int,const std::array<std::array<ludo_box,15>,15>& board);
-    static void type2(int,int,const std::array<std::array<ludo_box,15>,15>& board);
-    static void type2_2(int,int,const std::array<std::array<ludo_box,15>,15>& board);
-    static void type3(int,int,const std::array<std::array<ludo_box,15>,15>& board);
-    static void type4(int,int,const std::array<std::array<ludo_box,15>,15>& board);
-    static void type5(int,int,const std::array<std::array<ludo_box,15>,15>& board);
-    static void type6(int,int,const std::array<std::array<ludo_box,15>,15>& board);
-    static void type7(int,int,const std::array<std::array<ludo_box,15>,15>& board); //@brief Similar to type 5, only Inter-Row line different
-    static void type8(int,int,const std::array<std::array<ludo_box,15>,15>& board); //@brief Similar to type 4, only Inter-Row line different
-
-    friend void game::updateDisplay();
-    friend void game::takeIntro();
 
 };

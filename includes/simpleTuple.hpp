@@ -1,19 +1,19 @@
 #pragma once
 
-#include "exceptions.hpp"
+#include "exceptions.h"
 #include <functional>
 
 template <class T1, class T2>
 class simpleTuple{
 protected:
-  // T1 first;
-  // T2 second;
+  // T1 key;
+  // T2 value;
 
 public:
-  T1 first;
-  T2 second;
+  T1 key;
+  T2 value;
   void setVal(T1 K, T2 V);
-  const T1 getfirst() const;
+  const T1 getkey() const;
   const T2 getVal() const;
 
   void operator=(const simpleTuple<T1,T2>&);
@@ -39,7 +39,7 @@ class homoTuple : public simpleTuple<T,T>{
     bool operator!=(const homoTuple<T>&) const;
     bool operator!=(const simpleTuple<T,T>&) const;
 
-    homoTuple(T first, T second) : super(first,second){}
+    homoTuple(T key, T value) : super(key,value){}
     homoTuple(){};
 };
 
@@ -53,25 +53,22 @@ typedef homoTuple<double> doubleTuple;
 //##  DEFINTIONS  ##//
 //##    SIMPLETUPLE_METHODS   ##
 template <class T1, class T2>
-simpleTuple<T1,T2>::simpleTuple(T1 K, T2 V){
-    first = K;
-    second = V;
-}
+simpleTuple<T1,T2>::simpleTuple(T1 K, T2 V) : key(K), value(V){}
 
 template <class T1, class T2>
 void simpleTuple<T1,T2>::setVal(T1 K, T2 V){
-    first = K;
-    second = V;
+    key = K;
+    value = V;
   }
 
 template <class T1, class T2>
-const T1 simpleTuple<T1,T2>::getfirst() const{
-    return first;
+const T1 simpleTuple<T1,T2>::getkey() const{
+    return key;
 }
 
 template <class T1, class T2>
 const T2 simpleTuple<T1,T2>::getVal() const{
-    return second;
+    return value;
 }
 //##    SIMPLETUPLE_METHODS   ##
 
@@ -86,7 +83,7 @@ bool homoTuple<T>::operator!=(const homoTuple<T>& tuple2) const{
 
 template<typename T>
 bool homoTuple<T>::operator==(const homoTuple<T>& tuple2) const{
-  if(this->first == tuple2.first && this->second == tuple2.second){
+  if(this->key == tuple2.key && this->value == tuple2.value){
     return true;
   }
   else return false;
@@ -102,7 +99,7 @@ bool homoTuple<T>::operator!=(const simpleTuple<T,T>& tuple2) const{
 
 template<typename T>
 bool homoTuple<T>::operator==(const simpleTuple<T,T>& tuple2) const{
-  if(this->first == tuple2.getfirst() && this->second == tuple2.getVal()){
+  if(this->key == tuple2.getkey() && this->value == tuple2.getVal()){
     return true;
   }
   else return false;
@@ -110,22 +107,22 @@ bool homoTuple<T>::operator==(const simpleTuple<T,T>& tuple2) const{
 
 template<typename T>
 void homoTuple<T>::operator=(const simpleTuple<T,T> &parentTuple){
-  this->first = parentTuple.getfirst();
-  this->second = parentTuple.getVal();
+  this->key = parentTuple.getkey();
+  this->value = parentTuple.getVal();
 }
 
 template<typename T>
 void homoTuple<T>::operator=(const std::pair<int,int> &parentTuple){
-  this->first = parentTuple.first;
-  this->second = parentTuple.second;
+  this->key = parentTuple.key;
+  this->value = parentTuple.value;
 }
 
 template<typename T>
 bool homoTuple<T>::operator<(const homoTuple<T> &t2) const{
 
-  if(this->first < t2.first){
+  if(this->key < t2.key){
     return true;
-  }else if(this->second < t2.second){
+  }else if(this->value < t2.value){
     return true;
   }
   else return false;
@@ -135,10 +132,10 @@ bool homoTuple<T>::operator<(const homoTuple<T> &t2) const{
 template<typename T>
 T& homoTuple<T>::operator[](unsigned int index){
   if(index == 0){
-    return this->first;
+    return this->key;
     }
   else if(index == 1){
-    return this->second;
+    return this->value;
   }
   else{
     throw OutOfBoundException("Tuple");

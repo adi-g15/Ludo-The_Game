@@ -224,3 +224,80 @@ ludo_goti.cpp:(.text+0x9f): undefined reference to `ludo_coords::InitCoords()'
 collect2: error: ld returned 1 exit status
 Makefile:31: recipe for target 'build/game' failed
 make: *** [build/game] Error 1
+
+
+-----------------------------
+mint@mint:/media/mint/adig15/Repo/Ludo-The_Game$ make
+mkdir build/object_files -p
+mkdir libs -p
+g++ -c includes/exceptions.cpp -Iincludes -o build/object_files/exceptions.o
+g++ -c includes/game.cpp -Iincludes -o build/object_files/game.o
+g++ -c includes/ludo_box.cpp -Iincludes -o build/object_files/ludo_box.o
+g++ -c includes/ludo_goti.cpp -Iincludes -o build/object_files/ludo_goti.o
+g++ -c includes/ludo_coords.cpp -Iincludes -o build/object_files/ludo_coords.o
+g++ -c main.cpp -Iincludes -o build/main.o
+ar rvs libs/libludo_static.a build/object_files/game.o build/object_files/ludo_box.o build/object_files/ludo_goti.o build/object_files/ludo_coords.o
+r - build/object_files/game.o
+r - build/object_files/ludo_box.o
+r - build/object_files/ludo_goti.o
+r - build/object_files/ludo_coords.o
+ar rvs libs/libutil.a build/object_files/exceptions.o
+r - build/object_files/exceptions.o
+g++ build/main.o -Llibs -lludo_static -lutil -o build/game
+libs/libludo_static.a(game.o): In function `customUtil::getTerminalDimen()':
+game.cpp:(.text+0x121): multiple definition of `customUtil::getTerminalDimen()'
+build/main.o:main.cpp:(.text+0x0): first defined here
+libs/libludo_static.a(game.o): In function `customUtil::trimString(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)':
+game.cpp:(.text+0x1de): multiple definition of `customUtil::trimString(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)'
+build/main.o:main.cpp:(.text+0xbc): first defined here
+libs/libludo_static.a(game.o): In function `customUtil::intTostring[abi:cxx11](int)':
+game.cpp:(.text+0x392): multiple definition of `customUtil::intTostring[abi:cxx11](int)'
+build/main.o:main.cpp:(.text+0x270): first defined here
+libs/libludo_static.a(game.o): In function `is_Sum_Permutation(unsigned short, std::vector<unsigned short, std::allocator<unsigned short> >)':
+game.cpp:(.text+0x484): multiple definition of `is_Sum_Permutation(unsigned short, std::vector<unsigned short, std::allocator<unsigned short> >)'
+build/main.o:main.cpp:(.text+0x362): first defined here
+libs/libludo_static.a(game.o): In function `_BoardPrinter::_BoardPrinter(std::array<std::array<ludo_box, 15ul>, 15ul> const&)':
+game.cpp:(.text+0x734): multiple definition of `_BoardPrinter::_BoardPrinter(std::array<std::array<ludo_box, 15ul>, 15ul> const&)'
+build/main.o:main.cpp:(.text+0x612): first defined here
+libs/libludo_static.a(game.o): In function `_BoardPrinter::_BoardPrinter(std::array<std::array<ludo_box, 15ul>, 15ul> const&)':
+game.cpp:(.text+0x734): multiple definition of `_BoardPrinter::_BoardPrinter(std::array<std::array<ludo_box, 15ul>, 15ul> const&)'
+build/main.o:main.cpp:(.text+0x612): first defined here
+libs/libludo_static.a(game.o): In function `_BoardPrinter::errorScreen(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)':
+game.cpp:(.text+0x758): multiple definition of `_BoardPrinter::errorScreen(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+build/main.o:main.cpp:(.text+0x636): first defined here
+libs/libludo_static.a(game.o): In function `_BoardPrinter::titleBar()':
+game.cpp:(.text+0x908): multiple definition of `_BoardPrinter::titleBar()'
+build/main.o:main.cpp:(.text+0x7e6): first defined here
+libs/libludo_static.a(game.o): In function `_BoardPrinter::titleBar(int)':
+game.cpp:(.text+0x802): multiple definition of `_BoardPrinter::titleBar(int)'
+build/main.o:main.cpp:(.text+0x6e0): first defined here
+libs/libludo_static.a(game.o): In function `_BoardPrinter::row_type1(int)':
+game.cpp:(.text+0x91c): multiple definition of `_BoardPrinter::row_type1(int)'
+build/main.o:main.cpp:(.text+0x7fa): first defined here
+libs/libludo_static.a(game.o): In function `_BoardPrinter::row_type2(int)':
+game.cpp:(.text+0xb38): multiple definition of `_BoardPrinter::row_type2(int)'
+build/main.o:main.cpp:(.text+0xa16): first defined here
+libs/libludo_static.a(game.o): In function `_BoardPrinter::row_type3(int)':
+game.cpp:(.text+0xffa): multiple definition of `_BoardPrinter::row_type3(int)'
+build/main.o:main.cpp:(.text+0xed8): first defined here
+libs/libludo_static.a(game.o): In function `_BoardPrinter::row_type4(int)':
+game.cpp:(.text+0x122a): multiple definition of `_BoardPrinter::row_type4(int)'
+build/main.o:main.cpp:(.text+0x1108): first defined here
+libs/libludo_static.a(game.o): In function `_BoardPrinter::inter_type1()':
+game.cpp:(.text+0x1618): multiple definition of `_BoardPrinter::inter_type1()'
+build/main.o:main.cpp:(.text+0x14f6): first defined here
+libs/libludo_static.a(game.o): In function `_BoardPrinter::inter_type2()':
+game.cpp:(.text+0x19d8): multiple definition of `_BoardPrinter::inter_type2()'
+build/main.o:main.cpp:(.text+0x18b6): first defined here
+libs/libludo_static.a(game.o): In function `_BoardPrinter::inter_type3()':
+game.cpp:(.text+0x1e1a): multiple definition of `_BoardPrinter::inter_type3()'
+build/main.o:main.cpp:(.text+0x1cf8): first defined here
+libs/libludo_static.a(game.o): In function `_BoardPrinter::inter_type4()':
+game.cpp:(.text+0x206a): multiple definition of `_BoardPrinter::inter_type4()'
+build/main.o:main.cpp:(.text+0x1f48): first defined here
+libs/libludo_static.a(game.o): In function `_BoardPrinter::inter_type5()':
+game.cpp:(.text+0x21a0): multiple definition of `_BoardPrinter::inter_type5()'
+build/main.o:main.cpp:(.text+0x207e): first defined here
+collect2: error: ld returned 1 exit status
+Makefile:24: recipe for target 'build/game' failed
+make: *** [build/game] Error 1
