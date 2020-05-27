@@ -146,7 +146,7 @@ std::string stripOff(std::string str_out, char toRemove){
 			right_iter = left_iter;
 			while( *right_iter != toRemove ){
 				++right_iter;
-				if(right_iter_iter == str_out.end()) break;
+				if(right_iter == str_out.end()) break;
 			}
 		}
 
