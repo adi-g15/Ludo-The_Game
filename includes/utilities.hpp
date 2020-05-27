@@ -10,7 +10,7 @@
 #include<vector>
 
 #ifdef __linux__
-  #include<unistd.h>
+  #include<ctime> //For nanosleep()
 #else
   #include<windows.h>
 #endif
@@ -38,18 +38,19 @@ namespace customUtil
       NOTE - the string is not horizontally centered, for that, first call place_v_center() with empty string, then align_text_center()*/
     inline bool place_v_center(int v_length,const std::string& = "");
     inline bool place_v_center(const std::string& = ""); //Places cursor at vecrtically middle line
-    std::string trimString(const std::string&);   //@returns trimmed std::string, but doesnt modify original string
+    std::string trimString(std::string);   //@returns trimmed std::string, but doesnt modify original string
+    std::string stripOff(std::string, char toRemove); /*Returns a string without the passed character*/
 	  std::string intTostring(int num);
-    inline void pause(int sec);
+    inline void pause(float sec);
     bool is_Sum_Permutation(unsigned short num, std::vector<unsigned short> Vec);  //Self Algo...
 }
 //  FUNCTIONS END//
 
 
-//////// UTILITIES.CPP BELOW    !!!!
+//Defintions Start
 //This solved the 'undefined references' to the customUtil::functions in files
 #include<algorithm>
-#include "exceptions.hpp"
+#include "exceptions.h"
 
 #ifdef __linux__
     #include<sys/ioctl.h>
@@ -65,7 +66,6 @@ std::pair<int,int> customUtil::getTerminalDimen(){
   #ifdef __linux__
     winsize windowsSize;
     ioctl (STDOUT_FILENO, TIOCGWINSZ, &windowsSize);
-    //   outTuple = { windowsSize.ws_row , windowsSize.ws_col };    //NOTE - It was returning y*x (considering downward height of terminal to be y)
         outTuple = { windowsSize.ws_col , windowsSize.ws_row };
 
   #else //Windows API
@@ -76,8 +76,6 @@ std::pair<int,int> customUtil::getTerminalDimen(){
     }
 
   #endif
-
-    // std::cout<<"std::pair<int,int> - "<<outTuple.first<<'x'<<outTuple.second<<std::endl;    //[FOR DEBUG PURPOSES]
 
   return outTuple;
 }
@@ -124,8 +122,7 @@ bool customUtil::place_v_center(int vert_length, const std::string& str){
   return true;
 }
 
-std::string customUtil::trimString(const std::string &s){
-    std::string str_out(s);
+std::string customUtil::trimString(std::string str_out){
     auto lambda = [](char ch){
         return !isspace(ch) || ch=='\n';
     };
@@ -136,76 +133,66 @@ std::string customUtil::trimString(const std::string &s){
     return str_out;
 }
 
+std::string stripOff(std::string str_out, char toRemove){
+	auto left_iter = str_out.begin(), right_iter = str_out.end();
+
+	while( right_iter != str_out.end() ){
+    left_iter = str_out.begin();  //! To get rid of 'iterator invalidation' [Know_More]
+    right_iter = str_out.end();
+
+    while( *left_iter != toRemove && left_iter != str_out.end() ) ++left_iter;
+    if(left_iter == str_out.end()) break;
+    right_iter = left_iter;
+    while( *right_iter == toRemove && right_iter != str_out.end() ) ++right_iter;
+    str_out.erase( left_iter, right_iter );
+  }
+
+  return str_out;
+}
+
 std::string customUtil::intTostring(int num){
-	std::string outString;
-	while(num > 0){
-		outString.insert( outString.begin() , char(num%10 + 48) );
+  std::string outString;
+  while(num > 0){
+    outString.insert( outString.begin() , char(num%10 + 48) );
     num/=10;
   }
 
   return outString;
 }
 
-void customUtil::pause(int seconds){  //Supports Win, Linux, Mac
+/*Issue pointed by codacy - 
+This C routine is considered obsolete (as opposed to the shell command by the same name). The interaction of this function with SIGALRM and other timer functions such as sleep(), alarm(), setitimer(), and nanosleep() is unspecified (CWE-676). Use nanosleep(2) or setitimer(2) instead. */
+
+//! Changed from int to float, since, 0.7 would have been implicitly converted to 0
+void customUtil::pause(float seconds){  //Supports Win, Linux, Mac
   #ifdef __linux__
-    usleep(1000000*seconds);
+    int sec = (int)seconds;
+    int millisec = (int)(seconds*1000) - 1000*sec;
+    const timespec tmp = { sec,millisec*1000000L };
+    nanosleep( &tmp , NULL);
   #else
     Sleep(1000*seconds);
   #endif
 }
 
 bool is_Sum_Permutation(unsigned short num, std::vector<unsigned short> Vec){ //BUG - It seems all recursive calls have num=9, how??
-	if(num == 0) return true;
-	else if(num<0 || Vec.empty()) return false;
+  if(num == 0) return true;
+  else if(Vec.empty()) return false;
 
-	std::sort(Vec.begin(), Vec.end());
-	for (auto i = Vec.begin(); i < Vec.end(); i++)
-	{
-		if( *i > num){
-			Vec.erase(i, Vec.end());
-			break;
-		}
-	}
+  std::sort(Vec.begin(), Vec.end());
+  for (auto i = Vec.begin(); i < Vec.end(); i++)
+  {
+    if( *i > num){
+      Vec.erase(i, Vec.end());
+      break;
+    }
+  }
 
-	auto j = Vec.begin();
-	while ( j<Vec.end() ){
-		Vec.erase(j);
-		if( is_Sum_Permutation(num, Vec) || is_Sum_Permutation(num-(*j), Vec)) return true;
-		++j;
-	}
-	return false;
+  auto j = Vec.begin();
+  while ( j<Vec.end() ){
+    Vec.erase(j);
+    if( is_Sum_Permutation(num, Vec) || is_Sum_Permutation(num-(*j), Vec)) return true;
+    ++j;
+  }
+  return false;
 }
-//LEARNT+QUESTIONS BELOW//
-//ERROR - [in getTerminalDimen()] Replace std::pair<int,int> with simpleTuple<int,int> gives error : conversion from ‘simpleTuple<int, int>’ to non-scalar type ‘std::pair<int,int> {aka homoTuple<int>}’ requested
-/*LEARNT - ASCII value of integers 0-9 are actually 48-57*/
-    /*Learnt - In case of only 1 argument passed to std::string::erase()...
-                1. If we provide an index number, ALL including and after it are erased
-                2. If we provide an iterator,    ONLY that position is removed*/
-
-    //LEARNT - algorithm -> find_if - Keep finding, until the predicate is true
-    //LEARNT - Using .base() on a reverse_iterator returns us the normal_iterator, BUT CAUTION- This isn't advisable, and might cause SEGFAULT, (for eg. accessing .rbegin().base())
-
-/*LEARNT - stringify() can turn any name into text, BUT remember, it ignores trailing and front spaces, for eg. in stringify( Hello World ), first and last space ignored*(Verified)/
-*/
-
-/*LEARNT - The component type of STL containers like vectors must be 'asignable'.
-			References are NOT assignable, ie. we can only initialise them once, and,
-			you can't make them reference something else later (you can't assign it to reference any other vairable, and even after equating 2 references, only the values of variable they reference is changed, not the addresses they both refer to)
-			Due to same reason, other non-assignable types are also not allowed as components of containers, for eg. vector<const int> not allowed
-*/
-
-//LEARNT+QUESTIONS BELOW [SIMPLETUPLE]//
- /*[QUESTION_Answered] - This gives error without the 'this->'? Why?
-                            Answer - It is because unqualified lookup doesn't work here because the base is a template.
-                                      So, we need to use this-> to access inherited members in childs of template classes*/
-/*[LEARNT] - Direct access through objects of Base Class, to protected members of Base Class,
-                                                          is only in methods of the Base class, not even in Child
-                                                          For. eg, you take an object of parent type (not 'this' object), then can't access in Child*/
-  //DOWNSIDE_C++, QUESTION - We can't have virtual templated member function
-  //LEARNT - In a templated function, if return types in if and blocks is different, then It wont be able to know the type
-/*[LEARNT] - In C++, protected members can't be accessed directly
-                         In Java, protected members 'can' be accessed directly, but in same package*/
-/*NOTE, QUESTION - Did this to suppress this - In instantiation of ‘homoTuple<T>::homoTuple(T, T) [with T = int]’:
-./util/terminalstd::pair<int,int>.hpp:17:24:   required from here
-./util/./simpleTuple.hpp:70:30: error: no matching function for call to ‘simpleTuple<int, int>::simpleTuple()’
-     homoTuple(T key, T value){ */

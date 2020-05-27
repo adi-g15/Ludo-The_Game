@@ -1,19 +1,23 @@
-language: cpp
-
-matrix:
-  include:
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
-
-      env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-
-before_install:
-  - eval "$(MATRIX_EVAL)"        
-
-script: make && make run
+dist: trusty
+sudo: required
+language:
+  - cpp
+compiler:
+  - gcc
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-7
+      - g++-7
+script:
+  # Linking gcc-6 and g++-6 to their standard commands
+  - ln -s /usr/bin/gcc-7 /usr/local/bin/gcc
+  - ln -s /usr/bin/g++-7 /usr/local/bin/g++
+  # For Cmake based projects
+  - export CC=/usr/bin/gcc-7
+  - export CXX=/usr/bin/g++-7
+  # This is for debug purposes only
+  - gcc -v && g++ -v
+  - make
