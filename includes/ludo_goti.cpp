@@ -1,7 +1,7 @@
-#include "ludo_goti.hpp"
+#include "ludo_goti.h"
 
 #include<iostream>
-#include "ludo_coords.hpp"
+#include "ludo_coords.h"
 
 const std::pair<int,int> ludo_goti::getCoords() const{
     if(curr_coords.first == 0 && curr_coords.second == 0){
