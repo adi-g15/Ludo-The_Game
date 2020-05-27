@@ -134,18 +134,27 @@ std::string customUtil::trimString(std::string str_out){
 }
 
 std::string stripOff(std::string str_out, char toRemove){
-	auto left_iter = str_out.begin(), right_iter = str_out.end();
+	auto left_iter = str_out.begin(), right_iter = str_out.begin();
 
 	while( right_iter != str_out.end() ){
-    left_iter = str_out.begin();  //! To get rid of 'iterator invalidation' [Know_More]
-    right_iter = str_out.end();
+		while( *left_iter != toRemove ){
+			++left_iter;
+			if(left_iter == str_out.end()) break;
+		}
+		if(left_iter == str_out.end()) break;
+		else{
+			right_iter = left_iter;
+			while( *right_iter != toRemove ){
+				++right_iter;
+				if(right_iter_iter == str_out.end()) break;
+			}
+		}
 
-    while( *left_iter != toRemove && left_iter != str_out.end() ) ++left_iter;
-    if(left_iter == str_out.end()) break;
-    right_iter = left_iter;
-    while( *right_iter == toRemove && right_iter != str_out.end() ) ++right_iter;
-    str_out.erase( left_iter, right_iter );
-  }
+		str_out.erase( left_iter, right_iter );
+
+		left_iter = str_out.begin();  //! To get rid of 'iterator invalidation' [Know_More]
+
+	}
 
   return str_out;
 }
