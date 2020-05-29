@@ -1,5 +1,5 @@
 B1 = build/object_files
-I1 = includes
+SRC = src
 
 LIBS_OBJECT_FILES = $(B1)/game.o \
                     $(B1)/ludo_box.o \
@@ -8,12 +8,12 @@ LIBS_OBJECT_FILES = $(B1)/game.o \
 
 UTIL_OBJECT_FILES = $(B1)/exceptions.o
 
-LIBS_CPP_FILES = $(I1)/game.cpp \
-                    $(I1)/ludo_box.cpp \
-					$(I1)/ludo_goti.cpp \
-					$(I1)/ludo_coords.cpp
+LIBS_CPP_FILES = $(SRC)/game.cpp \
+                    $(SRC)/ludo_box.cpp \
+					$(SRC)/ludo_goti.cpp \
+					$(SRC)/ludo_coords.cpp
 
-UTIL_CPP_FILES = $(I1)/exceptions.cpp
+UTIL_CPP_FILES = $(SRC)/exceptions.cpp
 
 OBJECT_FILES = $(UTIL_OBJECT_FILES) \
 			   $(LIBS_OBJECT_FILES) \
@@ -30,20 +30,20 @@ build/main.o: main.cpp create_build_directories
 	g++ -c main.cpp -Iincludes -o build/main.o
 
 ##LIBRARY_ OBJECT_ FILES START  (Compiling implementation files)
-$(B1)/game.o : $(I1)/game.cpp
-	g++ -c $(I1)/game.cpp -Iincludes -o $(B1)/game.o
+$(B1)/game.o : $(SRC)/game.cpp
+	g++ -c $(SRC)/game.cpp -Iincludes -o $(B1)/game.o
 
-$(B1)/exceptions.o : create_build_directories $(I1)/exceptions.cpp
-	g++ -c $(I1)/exceptions.cpp -Iincludes -o $(B1)/exceptions.o
+$(B1)/exceptions.o : create_build_directories $(SRC)/exceptions.cpp
+	g++ -c $(SRC)/exceptions.cpp -Iincludes -o $(B1)/exceptions.o
 
-$(B1)/ludo_coords.o : $(I1)/ludo_coords.cpp
-	g++ -c $(I1)/ludo_coords.cpp -Iincludes -o $(B1)/ludo_coords.o
+$(B1)/ludo_coords.o : $(SRC)/ludo_coords.cpp
+	g++ -c $(SRC)/ludo_coords.cpp -Iincludes -o $(B1)/ludo_coords.o
 
-$(B1)/ludo_box.o : $(I1)/ludo_box.cpp
-	g++ -c $(I1)/ludo_box.cpp -Iincludes -o $(B1)/ludo_box.o
+$(B1)/ludo_box.o : $(SRC)/ludo_box.cpp
+	g++ -c $(SRC)/ludo_box.cpp -Iincludes -o $(B1)/ludo_box.o
 
-$(B1)/ludo_goti.o : $(I1)/ludo_goti.cpp
-	g++ -c $(I1)/ludo_goti.cpp -Iincludes -o $(B1)/ludo_goti.o
+$(B1)/ludo_goti.o : $(SRC)/ludo_goti.cpp
+	g++ -c $(SRC)/ludo_goti.cpp -Iincludes -o $(B1)/ludo_goti.o
 ##LIBRARY_ OBJECT_ FILES END
 
 ##Creating Libraries START
@@ -59,7 +59,7 @@ create_dynamic_lib : $(LIBS_OBJECT_FILES) $(LIBS_OBJECT_FILES)
 ##Creating Libraries END
 
 clean:
-	rm build/main.o build/object_files/*.o build/game*
+	rm build/main.o build/object_files/*.o build/game* libs/
 
 run: build/game
 	./build/game
