@@ -184,3 +184,10 @@ includes/utilities
 //LEARNT
 . Cannot create a non-constant pointer to a member function
 . To 'fully qualify' means to pass it as "&className::functionTryingToPass"
+///////////////////////////////////////////////////////
+Including a namespace twice, gives 'Multiple Defintions' linker error, to solve this the methods may be made 'static'
+
+
+///////////////////////////////////////////////////////
+Just a note for self to recall the learning experience - 
+**And there are at least 25 (approx.) significant bugs, library errors during these, about 10 MAY have been patched yesterday(20May)
