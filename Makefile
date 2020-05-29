@@ -59,7 +59,7 @@ create_dynamic_lib : $(LIBS_OBJECT_FILES) $(LIBS_OBJECT_FILES)
 ##Creating Libraries END
 
 clean:
-	rm build/main.o build/object_files/*.o build/game* libs/
+	rm build/ libs/ -r
 
 run: build/game
 	./build/game
