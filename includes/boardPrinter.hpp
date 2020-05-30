@@ -103,10 +103,10 @@ void _BoardPrinter::row_type2(int nrow){
 	//!Explanatory comments in _BoardPrinter::row_type1
 	std::cout<<'|';
 
-	for (size_t i = 0; i < boxlen; i++)	std::cout<<'\\';
-	customUtil::align_text_center(boxlen+2, board[nrow][1].get_box_content());
+	for (size_t i = 0; i < boxlen; i++)	std::cout<<'\\';	
+	customUtil::align_text_center(boxlen+2, board[nrow][1].content);
 	for (size_t i = 0; i < (boxlen)*2 + 1; i++)	std::cout<<'\\';
-	customUtil::align_text_center(boxlen+2, board[nrow][4].get_box_content());
+	customUtil::align_text_center(boxlen+2, board[nrow][4].content);
 	for (size_t i = 0; i < boxlen; i++) std::cout<<'\\';
 	std::cout<<'|';
 
