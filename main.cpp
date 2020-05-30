@@ -1,13 +1,12 @@
 /*
 Programmer - Aditya Gupta (Techy15)
 Language - C++
-Program - LudO - The Game
+Program - Ludo - The Game
 */
 
 #include<iostream>
-#include "board.hpp"
-#include "exceptions.hpp"
-#include<algorithm>
+
+#include "game.h"
 
 int main(int argc, char const *argv[]) {
 
@@ -27,7 +26,6 @@ int main(int argc, char const *argv[]) {
 		std::cin>>playConsent;
 
 	}while ( playConsent == 1 || playConsent == 2 );
-
 	std::cout<<"Khelne ke liye Dhanyawaad :-D"<<std::endl;
 
 	return 0;

@@ -1,22 +1,19 @@
-#include "ludo_box.hpp"  
+#include "ludo_box.h"  
 
 #include<iostream>
-#include "exceptions.hpp"
+#include "exceptions.h"
 #include<utility>	//ONLY for creating a temp pair, in appendGoti()
 #include<algorithm>
 
 using namespace std;
 
-ludo_box::ludo_box(){
-    content = " ";
-
-	numGotis = {
+ludo_box::ludo_box() : numGotis({
 		{ ColourLAAL, 0},
 		{ ColourHARA, 0},
 		{ ColourPEELA, 0},
 		{ ColourNEELA, 0}
-	};
-
+	})
+{
 	box_type = _boxNORMAL;
 }
 
@@ -45,7 +42,7 @@ bool ludo_box::removeGoti(std::shared_ptr<ludo_goti>& toBeRemoved){
 			}));
 			
 			//! Removing the goti from display(content)
-			char colourChar;
+			char colourChar = 'U'; //Undefined Colour
 			if(toBeRemoved->gotiColour == ColourLAAL){
 				colourChar = 'R';
 			}
