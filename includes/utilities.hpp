@@ -211,8 +211,12 @@ This C routine is considered obsolete (as opposed to the shell command by the sa
 
 //! Changed from int to float, since, 0.7 would have been implicitly converted to 0
 void customUtil::pause(float seconds){  //Supports Win, Linux, Mac
+
+  return; //DEBUG PURPOSES, REMOVE THIS LATER
+
   #ifdef __linux__
     int sec = (int)seconds;
+    // int millisec = (int)(seconds*100) - 100*sec; //DEBUG, mmaking the pause 10 times smaller
     int millisec = (int)(seconds*1000) - 1000*sec;
     const timespec tmp = { sec,millisec*1000000L };
     nanosleep( &tmp , NULL);

@@ -184,9 +184,45 @@ includes/utilities
 //LEARNT
 . Cannot create a non-constant pointer to a member function
 . To 'fully qualify' means to pass it as "&className::functionTryingToPass"
+
+/*[LEARNT] Emulating 'destructuring' in C++, like in JS ->
+    1. From C++11 ->
+    This can be done using the std::tie() and std::ignore (if needed) accordingly, in case of std::pair and std::tuple
+        int x; bool y; double z; tuple<int,bool,double> obj;
+        std::tie( x, y, z ) = obj;
+        std::tie( std::ignore, y, std::ignore ) = obj;  //If don't want all content
+
+    2. C++17 ->
+        It is called 'Structured Bindings' - 
+        auto [x, y, z] = obj;
+        auto [n1, n2, n3] = obj;    //Will also work
+        auto [a, b] = obj;  //ERROR: only 2 names provided for structured binding, while obj decomposes to 3 */
+
+/*LEARNT - We can't use `std::pair<>` as key, in unordered_set or unordered_map, while we can use them in set, and map - 
+
+    This is bcz, the unordered_containers use a hash function. By default, std::hash is used, but it doesn't provide an specialization for std::pair, hence we have to give a 
+*/
+
+/*[LEARNT] Functors in C++ -> Classes with overloaded () operator; Also called 'function objects'
+    Speciality/Use - 1. These types of functions can have 'state' (internal data, that stays through all 'calls')
+                     2. Faster too, with optimisations by compiler, ie. a functor call can simply be replaced with a call to name::operator()(), which makes it similar to function call, while using function pointer at same place, is 'dereferenced at runtime'
+*/
+/*Learnt- str.find('c') returns npos( static_cast<size_t>(-1) )... [NOT size()]
+    On laptop, static_cast<size_t>(-1) = (size_t)(-1) = 18446744073709551615*/
+    //LEARNT - Or should i say forgotten `? :` needs both operands of right side to be of same type 
+
+/*LEARNT - Template types may not be deducible in two cases ->
+    1. two return statements, returning different types(the problem, i mainly face when implementing operator[] for structs)
+    2. [HOT] Using something like, typet<T>::holder (holder is map<double,double>), and trying foo(typet<int>::holder), where foo() is a templated function, which tries to judge what is T (similar to reverse engineering), So how can you tell what T is, since typet<int>::holder, and typet<double>::holder, both are of same type, so how can you say, holder belonged to typed<int>, and not typet<double>... It is somewhat tricky 'for me atleast'. Read more on https://stackoverflow.com/questions/6060824/why-cant-the-template-argument-be-deduced-when-it-is-used-as-template-parameter and https://en.cppreference.com/w/cpp/language/template_argument_deduction*/
+
+//QUESTION - How to handle std::bad_alloc? (eg. in rolldie)
+
+//TODO - Add 1 more python scripts, or search for such solutions - arrange the function definition in the implementation file, as the order in the header class declaration
+//TODO - Can enter enteredRoll as a sum of the elements in dieNumbers
+//TODO - Remove 'if else break' or 'if break' conditions by a while loop, and if need be, then replace the for range to iterators declaration, then while
+//TO KnOW -> Overloading std::cout to print std::pair
 ///////////////////////////////////////////////////////
 Including a namespace twice, gives 'Multiple Defintions' linker error, to solve this the methods may be made 'static'
-
 
 ///////////////////////////////////////////////////////
 Just a note for self to recall the learning experience - 

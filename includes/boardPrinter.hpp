@@ -16,7 +16,9 @@ private:
 	static void titleBar(int width);
 	static void titleBar(); /*@brief Simply just calls titleBar with (terminalDimen().first)*/
 	static void errorScreen(std::string errMsg);
-    
+    static void finishedScreen(void);
+    	/*FUTURE - It can be modified to show who's the 1st and who's the 4th, BUT FOR NOW I WILL NOT IMPLEMENT IT HERE, SINCE I HAVE FURTHER PENDING PLANS FOR GUI*/
+
     void row_type1(int nrow);
     void row_type2(int nrow);
     void row_type3(int nrow);
@@ -33,7 +35,7 @@ private:
     friend class game;
 
 public:
-	short boxlen;
+	unsigned int boxlen;
 	int termWidth;
 	explicit _BoardPrinter( const std::array<std::array<ludo_box, 15>, 15>& );	//! Links to the board
 	_BoardPrinter() = delete;
@@ -61,13 +63,24 @@ void _BoardPrinter::errorScreen(std::string errMsg){
 	for(int i=0; i<termDimen.second - (termDimen.second-3)/2; ++i)	std::cout<<'\n';
 }
 
+void _BoardPrinter::finishedScreen(){
+	titleBar();
+	std::pair<int,int> termDimen = customUtil::getTerminalDimen();
+	std::cout<<'\n';
+
+	for(int i=0; i<(termDimen.second-3)/2; ++i)	std::cout<<'\n';
+	customUtil::align_text_center(customUtil::getTerminalDimen().first, "Khelne ke liye Dhanyawaad :D ");	
+	for(int i=0; i<termDimen.second - (termDimen.second-3)/2; ++i)	std::cout<<'\n';
+	std::cin.get();
+}
+
 void _BoardPrinter::titleBar(int width){	//Considering sufficient width, to be able to play the game
 
-	 #ifdef __linux__
-	 	system("clear");
-	 #elif _WIN32
-	 	system("cls")
-	 #endif
+	 // #ifdef __linux__
+	 // 	system("clear");
+	 // #elif _WIN32
+	 // 	system("cls")
+	 // #endif
 
 	std::cout<<std::endl;
 	customUtil::align_text_center(width, "NAMASTE from \"Ludo - The Game\" :D");
@@ -109,7 +122,6 @@ void _BoardPrinter::row_type2(int nrow){
 	customUtil::align_text_center(boxlen+2, board[nrow][4].content);
 	for (size_t i = 0; i < boxlen; i++) std::cout<<'\\';
 	std::cout<<'|';
-
 
 	for (size_t i = 0; i < 3; i++){
 		customUtil::align_text_center(boxlen, board[nrow][6+i].get_box_content());
@@ -187,7 +199,8 @@ void _BoardPrinter::inter_type1(){
 	std::cout<<'|';
 
 	for(int j=0; j<3; ++j){
-		for (size_t i = 0; i < (boxlen); i++) std::cout<<'-'; std::cout<<'|';
+		for (size_t i = 0; i < (boxlen); i++) std::cout<<'-';
+        std::cout<<'|';
 	}
 
 	for (size_t i = 0; i < boxlen; i++)	std::cout<<'\\';
@@ -210,9 +223,12 @@ void _BoardPrinter::inter_type2(){
 	for (size_t i = 0; i < boxlen; i++) std::cout<<'\\';
 	std::cout<<'|';
 
-	for (size_t i = 0; i < (boxlen); i++) std::cout<<'-'; std::cout<<'|';
-	for (size_t i = 0; i < (boxlen); i++) std::cout<<' '; std::cout<<'|';
-	for (size_t i = 0; i < (boxlen); i++) std::cout<<'-'; std::cout<<'|';
+	for (size_t i = 0; i < (boxlen); i++) std::cout<<'-';
+    std::cout<<'|';
+	for (size_t i = 0; i < (boxlen); i++) std::cout<<' ';
+    std::cout<<'|';
+	for (size_t i = 0; i < (boxlen); i++) std::cout<<'-';
+    std::cout<<'|';
 
 	for (size_t i = 0; i < boxlen; i++)	std::cout<<'\\';
 	for (size_t i = 0; i < boxlen+2; i++) std::cout<<'-';
@@ -230,11 +246,13 @@ void _BoardPrinter::inter_type3(){
 	for (size_t i = 0; i < (boxlen+1)*6-1; i++)	std::cout<<'\\';
 	std::cout<<'|';
 
-	for (size_t i = 0; i < (boxlen); i++) std::cout<<'-'; std::cout<<'|';
-	for (size_t i = 0; i < (boxlen); i++) std::cout<<' '; std::cout<<'|';
 	for (size_t i = 0; i < (boxlen); i++) std::cout<<'-';
-
+    std::cout<<'|';
+	for (size_t i = 0; i < (boxlen); i++) std::cout<<' ';
+    std::cout<<'|';
+	for (size_t i = 0; i < (boxlen); i++) std::cout<<'-';
 	std::cout<<'|';
+
 	for (size_t i = 0; i < (boxlen+1)*6-1; i++)	std::cout<<'\\';
 	std::cout<<"|\n";
 		//Inter-Row Line end
@@ -253,8 +271,11 @@ void _BoardPrinter::inter_type5(){
 		//Inter-Row line Start
     customUtil::place_center(termWidth - 15*(boxlen+1) +3 -4);
 	std::cout<<"  |";
-	for (size_t i = 0; i < (boxlen+1)*6-1; i++) std::cout<<'-'; std::cout<<'|';
-	for (size_t i = 0; i < (boxlen+1)*3-1; i++) std::cout<<' '; std::cout<<'|';
-	for (size_t i = 0; i < (boxlen+1)*6-1; i++) std::cout<<'-'; std::cout<<"|\n";
+	for (size_t i = 0; i < (boxlen+1)*6-1; i++) std::cout<<'-';
+    std::cout<<'|';
+	for (size_t i = 0; i < (boxlen+1)*3-1; i++) std::cout<<' ';
+    std::cout<<'|';
+	for (size_t i = 0; i < (boxlen+1)*6-1; i++) std::cout<<'-';
+    std::cout<<"|\n";
 		//Inter-Row Line end
 }

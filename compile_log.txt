@@ -301,3 +301,21 @@ build/main.o:main.cpp:(.text+0x207e): first defined here
 collect2: error: ld returned 1 exit status
 Makefile:24: recipe for target 'build/game' failed
 make: *** [build/game] Error 1
+
+
+Current Errors - 
+1. terminate called after throwing an instance of 'std::out_of_range'
+  what():  basic_string::erase: __pos (which is 18446744073709551615) > this->size() (which is 1)
+2. [DEBUG] START :
+the_goti count is 1
+
+: [DEBUG] PASSED
+Coordinates of Goti are corrupt (0,0)
+
+Can't append Goti, invalid parameters
+
+: [DEBUG] PASSED
+3 1 
+  game::attack() seems to be the culprit
+3. Makefile:73: recipe for target 'run' failed
+make: *** [run] Segmentation fault (core dumped)
