@@ -1,9 +1,3 @@
-/*
-Programmer - Aditya Gupta (Techy15)
-Language - C++
-Program - Ludo - The Game
-*/
-
 #include<iostream>
 
 #include "game.h"

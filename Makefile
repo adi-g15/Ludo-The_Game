@@ -19,31 +19,39 @@ OBJECT_FILES = $(UTIL_OBJECT_FILES) \
 			   $(LIBS_OBJECT_FILES) \
                build/main.o
 
+ #if mode vaiable is empty, setting mode to debug
+ifeq ($(mode),release)
+   CXXFLAGS = -Wall
+else
+   mode = debug
+   CXXFLAGS = -g -Wall
+endif
+
 #FUTURE - Later shift to dynamic and static libraries as needed, for now just do static linking
 build/game : $(OBJECT_FILES) create_static_lib create_utilities_lib
 	g++ build/main.o -Llibs -lludo_static -lutil -o build/game
 
-build/game_debug : $(OBJECT_FILES) create_static_lib create_utilities_lib
-	g++ build/main.o -Llibs -lludo_static -lutil -g -o build/game_debug
+build/debug : $(UTIL_OBJECT_FILES) $(LIBS_OBJECT_FILES) create_static_lib create_utilities_lib
+	g++ main.cpp -Llibs -lludo_static -lutil -Iincludes -g -o build/debug
 
 build/main.o: main.cpp create_build_directories
-	g++ -c main.cpp -Iincludes -o build/main.o
+	g++ -c main.cpp $(CXXFLAGS) -Iincludes -o build/main.o
 
 ##LIBRARY_ OBJECT_ FILES START  (Compiling implementation files)
 $(B1)/game.o : $(SRC)/game.cpp
-	g++ -c $(SRC)/game.cpp -Iincludes -o $(B1)/game.o
+	g++ -c $(SRC)/game.cpp $(CXXFLAGS) -std=c++17 -Iincludes -o $(B1)/game.o
 
 $(B1)/exceptions.o : create_build_directories $(SRC)/exceptions.cpp
-	g++ -c $(SRC)/exceptions.cpp -Iincludes -o $(B1)/exceptions.o
+	g++ -c $(SRC)/exceptions.cpp $(CXXFLAGS) -Iincludes -o $(B1)/exceptions.o
 
 $(B1)/ludo_coords.o : $(SRC)/ludo_coords.cpp
-	g++ -c $(SRC)/ludo_coords.cpp -Iincludes -o $(B1)/ludo_coords.o
+	g++ -c $(SRC)/ludo_coords.cpp $(CXXFLAGS) -Iincludes -o $(B1)/ludo_coords.o
 
 $(B1)/ludo_box.o : $(SRC)/ludo_box.cpp
-	g++ -c $(SRC)/ludo_box.cpp -Iincludes -o $(B1)/ludo_box.o
+	g++ -c $(SRC)/ludo_box.cpp $(CXXFLAGS) -Iincludes -o $(B1)/ludo_box.o
 
 $(B1)/ludo_goti.o : $(SRC)/ludo_goti.cpp
-	g++ -c $(SRC)/ludo_goti.cpp -Iincludes -o $(B1)/ludo_goti.o
+	g++ -c $(SRC)/ludo_goti.cpp $(CXXFLAGS) -Iincludes -o $(B1)/ludo_goti.o
 ##LIBRARY_ OBJECT_ FILES END
 
 ##Creating Libraries START
@@ -64,8 +72,8 @@ clean:
 run: build/game
 	./build/game
 
-debug: build/game_debug
-	gdb ./build/game_debug
+debug: build/debug
+	gdb ./build/debug
 
 create_build_directories:
 	mkdir build/object_files -p
