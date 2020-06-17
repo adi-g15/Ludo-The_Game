@@ -1,11 +1,16 @@
 #include "ludo_box.h"
 
-#include<iostream>
 #include "exceptions.h"
+#include<iostream>
 #include<utility>	//ONLY for creating a temp pair, in appendGoti()
 #include<algorithm>
 
 using namespace std;
+
+template<typename T1, typename T2>	//Utility function
+static inline std::ostream& operator<<(std::ostream& out, const std::pair<T1,T2>& p){
+	return out<<'('<<p.first<<", "<<p.second<<')';
+}
 
 ludo_box::ludo_box() : numGotis({
 		{ ColourLAAL, 0},
@@ -15,6 +20,25 @@ ludo_box::ludo_box() : numGotis({
 	})
 {
 	box_type = _boxNORMAL;
+}
+
+bool ludo_box::areOpponentsPresent(colours colour){
+	auto colourChar = getColourChar(colour);
+
+	for ( auto const& ch : content )
+	{
+		if( !isdigit(ch) && ch != colourChar && box_type== _boxNORMAL ){
+			return true;
+
+			cout<<"\n\n\n\n\n\n[DEBUG] At "<<coords<<" : "<<colourChar<<" has opponent "<<ch<<" AND content = "<<content<<"\n\n\n\n\n"<<endl;	//DEBUG
+
+		}
+	}
+	return false;
+}
+
+char ludo_box::getColourChar(colours colour){
+	return (colour == ColourLAAL) ? 'R' : ( (colour == ColourHARA) ? 'G' : ( (colour == ColourPEELA) ? 'Y' : ( (colour == ColourNEELA) ? 'B' : 'U') ) );
 }
 
 std::weak_ptr<ludo_goti> ludo_box::getGoti(colours gotiColour){
@@ -29,8 +53,7 @@ std::weak_ptr<ludo_goti> ludo_box::getGoti(colours gotiColour){
 }
 
 bool ludo_box::removeGoti(std::shared_ptr<ludo_goti>& toBeRemoved){
-	auto colourChar = 'U'; //! Setting gotiColour
-	colourChar = (toBeRemoved->gotiColour == ColourLAAL) ? 'R' : ( (toBeRemoved->gotiColour == ColourHARA) ? 'G' : ( (toBeRemoved->gotiColour == ColourPEELA) ? 'Y' : ( (toBeRemoved->gotiColour == ColourNEELA) ? 'B' : 'U') ) );
+	auto colourChar = getColourChar(toBeRemoved->gotiColour); //! Setting gotiColour
 	cout<<"\n[DEBUG] REMOVE START - toBeRemoved colour is "<<toBeRemoved->gotiColour<<endl;
 
 	for (auto &boxGoti : inBoxGotis)
@@ -56,7 +79,7 @@ bool ludo_box::removeGoti(std::shared_ptr<ludo_goti>& toBeRemoved){
 
 			auto loc = content.find(colourChar);
 			if( loc == static_cast<size_t>(-1) ){
-				cout<<"INVALID DEBUG -> To remove="<<toBeRemoved->get_gotiColour()<<" and found_goti="<<boxGoti->gotiColour<<" to remove from "<<toBeRemoved->getCoords().first<<", "<<toBeRemoved->getCoords().second<<" while finding "<<colourChar<<" in content = "<<content<<endl;
+				cout<<"INVALID DEBUG -> To remove="<<toBeRemoved->get_gotiColour()<<" and found_goti="<<boxGoti->gotiColour<<" to remove from "<<toBeRemoved->getCoords()<<" while finding "<<colourChar<<" in content = "<<content<<endl;
 				cin.get();
 				// return false;
 			}
@@ -87,33 +110,27 @@ bool ludo_box::removeGoti(std::shared_ptr<ludo_goti>& toBeRemoved){
 	return false; //Couldn't remove
 }
 
-short ludo_box::appendGoti(std::shared_ptr<ludo_goti> goti_to_add){
+short ludo_box::appendGoti(std::shared_ptr<ludo_goti> goti_to_add, bool onlyRequiresWillItAttack){
+	colours gotiColour = goti_to_add->get_gotiColour();
+	auto colourChar = getColourChar(goti_to_add->gotiColour);
+
+	if( onlyRequiresWillItAttack == true ){	//! Used by thinker, to know whether attack happens or not, without actually altering the board
+		 if( areOpponentsPresent(gotiColour) && box_type == _boxNORMAL) return 0;
+		 else return 1;
+	}
+
 	if(goti_to_add->getCoords() == make_pair(0,0)) return -1;
-	cout<<"\n[DEBUG] Append START of "<<goti_to_add->get_gotiColour()<<" to "<<coords.first<<", "<<coords.second<<". And box isempty "<<boolalpha<<isEmpty()<<endl;
-	char colourChar;
-	colourChar = (goti_to_add->gotiColour == ColourLAAL) ? 'R' : ( (goti_to_add->gotiColour == ColourHARA) ? 'G' : ( (goti_to_add->gotiColour == ColourPEELA) ? 'Y' : ( (goti_to_add->gotiColour == ColourNEELA) ? 'B' : 'U') ) );
-	bool opponentGotiPresent = false;	//of other colour
-	for ( auto const& ch : content )
-	{
-		if( !isdigit(ch) && ch != colourChar && box_type== _boxNORMAL ){
-			opponentGotiPresent = true;
-
-			cout<<"\n\n\n\n\n\\nAt "<<coords.first<<", "<<coords.second<<" : "<<colourChar<<" has opponent "<<ch<<" AND content = "<<content<<"\n\n\n\n\n"<<endl;	//DEBUG
-
-			break;
-		}
-	}	
-
+	
+	cout<<"\n[DEBUG] Append START of "<<goti_to_add->get_gotiColour()<<" to "<<coords<<". And box isempty "<<boolalpha<<isEmpty()<<endl;
 	if( box_type == _boxSTOP && isEmpty() )	content = colourChar;
 	else content.push_back(colourChar);
 	sanitizeContent();
 
-	colours gotiColour = goti_to_add->get_gotiColour();
 	goti_to_add->curr_coords = coords;
 	inBoxGotis.push_back( goti_to_add );
 	++numGotis[gotiColour];
 
-	if( opponentGotiPresent && box_type == _boxNORMAL ) return 0;
+	if( areOpponentsPresent(gotiColour) && box_type == _boxNORMAL ) return 0;
 
 	cout<<"\n[DEBUG] Append END"<<endl;
 	return 1;

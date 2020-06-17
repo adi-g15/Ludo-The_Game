@@ -9,6 +9,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <chrono>
 
 #ifdef __linux__
   #include<ctime> //For nanosleep()
@@ -36,6 +37,16 @@
 									 	 customUtil::_resetColouredOutput();
 /*xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/
 
+// template<typename T1, typename T2>	//LINKER_ERROR - When this fuinction is uncommented, and When utilities.hpp included in ludo_box.cpp, and game.cpp, then 'multiple defintion errors show up for the mebmbers of the customUtil namespace (Wait...WHAT? WHY?... I dont know now)'
+// static inline std::ostream& operator<<(std::ostream& out, const std::pair<T1,T2>& p){
+// 	return out<<'('<<p.first<<", "<<p.second<<')';
+// }
+
+// inline std::ostream& operator<<(std::ostream& out, const std::pair<int,int>& p){
+// 	return out<<'('<<p.first<<", "<<p.second<<')';
+// }
+
+
 //  FUNCTIONS START//
 namespace customUtil
 {
@@ -49,6 +60,17 @@ namespace customUtil
 
       RESET
     };
+
+    struct Timer{
+	    private:
+	    	std::chrono::time_point<std::chrono::_V2::system_clock, std::chrono::duration<long, std::ratio<1, 1000000000>>> start, end;
+	    public:
+	    	Timer();
+	    	~Timer();
+    };
+
+    //! NOTE - The bool values are generally for debugging purposes, and may/may not have been ignored in code
+    std::pair<int,int> getTerminalDimen();
 
     static std::map<colours, std::string> terminalColourMapping({
       { RED, "[0;31m" },
@@ -75,7 +97,9 @@ namespace customUtil
     std::string stripOff(std::string, char toRemove); /*Returns a string without the passed character*/
 	  std::string intTostring(int num);
     inline void pause(float sec);
-    bool is_Sum_Permutation(unsigned short num, std::vector<unsigned short> Vec);  //Self Algo...
+    /*@brief Returns true if `num` can be written as a sum of some arbitrary elements of the vector v; Else returns false*/
+    bool isSum(unsigned int num, const std::vector<unsigned short> &v);
+    std::vector<unsigned short> isSumOfElements(unsigned int num, const std::vector<unsigned short> &v);
     void printcoloured(char, colours colourName, bool isBold = false);
     void printcoloured(std::string, colours colourName, bool isBold = false);
     void _colouredOutput(colours colourName, bool isBold = false);
@@ -261,24 +285,37 @@ void customUtil::_resetColouredOutput(){
   printf("\033%s",terminalColourMapping[RESET].c_str());
 }
 
-bool is_Sum_Permutation(unsigned short num, std::vector<unsigned short> Vec){ //BUG - It seems all recursive calls have num=9, how??
-  if(num == 0) return true;
-  else if(Vec.empty()) return false;
+bool customUtil::isSum(unsigned int num, const std::vector<unsigned short> &v){
+    unsigned int sum = 0;
+    auto total = 1<<v.size();
 
-  std::sort(Vec.begin(), Vec.end());
-  for (auto i = Vec.begin(); i < Vec.end(); i++)
-  {
-    if( *i > num){
-      Vec.erase(i, Vec.end());
-      break;
+    for (int i = 0; i < total; ++i)
+    {
+        sum=0;
+        for(size_t j=0; j<v.size(); ++j){
+            if( i & 1<<j ){ //Cheching if the jth bit is set
+                sum += v[j];
+            }
+        }
+        if( num == sum ) return true;
     }
-  }
+    return false;
+}
 
-  auto j = Vec.begin();
-  while ( j<Vec.end() ){
-    Vec.erase(j);
-    if( is_Sum_Permutation(num, Vec) || is_Sum_Permutation(num-(*j), Vec)) return true;
-    ++j;
-  }
-  return false;
+std::vector<unsigned short> customUtil::isSumOfElements(unsigned int num, const std::vector<unsigned short> &v){
+    unsigned int sum = 0; auto total = 1<<v.size();
+    std::vector<unsigned short> elements;
+
+    for (int i = 0; i < total; ++i)
+    {
+        for(size_t j=0; j<v.size(); ++j){
+            if( i & 1<<j ){ //Cheching if the jth bit is set
+                elements.push_back(v[j]);
+                sum += v[j];
+            }
+        }
+        if( num == sum ) return elements;
+        sum=0; elements.clear();
+    }
+    return {};
 }
