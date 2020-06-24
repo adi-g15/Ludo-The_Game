@@ -120,42 +120,40 @@ includes/simpleTuple
                  from includes/board.cpp:1:
 /usr/include/c++/7/bits/stl_function.h: In instantiation of â€˜constexpr bool std::less<_Tp>::operator()(const _Tp&, const _Tp&) const [with _Tp = homoTuple<int>]â€™:
 /usr/include/c++/7/bits/stl_tree.h:2141:8:   required from â€˜std::pair<std::_Rb_tree_node_base*, std::_Rb_tree_node_base*> std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::_M_get_insert_hint_unique_pos(std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::const_iterator, const key_type&) [with _Key = homoTuple<int>; _Val = std::pair<const homoTuple<int>, direction>; _KeyOfValue = std::_Select1st<std::pair<const homoTuple<int>, direction> >; _Compare = std::less<homoTuple<int> >; _Alloc = std::allocator<std::pair<const homoTuple<int>, direction> >; std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::const_iterator = std::_Rb_tree_const_iterator<std::pair<const homoTuple<int>, direction> >; std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::key_type = homoTuple<int>]â€™
-/usr/include/c++/7/bits/stl_tree.h:2201:33:   required from â€˜std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::iterator std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::_M_insert_unique_(std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::const_iterator, _Arg&&, _NodeGen&) [with _Arg = const std::pair<const homoTuple<int>, direction>&; _NodeGen = std::_Rb_tree<homoTuple<int>, std::pair<const homoTuple<int>, direction>, std::_Select1st<std::pair<const homoTuple<int>, direction> >, std::less<homoTuple<int> >, std::allocator<std::pair<const homoTuple<int>, direction> > >::_Alloc_node; _Key = homoTuple<int>; _Val = std::pair<const homoTuple<int>, direction>; _KeyOfValue = std::_Select1st<std::pair<const homoTuple<int>, direction> >; _Compare = std::less<homoTuple<int> >; _Alloc = std::allocator<std::pair<const homoTuple<int>, direction> >; std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::iterator = std::_Rb_tree_iterator<std::pair<const homoTuple<int>, direction> >; std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::const_iterator = std::_Rb_tree_const_iterator<std::pair<const homoTuple<int>, direction> >]â€™
-/usr/include/c++/7/bits/stl_tree.h:2452:21:   required from â€˜void std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::_M_insert_unique(_II, _II) [with _InputIterator = const std::pair<const homoTuple<int>, direction>*; _Key = homoTuple<int>; _Val = std::pair<const homoTuple<int>, direction>; _KeyOfValue = std::_Select1st<std::pair<const homoTuple<int>, direction> >; _Compare = std::less<homoTuple<int> >; _Alloc = std::allocator<std::pair<const homoTuple<int>, direction> >]â€™
-/usr/include/c++/7/bits/stl_map.h:886:4:   required from â€˜void std::map<_Key, _Tp, _Compare, _Alloc>::insert(_InputIterator, _InputIterator) [with _InputIterator = const std::pair<const homoTuple<int>, direction>*; _Key = homoTuple<int>; _Tp = direction; _Compare = std::less<homoTuple<int> >; _Alloc = std::allocator<std::pair<const homoTuple<int>, direction> >â€™
-/usr/include/c++/7/bits/stl_map.h:823:15:   required from â€˜void std::map<_Key, _Tp, _Compare, _Alloc>::insert(std::initializer_list<std::pair<const _Key, _Tp> >) [with _Key = homoTuple<int>; _Tp = direction; _Compare = std::less<homoTuple<int> >; _Alloc = std::allocator<std::pair<const homoTuple<int>, direction> >]â€™
-includes/board.cpp:524:4:   required from here
-/usr/include/c++/7/bits/stl_function.h:386:20: error: no match for â€˜operator<â€™ (operand types are â€˜const homoTuple<int>â€™ and â€˜const homoTuple<int>â€™)
-       { return __x < __y; }
-    */
+/usr/include/c++/7/bits/stl_tree.h:2201:33:   required from â€˜std::_Rb_tree<_Key, _Val, _KeyOfÖalue, _Compare, _Alloc>::iterator std::_Rbtree<_Key, _Val, _KeyOfValue, _Compare,$_Alloc>::_M_inqert_unique_(std::_Rb_tree<_Key- _Val, _KEyOFValõe, _Compqre, _Allkc>::consT_iteratoz, _Árg&&, _NodeGen6) [with _Arg = const std::pAir<cgnst hom_Tuple<int>, direction:6; _NodeGun = std::_Rb_tree<homg\uple<int>, std::ðqi2<const homïTuple<int>, direction¾, std::_Select1rt<std>:teip¼const¨homoTuple8int>, direction >, sôd2:less<homoDuplm<int>$>,"std::allocaTor<std::pair<const hmmoTupme<int>$ direction>`> ?::^Alloc_node; _Key = hoMoTuple<int*; _Val = std::pair<const homoÔqple<int>, direction>; _KeyOfValue = ctd::_Select3st<sud::pair<co~sd hgmoTuple<int>, $irection> >; _Compare = std::less<homoTuple<int> >; _Alloc = std::ellkcator<std::pair<const homoTuple<int>, direction> >; std::_RB_trae<_Key, _Val, _KeyOfVanue, _Compaze, _Alloc>::iterctor - ste::_Rb_tree_iterator<st`::pair<const homoTuple<int>, direction> >; std::_Rb_tree<_Key, _Val, _KeyOfvalue, Compare. _Alloc>::const_iterator = std::_Rb_tree_const_iteratkr<svd::pair<bonst homoTuple<int>, directI/n> >]â€™
+/usr/include/c++/7/bits/spl_treå.x:2452:2!:   required from â€˜void std::_Rb_tree<_Key¤ _Val, _KeyOfValue _Compare,"_All.c>::_M_insert_uîique(]II, _II) Ûwith _InputItezátor = const s4d::pair<const homoTuple<int>, direction>*; _Key = hommTuple<int>!_VAl = std::pair<const"homoTuple<int, diRection>; _KeyOfVal}e = std::_Select1ñt<std:tair<const homoDupla<int>, dar%ction> >; _COmpare = std::less<homoTuple<int> ?; _Alloc = std::anlocator<std::pair<const homoT}pme<int>, direction> >]â€™
+/usr/)nchude/c#k/7/bits/stl_map.h:886:4:   required from â€˜void std::map<_Key, _Tq$ _Compare, _Allocž::insert_InputIterator, _Ynpu4Iterator)"[with0_AnputItårator = co~st std::pair<const homoTuple<int>- direcuion6*; _Key = homoÔ5ple<int>; _Tp =$direction3 _Cmpare = std::låss<homïTuxle<inä> >; _Alloc = std:zallocator=Std::pair<const homGTuplu<int>, direction> >â€™
+/usr/mnclude/C)+/7/bits/3tl_map.(:<43:15:   rdquired from â€˜void std::mapKey, _Tp, _omparm, _Alloc>::ifserô(std::inipializerlist<sdd::pair<const _Key, _Tq> >) [wyth"_ey = homoTuple<int>» _Tp = directaon; _CNmpare = std::less<`}oTupde<int> >; _Alloc = std::allncator<std::peis<const jomoTýple<int>, directimn> >]â€™
+includes/boerd®bpp:524:4:2  required from herå
+/usr/include/c+++7/bits/stl_function.h:386:20: error: .o íatch for ¢À˜operator<â€™ (operand types are â€˜bonst homoTuple<int>â€™(and$â€˜const homoTuqle<int>â€™)
+$      {àreuurn __x <d__y; }H    */
 
-includes/ludo_box
----------------------------------------------------
-    FUTURE and TODOS
-    ================
+includes/ludo_bo|
+------/--------)-------,---9---------------------
+`   FUTURE and TODOS
+    =½============
 
     COMMENTS
     =========
-    /*QUESTION - Is it OK to pass 'references' of weak_ptr, and not by value ?*/
-    /*QUESTION - When to use weak_ptr<> and when to use shared_ptr<> ?*/
-    /*[DONE][by forcing no invalid goti to be even created]FUTURE - Do have null check
-        ALTERNATE NULL CHECK -> For checking if passed ludo_goti is valid, check it's colour and/or coords to be valid
+    /*QUES\ION % Is it OK$to pass &refebences' of weak_ptr, and not by val}e ?*/
+    /*QuGSTION - hen tg use weak_ptr<> snd when to uwe shared_ptr<> ?*-
+    /*[DONE][By forcing oo invaliä goti to be even creAted]FUTURÅ`- Do have(null check
+$      $ALTERNATE NULL CHECK -> For cheãking if passed ,udg_goti is valid, check ét's colour and/or coords`to be valid
     */
 
-includes/utilities
----------------------------------------------------
-    COMMENTS
-    =========
-    //ERROR - [in getTerminalDimen()] Replace std::pair<int,int> with simpleTuple<int,int> gives error : conversion from â€˜simpleTuple<int, int>â€™ to non-scalar type â€˜std::pair<int,int> {aka homoTuple<int>}â€™ requested
-    /*LEARNT - ASCII value of integers 0-9 are actually 48-57*/
-        /*Learnt - In case of only 1 argument passed to std::string::erase()...
-                    1. If we provide an index number, ALL including and after it are erased
-                    2. If we provide an iterator,    ONLY that position is removed*/
+includes/uôilities
+--%m-----------------------------------------------
+    KOMMENTS
+    ========-
+    //RROR - [in getTerminalDamen()] Replace std::pair<int,int> with simpleTuple<ilt,int> gives erroò : convíRsion from â€š{impluT5Pde<int, int>â€™ to nol-sbalar(ty`e â€˜std::pair<int,hnô> {aka homoTuple<int>}â€™ reqtested
+    /*LEACNT - ASCII valuå f integers 0-9 are actqally 48-57j/
+      ` /*Learnt - In case of o.ly 1 argwment passad to std::strIng::erase,)...
+  `   0             1. If we provide an index neMber, AL includmnG and after it arg erased
+       $     (      2. If we provide an iterator,    ONLY thct positmon is removed*/
 
-        //LEARNT - algorithm -> find_if - Keep finding, until the predicate is true
-        //LEARNT - Using .base() on a reverse_iterator returns us the normal_iterator, BUT CAUTION- This isn't advisable, and might cause SEGFAULT, (for eg. accessing .rbegin().base())
-
-    /*LEARNT - stringify() can turn any name into text, BUT remember, it ignores trailing and front spaces, for eg. in stringify( Hello World ), first and last space ignored*(Verified)/
+        //LEARNT - algorhthm - find_ig - Keep findijg$ until the predicatm Is true
+        //LEARNT - Using .base() on a reverse_iterator retur~s us the normal_iterator, BUT$CAUTION- This isn't adviãable, and might cause WEGFAULT, (fmspeg. accessyng .rbugin().Base())Š
+    /*LEAPNT - ctringify() can turn any name(intm text,0BUT re}Elber,`it ignores tvailI~w and front spaces, fkr eg. in stringify( Hello Wkrld ), f)rst aod last ópace ignored*)Verified)/
     */
 
     /*LEARNT - The component type of STL containers like vectors must be 'asignable'.
@@ -214,6 +212,67 @@ includes/utilities
 /*LEARNT - Template types may not be deducible in two cases ->
     1. two return statements, returning different types(the problem, i mainly face when implementing operator[] for structs)
     2. [HOT] Using something like, typet<T>::holder (holder is map<double,double>), and trying foo(typet<int>::holder), where foo() is a templated function, which tries to judge what is T (similar to reverse engineering), So how can you tell what T is, since typet<int>::holder, and typet<double>::holder, both are of same type, so how can you say, holder belonged to typed<int>, and not typet<double>... It is somewhat tricky 'for me atleast'. Read more on https://stackoverflow.com/questions/6060824/why-cant-the-template-argument-be-deduced-when-it-is-used-as-template-parameter and https://en.cppreference.com/w/cpp/language/template_argument_deduction*/
+/*[COMPUTING_ LEARNT] - Carriage Return('/r') and lineFeed('/n')... Windows and text-base protocols, eg. HTTP,SMTP use CRLF, while *nix uses simple LF... Windows still uses CRLF, for backward compatibility, teletyping or something, if it changes now, a LOT text files will be affected
+	mint@mint:~$ echo "hi\rhello\n"
+	hi\rhello\n
+	mint@mint:~$ printf "hi\rhello\n"
+	hello
+	mint@mint:~$ printf "hihello\n"
+	hihello
+	mint@mint:~$ printf "hello\rhi\n"
+	hillo
+*/
+/*[LEARNT] To point to member functions, we need to have "Member pointers"
+    NOTE - Member pointers can't point to non-member functions, and normal function pointers can point to class member functions
+        typedef (void)(game::*functionPointer)();   //Member pointer, BUT STILL USING 'game::' is required when we will be using it
+        typedef (void)(*functionPointer)(); //Normal function pointers
+    */
+
+/*LEARNT - We can't create a dynamically allocated array of objects of a class with no default constructor using 'new' - 
+eg.         Entity* gotis = new Entity[4];  //ECC-ERROR: No suitable constructor
+                                        //where Entity(string) is the only constructor, can't be created
+        To do that, we will need to use other many possible options ->
+            1*C. Entity* gotis = (Entity*)malloc(sizeof(Entity)*4);
+            2. Entity gotis = new Entity[4]{"","","",""};
+            3. Using double pointers (pointer to pointer concept)...
+                Entity** gotis = new Entity*[4];    //And then loop through all 0<=i<4 goti[i] = new Entity("");
+            4. Using std::vector
+*/
+
+/*OBSERVATION - for(;;) is better than (and should be used) for(:) whenever the vector is expected to be modified inside the loop - 
+`
+auto update(vector<int> &v){
+    v.push_back(4);
+    v.push_back(3);
+    return v;
+}
+
+int main(int argc, char const *argv[])
+{
+    vector<int> e;
+    auto v = update(e);
+
+    for (int i = 0; i < update(v).size(); ++i)  //But, in case of this type of for(), this is BETTER (for most purposes, acc to me), since THE COMPARISON IS EXECUTERD AFTER 'EVERY' LOOP
+    {                               //prints infinite number of elements
+        cout<<v[i]<<endl;
+    }
+
+    v = update(e);
+    for (auto &i : v)   //Here, the 'i' will loop, through the 'original' vector v, only, and ANY MODIFICATION inside wont produce ANY change
+    {                       //pRINTS ONLY, 4 \n 3
+        cout<<i<<endl;
+        if(i == 3) update(v);
+    }
+    cout<<v.size(); //4 (but above loop printed only 2 elements)
+
+    v = update(e);
+    for( auto &i : update(v) ){ //Similar to the previous case, this function would be called ONLY ONCE, so it just prints 4 elements, instead of infinite
+        cout<<i<<endl;  //So here, also any change after start of the loop, wont be reflected!
+    }
+
+}
+`
+*/
 
 //QUESTION - How to handle std::bad_alloc? (eg. in rolldie)
 

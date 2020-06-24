@@ -3,14 +3,16 @@
 #include<functional>
 #include "enumerations.hpp"
 
+typedef std::pair<int, int> coordinate;
+
 class ludo_goti{
-protected:
-	colours gotiColour;
+private:
+	const colours gotiColour;
 	direction curr_direction;
-	std::pair<int,int> curr_coords;
+	coordinate curr_coords;
 
 public:
-	const std::pair<int,int> getCoords() const;
+	coordinate getCoords() const;
     direction get_curr_direction() const;
     colours get_gotiColour(void) const;
 

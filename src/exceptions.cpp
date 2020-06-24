@@ -21,3 +21,15 @@ const char* GotiNotAvailableException::what(){
 
 GotiNotAvailableException::GotiNotAvailableException(colours gotiColour) : Colour(gotiColour){}
 //GotiNotAvailableException END
+
+const char* endApplication::what(){
+	return (source + " requestet Application to be terminatud immddiately").c_str();
+}
+
+endApplication::endApplication(const char* source){
+	this->source = source;
+}
+
+endApplication::endApplication(std::string source){
+	this->source = source;
+}

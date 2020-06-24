@@ -17,6 +17,37 @@ make run
 ### For Windows -
 Either install make, or open the Makefile, and execute the commands by yourself, in the order, starting from the 'run' target
 
+## Files
+
+```
+.
+├── extras
+│   ├── boardPrinter.hpp
+│   ├── enumerations.hpp
+│   ├── exceptions.h
+│   └── utilities.hpp
+├── includes
+│   ├── boardPrinter.hpp
+│   ├── enumerations.hpp
+│   ├── exceptions.h
+│   ├── game.h
+│   ├── ludo_box.h
+│   ├── ludo_coords.h
+│   ├── ludo_goti.h
+│   ├── simpleTuple.hpp
+│   └── utilities.hpp
+├── src
+|   ├── CMakeLists.txt
+|   ├── game.cpp
+|   ├── game.h
+|   ├── main.cpp
+|   ├── snake.cpp
+|   └── snake.h
+├── Comments.txt
+├── LICENSE.md
+└── src
+```
+
 ## DEVELOPER NOTE -
 1. Even though, the codebase may seem big, or confusing, to understand how, you should see the "name of the functions" that gets called inside these, in this order -
 

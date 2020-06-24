@@ -3,20 +3,22 @@
 #include<functional>
 #include "enumerations.hpp"
 
-class ludo_coords{
-private:
+typedef std::pair<int, int> coordinates;
 
-	std::map<std::pair<int,int>, direction> outer_corners;
-	std::map<std::pair<int,int>, direction> inner_turns;
-	std::map<colours, std::pair<std::pair<int,int>, direction>> home_turns;
-	std::map<colours,std::pair<int,int>> start_coords;
+class ludo_coords{
+// private:
+public:
+	std::map<coordinates, direction> outer_corners;
+	std::map<coordinates, direction> inner_turns;
+	std::map<colours, std::pair<coordinates, direction>> home_turns;
+	std::map<colours,coordinates> start_coords;
 	std::map<colours, direction> start_dir;
-	std::vector<std::pair<int,int>> stops;
+	std::vector<coordinates> stops;
 
 	friend class game;
 public:
 
 	void InitCoords(void);
-    direction turnAtCorner(const std::pair<int,int>& curr_coords, const std::map<std::pair<int,int>, direction>&) const;
+    direction turnAtCorner(const coordinates& curr_coords, const std::map<coordinates, direction>&) const;
 	ludo_coords();	
 };
