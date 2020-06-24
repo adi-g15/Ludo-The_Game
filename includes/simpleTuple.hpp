@@ -1,5 +1,7 @@
 #pragma once
 
+/*[DEPRECATED] USING std::pair INSTEAD OF THIS*/
+
 #include "exceptions.h"
 #include <functional>
 

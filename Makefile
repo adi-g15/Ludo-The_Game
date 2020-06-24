@@ -67,7 +67,7 @@ create_dynamic_lib : $(LIBS_OBJECT_FILES) $(LIBS_OBJECT_FILES)
 ##Creating Libraries END
 
 clean:
-	rm build/ libs/ -r
+	rm build/ libs/ -rvf
 
 run: build/game
 	./build/game
@@ -75,6 +75,12 @@ run: build/game
 debug: build/debug
 	gdb ./build/debug
 
-create_build_directories:
+#   'UTILITY'
+create_build_directories: 
 	mkdir build/object_files -p
 	mkdir libs -p
+
+exp: 
+	g++ experimental.cpp -o 'build/exp'
+	build/exp
+#   'UTILITY'
