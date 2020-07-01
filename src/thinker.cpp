@@ -68,12 +68,11 @@ const _moveData thinker::isMovePossible(const coordinate& coord, int dist) const
 	if( dist == 0 ) return { true, { coord, currDir,0} };
 
 	_moveData retVal;
-	int moveProfit = 0;
+	int moveProfit(0);
 
 	std::pair<int,int> increment_coord( {0,0} );
 	std::pair<int,int> updated_coords( coord );
 	auto currBox = std::cref(state->getBox(updated_coords));	// using reference wrapper to allow it to be changed to refer something else
-
 
 	/*Move Profits ->
 	    Each block +1
@@ -162,6 +161,7 @@ const _moveData thinker::isMovePossible(const coordinate& coord, int dist) const
 	retVal.isPossible = true;
 	retVal.smartData.finalCoords = updated_coords;
 	retVal.smartData.finalDirection = currDir;
+	retVal.smartData.moveProfit = moveProfit;
 
 	return retVal ;
 }
@@ -225,8 +225,8 @@ bool thinker::setBestMove(){
  	}
  
  	std::vector<coordinate> movingPos, opponentsPos;
- 	for( size_t i; i < state->board.size(); ++i ){
-	 	for( size_t j; j < state->board.at(i).size(); ++j ){
+ 	for( size_t i=0; i < state->board.size(); ++i ){
+	 	for( size_t j=0; j < state->board.at(i).size(); ++j ){
 			if( state->board[i][j].areOpponentsPresent(state->currColour) )	opponentsPos.push_back({i,j});
 		}
  	}

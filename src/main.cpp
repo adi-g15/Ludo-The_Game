@@ -8,12 +8,12 @@ static int numGamePlays = 0;
 int main(int argc, char const *argv[]) {
 
 	game newGame;
-	short playConsent = 1;
 
 	//GamePlay starts
 	
 	try{
 
+		short playConsent = 1;
 		do{
 			// for(; numGamePlays<1000; ++numGamePlays)
 {			if( !newGame.InitGame(playConsent) ){

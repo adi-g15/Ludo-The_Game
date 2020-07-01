@@ -24,7 +24,6 @@ const _moveData game::isMovePossible(std::shared_ptr<ludo_goti>& the_goti, int d
 	if( dist == 0 ) return { true, {the_goti->curr_coords,the_goti->curr_direction,0} };
 
 	_moveData retVal;
-	int moveProfit = 0;
 
 	std::pair<int,int> increment_coord( {0,0} );
 	std::pair<int,int> updated_coords( the_goti->curr_coords );
@@ -32,13 +31,6 @@ const _moveData game::isMovePossible(std::shared_ptr<ludo_goti>& the_goti, int d
 
 	direction turnDirection, currDirection = the_goti->curr_direction;
 
-	/*Move Profits ->
-	    Each block +1
-	    Home +2
-	    Stops +3
-	    Attack +4
-	    Crosses enemy -3 (ie. slightly more attacking)
-	*/	
 	while(dist--){
 
 		increment_coord = {0,0};
@@ -105,24 +97,11 @@ const _moveData game::isMovePossible(std::shared_ptr<ludo_goti>& the_goti, int d
 		updated_coords.second += increment_coord.second;
 		currBox = getBoardBox(updated_coords);
 
-		//Judging the profit START
-		moveProfit += NORMAL_MOVE;
-
-		if( currBox.get().areOpponentsPresent(the_goti->gotiColour) && dist!=0 ){
-			moveProfit += CROSSES_ENEMY;
-		}
-		//Judging the profit START
-
 		if( currBox.get().box_type == _boxHOME_END && dist!=0 ){	//! Reached finished point, but move still incomplete
 			retVal.isPossible = false;
-			moveProfit += REACH_HOME;
-
 			return retVal;
 		}
 	}
-
-	if( currBox.get().areOpponentsPresent(the_goti->gotiColour) && currBox.get().box_type == _boxNORMAL )	moveProfit += ATTACK;
-	else if( currBox.get().box_type == _boxSTOP ) moveProfit += REACH_STOP;
 
 	retVal.isPossible = true;
 	retVal.smartData.finalCoords = updated_coords;

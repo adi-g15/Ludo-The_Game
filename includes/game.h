@@ -29,7 +29,7 @@
 						 }\
 						 cout<<"\n-------------DEBUG--------------"<<endl;
 
-struct _smartMoveData{	//!To be exploited by the 'THINKING' Robots
+struct _smartMoveData{
 	std::pair<int,int> finalCoords;
 	direction finalDirection;
 	int moveProfit = 0;

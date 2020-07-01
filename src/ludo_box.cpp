@@ -92,11 +92,10 @@ string ludo_box::get_box_content() const{
 }
 
 void ludo_box::sanitizeContent(void){
-    unsigned short gotiCount = 0;
     std::array<char, 4> gotiChar = {'R', 'G', 'Y', 'B'};
 
     for( auto &i : gotiChar ){
-        gotiCount = 0;
+	    unsigned short gotiCount = 0;
         auto loc = content.find(i);
         if( loc == static_cast<size_t>(-1) ){ continue; }
         ++gotiCount; ++loc;
