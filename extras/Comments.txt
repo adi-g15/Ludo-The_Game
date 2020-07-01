@@ -147,6 +147,10 @@ includes/utilities
     COMMENTS
     =========
     //ERROR - [in getTerminalDimen()] Replace std::pair<int,int> with simpleTuple<int,int> gives error : conversion from ‘simpleTuple<int, int>’ to non-scalar type ‘std::pair<int,int> {aka homoTuple<int>}’ requested
+    /*[LEARNT] - The error "pointer to incomplete class type is not allowed", generally related to header files, when "I forward declared the class in the header, and failed to include the full header for the class"
+			AND, "An 'incomplete class' is one that is declared but not defined"
+			ALSO, If your class is defined as a typedef: "typedef struct struct{};", and then try to refer to it as 'struct myclass' anywhere else, you'll get many such errors, to solve it, remove 'class/struct' from variable declarations, ie. 'mystruct *var = value;' instead of 'struct mystruct *var=value'*/
+
     /*LEARNT - ASCII value of integers 0-9 are actually 48-57*/
         /*Learnt - In case of only 1 argument passed to std::string::erase()...
                     1. If we provide an index number, ALL including and after it are erased
@@ -184,9 +188,118 @@ includes/utilities
 //LEARNT
 . Cannot create a non-constant pointer to a member function
 . To 'fully qualify' means to pass it as "&className::functionTryingToPass"
+
+/*[LEARNT] Emulating 'destructuring' in C++, like in JS ->
+    1. From C++11 ->
+    This can be done using the std::tie() and std::ignore (if needed) accordingly, in case of std::pair and std::tuple
+        int x; bool y; double z; tuple<int,bool,double> obj;
+        std::tie( x, y, z ) = obj;
+        std::tie( std::ignore, y, std::ignore ) = obj;  //If don't want all content
+
+    2. C++17 ->
+        It is called 'Structured Bindings' - 
+        auto [x, y, z] = obj;
+        auto [n1, n2, n3] = obj;    //Will also work
+        auto [a, b] = obj;  //ERROR: only 2 names provided for structured binding, while obj decomposes to 3 */
+
+/*LEARNT - We can't use `std::pair<>` as key, in unordered_set or unordered_map, while we can use them in set, and map - 
+
+    This is bcz, the unordered_containers use a hash function. By default, std::hash is used, but it doesn't provide an specialization for std::pair, hence we have to give a 
+*/
+
+/*[LEARNT] Functors in C++ -> Classes with overloaded () operator; Also called 'function objects'
+    Speciality/Use - 1. These types of functions can have 'state' (internal data, that stays through all 'calls')
+                     2. Faster too, with optimisations by compiler, ie. a functor call can simply be replaced with a call to name::operator()(), which makes it similar to function call, while using function pointer at same place, is 'dereferenced at runtime'
+*/
+/*Learnt- str.find('c') returns npos( static_cast<size_t>(-1) )... [NOT size()]
+    On laptop, static_cast<size_t>(-1) = (size_t)(-1) = 18446744073709551615*/
+    //LEARNT - Or should i say forgotten `? :` needs both operands of right side to be of same type 
+
+/*LEARNT - Template types may not be deducible in two cases ->
+    1. two return statements, returning different types(the problem, i mainly face when implementing operator[] for structs)
+    2. [HOT] Using something like, typet<T>::holder (holder is map<double,double>), and trying foo(typet<int>::holder), where foo() is a templated function, which tries to judge what is T (similar to reverse engineering), So how can you tell what T is, since typet<int>::holder, and typet<double>::holder, both are of same type, so how can you say, holder belonged to typed<int>, and not typet<double>... It is somewhat tricky 'for me atleast'. Read more on https://stackoverflow.com/questions/6060824/why-cant-the-template-argument-be-deduced-when-it-is-used-as-template-parameter and https://en.cppreference.com/w/cpp/language/template_argument_deduction*/
+
+//QUESTION - How to handle std::bad_alloc? (eg. in rolldie)
+
+//TODO - Add 1 more python scripts, or search for such solutions - arrange the function definition in the implementation file, as the order in the header class declaration
+//TODO - Can enter enteredRoll as a sum of the elements in dieNumbers
+//TODO - Remove 'if else break' or 'if break' conditions by a while loop, and if need be, then replace the for range to iterators declaration, then while
+//TO KnOW -> Overloading std::cout to print std::pair
+
+/*[COMPUTING_ LEARNT] - Carriage Return('/r') and lineFeed('/n')... Windows and text-base protocols, eg. HTTP,SMTP use CRLF, while *nix uses simple LF... Windows still uses CRLF, for backward compatibility, teletyping or something, if it changes now, a LOT text files will be affected
+	mint@mint:~$ echo "hi\rhello\n"
+	hi\rhello\n
+	mint@mint:~$ printf "hi\rhello\n"
+	hello
+	mint@mint:~$ printf "hihello\n"
+	hihello
+	mint@mint:~$ printf "hello\rhi\n"
+	hillo
+*/
+/*[LEARNT] To point to member functions, we need to have "Member pointers"
+    NOTE - Member pointers can't point to non-member functions, and normal function pointers can point to class member functions
+        typedef (void)(game::*functionPointer)();   //Member pointer, BUT STILL USING 'game::' is required when we will be using it
+        typedef (void)(*functionPointer)(); //Normal function pointers
+    */
+
+/*LEARNT - We can't create a dynamically allocated array of objects of a class with no default constructor using 'new' - 
+eg.         Entity* gotis = new Entity[4];  //ECC-ERROR: No suitable constructor
+                                        //where Entity(string) is the only constructor, can't be created
+        To do that, we will need to use other many possible options ->
+            1*C. Entity* gotis = (Entity*)malloc(sizeof(Entity)*4);
+            2. Entity gotis = new Entity[4]{"","","",""};
+            3. Using double pointers (pointer to pointer concept)...
+                Entity** gotis = new Entity*[4];    //And then loop through all 0<=i<4 goti[i] = new Entity("");
+            4. Using std::vector
+*/
+
+/*OBSERVATION - for(;;) is better than (and should be used) for(:) whenever the vector is expected to be modified inside the loop - 
+`
+auto update(vector<int> &v){
+    v.push_back(4);
+    v.push_back(3);
+    return v;
+}
+
+int main(int argc, char const *argv[])
+{
+    vector<int> e;
+    auto v = update(e);
+
+    for (int i = 0; i < update(v).size(); ++i)  //But, in case of this type of for(), this is BETTER (for most purposes, acc to me), since THE COMPARISON IS EXECUTERD AFTER 'EVERY' LOOP
+    {                               //prints infinite number of elements
+        cout<<v[i]<<endl;
+    }
+
+    v = update(e);
+    for (auto &i : v)   //Here, the 'i' will loop, through the 'original' vector v, only, and ANY MODIFICATION inside wont produce ANY change
+    {                       //pRINTS ONLY, 4 \n 3
+        cout<<i<<endl;
+        if(i == 3) update(v);
+    }
+    cout<<v.size(); //4 (but above loop printed only 2 elements)
+
+    v = update(e);
+    for( auto &i : update(v) ){ //Similar to the previous case, this function would be called ONLY ONCE, so it just prints 4 elements, instead of infinite
+        cout<<i<<endl;  //So here, also any change after start of the loop, wont be reflected!
+    }
+
+}
+`
+*/
+
+//QUESTION - How to handle std::bad_alloc? (eg. in rolldie)
+
+//TODO - Add 1 more python scripts, or search for such solutions - arrange the function definition in the implementation file, as the order in the header class declaration
+//TODO - Can enter enteredRoll as a sum of the elements in dieNumbers
+//TODO - Remove 'if else break' or 'if break' conditions by a while loop, and if need be, then replace the for range to iterators declaration, then while
+//TO KnOW -> Overloading std::cout to print std::pair
 ///////////////////////////////////////////////////////
 Including a namespace twice, gives 'Multiple Defintions' linker error, to solve this the methods may be made 'static'
 
+
+///////////////////////////////////////////////////////
+Including a namespace twice, gives 'Multiple Defintions' linker error, to solve this the methods may be made 'static'
 
 ///////////////////////////////////////////////////////
 Just a note for self to recall the learning experience - 

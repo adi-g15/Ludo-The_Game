@@ -1,35 +1,52 @@
 #pragma once
 
-#include "ludo_coords.h"
-#include "ludo_box.h"
 #include <unordered_map>
-#include <unordered_set>
+#include <set>
 #include <functional>
-#include <random>
 
-#define DEBUG_PRINTBOARD cout<<"------------DEBUG-------------";\
+#include "die.hpp"
+#include "ludo_state.h"
+#include "ludo_box.h"
+#include "exceptions.h"
+
+#define DEBUG_PRINTBOARD cout<<"\n-------------DEBUG--------------";\
 							for(auto &i : board) {\
 							std::cout<<"\n|";\
 							for(auto &j : i) {\
-								std::cout<<j.get_box_content()<<' ';\
+								std::cout<<(j.inBoxGotis.empty() ? "  " : (j.content+" ") );\
 							}\
 							std::cout<<'|';\
 						 }\
-						 cout<<"\n------------DEBUG-------------\n";
+						 cout<<"\n-------------DEBUG--------------"<<endl;
 
+#define DEBUG_NUMERICALBOARD cout<<"\n-------------DEBUG--------------";\
+							for(auto &i : board) {\
+							std::cout<<"\n|";\
+							for(auto &j : i) {\
+								std::cout<<(j.inBoxGotis.size() == 0 ? ' ' : static_cast<char>(48 + j.inBoxGotis.size()) ) <<' '; \
+							}\
+							std::cout<<'|';\
+						 }\
+						 cout<<"\n-------------DEBUG--------------"<<endl;
 
-namespace Die{
-	//! Using 4 different generators as well as sequences, one for each player
-	static std::random_device dev_engine;
-	static std::array<std::mt19937, 4> mt = { std::mt19937(dev_engine()),std::mt19937(dev_engine()),std::mt19937(dev_engine()),std::mt19937(dev_engine()) };
-	static std::array<std::uniform_int_distribution<int>, 4> dist = { std::uniform_int_distribution<int>(1,6), std::uniform_int_distribution<int>(1,6), std::uniform_int_distribution<int>(1,6), std::uniform_int_distribution<int>(1,6) };	//uniform distribution from [1,6]
-}
+struct _smartMoveData{
+	std::pair<int,int> finalCoords;
+	direction finalDirection;
+	int moveProfit = 0;
+};
+
+struct _moveData{
+	bool isPossible = false;
+	_smartMoveData smartData;
+};
+
+class ludo_state;
 
 class game{
 private:
-	typedef void (*functionPointer)();
+	typedef void (game::*functionPointer)(void);
 
-	std::array<std::array<ludo_box,15>,15> board;
+	std::vector<std::vector<ludo_box>> board;
 	std::map<colours, std::vector<std::reference_wrapper<ludo_box>>> lockedPositions;
 	std::map<colours, std::vector<std::shared_ptr<ludo_goti>>> movingGotis;
 	std::map<colours, unsigned short> numfinishedGotis;
@@ -37,22 +54,28 @@ private:
 	/*@brief 1st in this order is the one at bottom left, and next ones anti-clockwise to this*/
 	std::array<colours,4> colourOrder;
 
-	//!IMP_NOTE - These have been used in many member functions, instead of exchanging between them, this also ensures that they all are in sync, for eg. updateDisplay(), unlockGoti()
 	player currentPlayer;
 	colours currentGotiColour;
-	int number_of_GameRuns;
-	int min_boxlen;
-	int goti_per_user;
+	unsigned int number_of_GameRuns;
+	unsigned int goti_per_user;
 
 	ludo_coords _ludo_coords;	//! An object to make the ludo_coords available to us
 
-	bool unlockGoti();
-	bool add_to_lockedGoti(std::shared_ptr<ludo_goti>);
-	void takeIntro();	//! Initializes the PlayerMap
+	inline bool gameisFinished(void);
+	inline bool isPlayerPlaying(player);
+	unsigned short getNumLockedGotis(colours);
+	/*  @brief Simply moves a goti of same colour from the locked goti positions,
+			   and move the goti to movingGotis, and the std::make_shared to starting box
+		@returns bool indicating whether enough locked gotis were available*/
+	bool unlockGoti(void);
+	bool lockGoti(std::shared_ptr<ludo_goti>);
+	void takeIntro(void);	//! Initializes the PlayerMap
+	void endGame() const;	//Only for use by shortcutsMap, and DEBUGGING purpose
+	void endGame(std::string cause) const;
 
 public:	
-	std::unordered_map<std::string, void(*)(std::string)> shortcutsMap;
-	// std::unordered_map<std::string, functionPointer> shortcutsMap;
+	// std::unordered_map<std::string, void(*)(std::string)> shortcutsMap;
+	std::unordered_map<std::string, functionPointer> shortcutsMap;
 	// functionPointer arr[10]; //Learnt - Array of 10 function pointers to functions taking nothing, and returning void
 
 	std::map<colours, player> coloursMap;
@@ -64,35 +87,46 @@ public:
 						2. colour GotiColour
 
 */
-	std::map<player, std::pair< std::string, colours >> activePlayerMap;
 
-	short moveGoti(std::shared_ptr<ludo_goti>, unsigned int);
+	std::map<player, std::pair< std::string, colours >> activePlayerMap;
+	std::map<player, RobotKind> robotPlayers;
+
+	inline short moveGoti(std::shared_ptr<ludo_goti>, unsigned int dist);
+	inline short moveGoti(std::shared_ptr<ludo_goti>, _moveData moveData);
+	short moveGoti(std::shared_ptr<ludo_goti>, _smartMoveData moveData);	//Moves goti to ENDPOINT 'DIRECTLY' (basic checks only)
+	bool handleMoveVal( short, std::vector<unsigned short> &dieNumbers, bool isRobot = true);	//Handles value returned by moveGoti() calls
+
+	const _moveData isMovePossible(std::shared_ptr<ludo_goti>&, int dist);	//! Can use std::variant too
+																	//The first is goti_index, and 2nd is tried roll
+	bool autoMove();	//! The 'simple' function that will 'simply' call the private recursive overload
 
 	/* @brief Simply removes the 1st goti, if attack request found valid
-	   @returns bool indicating, if he gets an extra die roll
-	   NOTE- IT's called by moveGoti if it founds the coordinates are same for two gotis of different colours
+	   **IMPORTANT_NOTE - For simplicity, an empty vector passed for coloursToRemove will be considered as 'Remove all except this gotiColour'
+	   FUTURE - If have used a vector of colours, in favor of future scope of support of FRIEND GOTIS
 	*/
-	bool attack(std::shared_ptr<ludo_goti> to_be_removed, std::weak_ptr<ludo_goti>& attacker, const std::pair<int,int>& coords);
+	void attack(std::vector<colours> coloursToRemove, std::shared_ptr<ludo_goti> attacker);
 
-	/*  @brief Simply moves a goti of same colour from the locked goti positions,
-			   and std::move the goti to movingGotis, and the std::make_shared to starting box
-		@returns bool indicating whether enough locked gotis were available*/
-	bool isPlayerPlaying(player);
-	int rolldie(player);
-	void updateDisplay();
-	unsigned short getNumGotis(colours);
-	std::pair<int,int> getEmptyLocks(colours);
+	void updateDisplay(void);
+		/*NOTE - getEmptyLocks(...) == {0,0} is a good test for 'ZERO LOCKED POSITIONS'*/
+	std::pair<int,int> getEmptyLocks(colours) const;
 
-	//!Bool return values are usually for debugging purposes
+	//! bool return values, used here, are usually for debugging purposes
 	bool InitGame(short = 1);	//! Starts/Resets the game
 	void play(bool = true);
-	void settingsMenu(const std::string& source);
-	void notYetImplementedScr();
-	ludo_box& getBoardBox(const std::pair<int,int>& coords);
+	void settingsMenu();
+	void notYetImplementedScr(void) const;
+	inline ludo_box& getBoardBox(const std::pair<int,int>& coords);
+
+	//Current State Validation Methods
+	inline bool isValid(const std::pair<int,int>& coords) const;
+	inline bool isValid(const std::shared_ptr<ludo_goti>&) const;
 
 	game();
 	~game();
 
 	friend class _BoardPrinter;
+	friend class ludo_state;
+	friend class ludo_state;
+	friend class thinker;
 
 };

@@ -3,7 +3,7 @@
 #include<iostream>
 #include "ludo_coords.h"
 
-const std::pair<int,int> ludo_goti::getCoords() const{
+coordinate ludo_goti::getCoords() const{
     if(curr_coords.first == 0 && curr_coords.second == 0){
         std::cerr<<"Coordinates of Goti are corrupt (0,0)\n"<<std::endl;
     }
@@ -22,8 +22,7 @@ bool ludo_goti::operator==(const ludo_goti& goti){
     return (this->curr_coords == goti.curr_coords) && (this->gotiColour == goti.gotiColour);
 }
 
-ludo_goti::ludo_goti(colours gotiColour,const std::pair<int,int>& coords, direction dir) : curr_coords(coords) {
-    this->gotiColour = gotiColour;
+ludo_goti::ludo_goti(colours gotiColour,const coordinate& coords, direction dir) : gotiColour(gotiColour), curr_coords(coords) {
     this->curr_direction = NO_TURN;
     this->curr_direction = dir;
 }

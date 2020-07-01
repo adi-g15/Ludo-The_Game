@@ -20,4 +20,5 @@ script:
   - export CXX=/usr/bin/g++-7
   # This is for debug purposes only
   - gcc -v && g++ -v
+  - cmake .
   - make
