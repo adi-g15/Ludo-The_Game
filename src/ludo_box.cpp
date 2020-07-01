@@ -1,71 +1,60 @@
-#include "ludo_box.h"  
+#include "ludo_box.h"
 
-#include<iostream>
 #include "exceptions.h"
+#include "keywords.hpp"
+#include<iostream>
 #include<utility>	//ONLY for creating a temp pair, in appendGoti()
 #include<algorithm>
 
 using namespace std;
 
-ludo_box::ludo_box() : numGotis({
-		{ ColourLAAL, 0},
-		{ ColourHARA, 0},
-		{ ColourPEELA, 0},
-		{ ColourNEELA, 0}
-	})
-{
-	box_type = _boxNORMAL;
+template<typename T1, typename T2>	//Utility function
+static inline std::ostream& operator<<(std::ostream& out, const std::pair<T1,T2>& p){
+	return out<<'('<<p.first<<", "<<p.second<<')';
 }
 
-std::weak_ptr<ludo_goti> ludo_box::getGoti(colours gotiColour){
-	for (auto &&i : inBoxGotis)
-	{
-		if(i->get_gotiColour() == gotiColour){
-			return i;
-		}
-	}		
+ludo_box::ludo_box(const coordinate& coord, BOX_TYPE type) : coords(coord), box_type(type){}
 
-	throw GotiNotAvailableException(gotiColour);
+bool ludo_box::areOpponentsPresent(colours colour) const{
+	auto colourChar = colourCodes.at(colour);
+
+	for ( auto const& ch : content )
+	{
+		if( !isdigit(ch) && ch != colourChar && box_type== _boxNORMAL ){
+			return true;
+		}
+	}
+	return false;
 }
 
 bool ludo_box::removeGoti(std::shared_ptr<ludo_goti>& toBeRemoved){
+	auto colourChar = colourCodes.at(toBeRemoved->gotiColour); //! Setting gotiColour
+
 	for (auto &boxGoti : inBoxGotis)
 	{
 		//!Removing goti from the dataStructures is done by the next 3lines in the if block
 		if( boxGoti == toBeRemoved ){
-			// toBeRemoved->curr_direction = NO_TURN;	//NOTE - These will be reset by game::lockGoti()
-			// toBeRemoved->curr_coords = { 0,0 };
-			
-			--numGotis[toBeRemoved->gotiColour];
+					
+				//Logically Removing the goti now
 			inBoxGotis.erase(std::find_if(inBoxGotis.begin(), inBoxGotis.end(), [&](shared_ptr<ludo_goti>& compare_goti){
 				return compare_goti == toBeRemoved;
 			}));
-			
-			//! Removing the goti from display(content)
-			char colourChar = 'U'; //Undefined Colour
-			if(toBeRemoved->gotiColour == ColourLAAL){
-				colourChar = 'R';
-			}
-			else if(toBeRemoved->gotiColour == ColourHARA){
-				colourChar = 'G';
-			}
-			else if(toBeRemoved->gotiColour == ColourPEELA){
-				colourChar = 'Y';
-			}
-			else if(toBeRemoved->gotiColour == ColourNEELA){
-				colourChar = 'B';
-			}
 
-			auto contentiter = std::find(content.begin(), content.end(), colourChar);
-			if ( *(contentiter+1) >= 48 && *(contentiter+1) <= 57 )	//ie. there are multiple gotis
+			//! Removing the goti from display(content)
+
+			auto loc = content.find(colourChar);
+
+		//Expects sanitized string
+			if( loc+1 == content.size() ) content.erase(content.begin() + loc);
+			else if ( content[loc+1] >= 48 && content[loc+1] <= 57 )	//ie. there are multiple gotis
 			{
-				if(*(contentiter+1) > '2')	//ie. It will be greater than or equal to 2
-					*(contentiter+1) -= 1;
+				if(content[loc+1] > '2')
+					content[loc+1] -= 1;
 				else{
-					content.erase(contentiter+1);
+					content.erase(content.begin() + loc+1);
 				}
 			}
-			else content.erase(contentiter);
+			else content.erase(content.begin() + loc);
 
 			if(isEmpty()){
 				if(box_type == _boxSTOP){
@@ -80,53 +69,49 @@ bool ludo_box::removeGoti(std::shared_ptr<ludo_goti>& toBeRemoved){
 	return false; //Couldn't remove
 }
 
-bool ludo_box::appendGoti(std::shared_ptr<ludo_goti> goti_to_add){
+short ludo_box::appendGoti(std::shared_ptr<ludo_goti> goti_to_add){
+	colours gotiColour = goti_to_add->get_gotiColour();
+	auto colourChar = colourCodes.at(goti_to_add->gotiColour);
+
+	if(goti_to_add->getCoords() == make_pair(0,0)) return -1;
 	
-	if( goti_to_add->get_gotiColour() != UnknownColour && goti_to_add->getCoords() != std::make_pair(0,0) ){
-		colours gotiColour = goti_to_add->get_gotiColour();
+	if( box_type == _boxSTOP && isEmpty() )	content = colourChar;
+	else content.push_back(colourChar);
+	sanitizeContent();
 
-		goti_to_add->curr_coords = coords;
-		inBoxGotis.push_back( goti_to_add );
-		++numGotis[gotiColour];
-		
-		char gotiChar;
-		if( gotiColour == ColourLAAL )
-			gotiChar = 'R';
-		else if( gotiColour == ColourHARA )
-			gotiChar = 'G';
-		else if( gotiColour == ColourPEELA )
-			gotiChar = 'Y';
-		else if( gotiColour == ColourNEELA)
-			gotiChar = 'B';
+	goti_to_add->curr_coords = coords;
+	inBoxGotis.push_back( goti_to_add );
 
-		if( !isEmpty() && content != "X" ){
-			auto iter = std::find(content.begin(), content.end(), gotiChar);
-			if( iter != content.end() ){	//Goti of same colour present
-				if(*(iter+1) >=48 && *(iter+1) <= 57){	//Handles the case where numberOfGotis alreasy follow the gotiChar( for eg. R2 )
-					++(*(iter+1));
-				}
-				else{	//Used if-else to prevent iterator invalidation,due to erasing (iter+1) [CHANGED NOW]
-					short gotiCount=1;
-				
-					for (auto &&ch : content)
-					{
-						if(ch == gotiChar)	++gotiCount;
-					}
-					if(gotiCount > 1)
-						content.insert(iter+1,char(gotiCount + 48)); //casted to char, and added 48, since 0 is ASCII value 48
-				}
-			}
-			else content.push_back(gotiChar);
-		}else content = gotiChar;
+	if( areOpponentsPresent(gotiColour) && box_type == _boxNORMAL ) return 0;
 
-		return true;
-	}
-	std::cerr<<"Can't append Goti, invalid parameters"<<std::endl;
-	return false;
+	return 1;
 }
 
 string ludo_box::get_box_content() const{
 	return content;
+}
+
+void ludo_box::sanitizeContent(void){
+    std::array<char, 4> gotiChar = {'R', 'G', 'Y', 'B'};
+
+    for( auto &i : gotiChar ){
+	    unsigned short gotiCount = 0;
+        auto loc = content.find(i);
+        if( loc == static_cast<size_t>(-1) ){ continue; }
+        ++gotiCount; ++loc;
+        while( loc<content.size() ){
+            if( content[loc] == i ){
+                ++gotiCount;
+                content.erase(content.begin() + loc);
+                --loc;
+            }
+            ++loc;
+        }
+        if( gotiCount > 1 ){
+        	if( content[content.find(i)+1] >=48 && content[content.find(i)+1] <=57 )	content[content.find(i)+1] += gotiCount-1;
+            else content.insert(content.find(i)+1, 1, static_cast<char>(48+gotiCount) );
+        }
+    }
 }
 
 bool ludo_box::isPresent(const ludo_goti& goti) const{
@@ -139,17 +124,7 @@ bool ludo_box::isPresent(const ludo_goti& goti) const{
 	return false;
 }
 
-bool ludo_box::isEmpty(){
-	for (auto &&i : numGotis)
-	{
-		if( i.second != 0 )
-			return false;
-	}
-	return true;
+bool ludo_box::isEmpty() const{
+	if( box_type == _boxUNUSABLE )	return false;
+	else return this->inBoxGotis.empty();
 }
-
-
-//      LEARNT  //
-/*[LEARNT] - The error "pointer to incomplete class type is not allowed", generally related to header files, when "I forward declared the class in the header, and failed to include the full header for the class"
-			AND, "An 'incomplete class' is one that is declared but not defined"
-			ALSO, If your class is defined as a typedef: "typedef struct struct{};", and then try to refer to it as 'struct myclass' anywhere else, you'll get many such errors, to solve it, remove 'class/struct' from variable declarations, ie. 'mystruct *var = value;' instead of 'struct mystruct *var=value'*/
