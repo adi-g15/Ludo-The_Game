@@ -22,9 +22,6 @@ bool ludo_box::areOpponentsPresent(colours colour) const{
 	{
 		if( !isdigit(ch) && ch != colourChar && box_type== _boxNORMAL ){
 			return true;
-
-			cout<<"\n\n\n\n\n\n[DEBUG] At "<<coords<<" : "<<colourChar<<" has opponent "<<ch<<" AND content = "<<content<<"\n\n\n\n\n"<<endl;	//DEBUG
-
 		}
 	}
 	return false;
@@ -32,13 +29,10 @@ bool ludo_box::areOpponentsPresent(colours colour) const{
 
 bool ludo_box::removeGoti(std::shared_ptr<ludo_goti>& toBeRemoved){
 	auto colourChar = colourCodes.at(toBeRemoved->gotiColour); //! Setting gotiColour
-	cout<<"\n[DEBUG] "<<toBeRemoved->gotiColour<<" is toBeRemoved from "<<coords<<endl;
 
 	for (auto &boxGoti : inBoxGotis)
 	{
 		//!Removing goti from the dataStructures is done by the next 3lines in the if block
-
-		// cout<<"[DEBUG] inBoxGotis contained : ";	for(auto const&box : inBoxGotis) cout<<box->gotiColour<<' ';	cout<<endl;
 		if( boxGoti == toBeRemoved ){
 					
 				//Logically Removing the goti now
@@ -47,14 +41,8 @@ bool ludo_box::removeGoti(std::shared_ptr<ludo_goti>& toBeRemoved){
 			}));
 
 			//! Removing the goti from display(content)
-	// cout<<"\n[DEBUG] REMOVE START 2"<<endl;	for(auto const&box : inBoxGotis) cout<<box->gotiColour<<' ';	cout<<endl;
 
 			auto loc = content.find(colourChar);
-			if( loc == static_cast<size_t>(-1) ){
-				cout<<"INVALID DEBUG -> To remove="<<toBeRemoved->get_gotiColour()<<" and found_goti="<<boxGoti->gotiColour<<" to remove from "<<toBeRemoved->getCoords()<<" while finding "<<colourChar<<" in content = "<<content<<endl;
-				cin.get();
-				// return false;
-			}
 
 		//Expects sanitized string
 			if( loc+1 == content.size() ) content.erase(content.begin() + loc);
@@ -87,7 +75,6 @@ short ludo_box::appendGoti(std::shared_ptr<ludo_goti> goti_to_add){
 
 	if(goti_to_add->getCoords() == make_pair(0,0)) return -1;
 	
-	cout<<"[DEBUG] "<<goti_to_add->get_gotiColour()<<" to be Appended to "<<coords<<". And box isempty "<<boolalpha<<isEmpty()<<endl;
 	if( box_type == _boxSTOP && isEmpty() )	content = colourChar;
 	else content.push_back(colourChar);
 	sanitizeContent();
@@ -142,9 +129,3 @@ bool ludo_box::isEmpty() const{
 	if( box_type == _boxUNUSABLE )	return false;
 	else return this->inBoxGotis.empty();
 }
-
-
-//      LEARNT  //
-/*[LEARNT] - The error "pointer to incomplete class type is not allowed", generally related to header files, when "I forward declared the class in the header, and failed to include the full header for the class"
-			AND, "An 'incomplete class' is one that is declared but not defined"
-			ALSO, If your class is defined as a typedef: "typedef struct struct{};", and then try to refer to it as 'struct myclass' anywhere else, you'll get many such errors, to solve it, remove 'class/struct' from variable declarations, ie. 'mystruct *var = value;' instead of 'struct mystruct *var=value'*/

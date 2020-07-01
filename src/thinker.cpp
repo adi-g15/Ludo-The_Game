@@ -1,9 +1,13 @@
-#include <unordered_set>
 #include <algorithm>
-// #include "thinker.h"
+#include <unordered_set>
+#include "thinker.h"
+#include "game.h"
 
-thinker::thinker(const game* original){
-	this->state = new minimal_ludoState(original);
+typedef std::pair<unsigned short, unsigned short> combination;
+
+thinker::thinker(game* original){
+	this->state = new ludo_state(original);
+	this->original = original;
 }
 
 thinker::~thinker(){
@@ -41,18 +45,18 @@ bool thinker::unlock(){
 	return true;
 }
 
-direction thinker::getDirOfMovement( const coordinate& coord) const{
+direction thinker::getDirOfMovement( const coordinate& coord){
 	direction retVal;
-	if( coord.first < (state->board.size()/2 - 2) || coord.second  > (state->board.size()/2 - 2) ){
+	if( coord.first < (15/2 - 2) || coord.second  > (15/2 - 2) ){
 		if( coord.first == 0 )	retVal = direction::EAST;
-		else if( coord.first == (state->board.size()-1) )	retVal = direction::WEST;
-		else if( coord.second < state->board.at(0).size()/2 )	retVal = direction::NORTH;
+		else if( coord.first == (15-1) )	retVal = direction::WEST;
+		else if( coord.second < 15/2 )	retVal = direction::NORTH;
 		else	retVal = direction::SOUTH;
 	}
 	else{
 		if( coord.second == 0 )	retVal = direction::NORTH;
-		else if( coord.second == (state->board.at(0).size()-1) )	retVal = direction::SOUTH;
-		else if( coord.first > (state->board.size()/2) )	retVal = direction::EAST;
+		else if( coord.second == (15-1) )	retVal = direction::SOUTH;
+		else if( coord.first > (15/2) )	retVal = direction::EAST;
 		else	retVal = direction::WEST;
 	}
 	return retVal;
@@ -162,14 +166,18 @@ const _moveData thinker::isMovePossible(const coordinate& coord, int dist) const
 	return retVal ;
 }
 
-bool thinker::implementBestMove(game* original){
-	state->resetBoard();
-	if( !state->isInSync(*original) ) return false;
-	else if( !this->bestMove_available ){
-		if ( this->setBestMove() == false ) return false;	//ie. bestthinker::combination not available
+bool thinker::implementBestMove(){
+	if( !this->bestMove_available ){
+		this->setBestMove();
 	}
 
-	//Now moving using the bestthinker::combination found ;D
+	state->resetBoard();
+	if( !state->isInSync(original) ) return false;
+	else if( !this->bestMove_available ){
+		if ( this->setBestMove() == false ) return false;	//ie. bestcombination not available
+	}
+
+	//Now moving using the bestcombination found ;D
 	for( auto& p : bestMove ){
 		if ( p.second == 0 )	//Ie. unlock a goti here
 		{
@@ -190,14 +198,14 @@ bool thinker::implementBestMove(game* original){
 	return true;
 }
 
-std::vector<thinker::combination> thinker::getBestMove(){
+std::vector<combination> thinker::getBestMove(){
 	if( ! this->bestMove_available ) this->setBestMove();
 	return this->bestMove;
 }
 
 bool thinker::setBestMove(){
 	std::vector<unsigned short> dieNumbers;
-	std::map<std::vector<thinker::combination>, int> completeMoves;
+	std::map<std::vector<combination>, int> completeMoves;
 
 	int maxProfit = 0;
 
@@ -237,12 +245,12 @@ bool thinker::setBestMove(){
 	return this->bestMove_available;
 }
 
-bool thinker::mindlessMovers ( unsigned short roll, std::vector<unsigned short> dieNumbers, unsigned short gotiIndex, std::vector<coordinate> movingColoursPos, std::vector<coordinate> opponentsPos, std::pair<std::vector<thinker::combination>, int> prevMoves ){
+bool thinker::mindlessMovers ( unsigned short roll, std::vector<unsigned short> dieNumbers, unsigned short gotiIndex, std::vector<coordinate> movingColoursPos, std::vector<coordinate> opponentsPos, std::pair<std::vector<combination>, int> prevMoves ){
 	if( dieNumbers.empty() ){
 		//This is the time for that 'heuristic' function's task
-		m.lock();
+		// m.lock();
 		this->completeMoves.insert({prevMoves.second, prevMoves.first});
-		m.unlock();
+		// m.unlock();
 		return true;
 	}
 
@@ -300,19 +308,19 @@ bool thinker::mindlessMovers ( unsigned short roll, std::vector<unsigned short> 
 			this->mindlessMovers(r, dieNumbers, index, movingColoursPos, opponentsPos , prevMoves);
 			// threads.push_back(std::thread( thinker::mindlessMovers, this , r, dieNumbers, index, movingColoursPos, opponentsPos , prevMoves));
 		}
-		for( auto& t: threads ){
-			if( t.joinable() )	t.join();
-		}
+		// for( auto& t: threads ){
+		// 	if( t.joinable() )	t.join();
+		// }
     }
 
 	return true;
 }
 
-inline bool thinker::operator()(game* original){
-	return this->move(original);
+bool thinker::operator()(){
+	return this->move();
 }
 
-inline bool thinker::move(game* original){
+bool thinker::move(){
 	this->setBestMove();
-	return this->implementBestMove(original);
+	return this->implementBestMove();
 }

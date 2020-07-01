@@ -3,8 +3,6 @@
 #include<functional>
 #include "enumerations.hpp"
 
-typedef std::pair<int, int> coordinate;
-
 class ludo_goti{
 private:
 	const colours gotiColour;
