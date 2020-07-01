@@ -19,3 +19,12 @@ class GotiNotAvailableException : std::exception{
     explicit GotiNotAvailableException(colours);
     GotiNotAvailableException() = delete;
 };
+
+class endApplication : public std::exception{
+  std::string source;
+  public:
+    const char* what();
+    explicit endApplication(const char*);
+    explicit endApplication(std::string);
+    endApplication() = delete;	//Passing source of request/error is mandatory
+};
