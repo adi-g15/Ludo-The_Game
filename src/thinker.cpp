@@ -151,7 +151,7 @@ const _moveData thinker::isMovePossible(const coordinate& coord, int dist) const
 			retVal.isPossible = false;
 			moveProfit += REACH_HOME;
 
-			return retVal;
+			break;
 		}
 	}
 
