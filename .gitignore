@@ -2,5 +2,4 @@
 *sh
 experimental*
 includes/*.gch
-build/game*
-build/object_files/*
+build/

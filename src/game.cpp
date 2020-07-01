@@ -6,9 +6,11 @@
 #include <set>
 #include <sstream>
 #include <unordered_set>
+
 #include "boardPrinter.hpp"
 #include "exceptions.h"
 #include "keywords.hpp"
+#include "thinker.h"
 
 using namespace std;
 
@@ -150,8 +152,8 @@ short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, _smartMoveData moveDat
 	}
 
 	const auto [finalCoords, finalDir, moveProfit] = moveData;
-	cout<<"\n[DEBUG] INSIDE MOVE, Started moving from "<<the_goti->curr_coords<<"\tfinalCoords"<<finalCoords;	cout<<endl;
 
+		//DEBUG
 	if ( (movingGotis[currentGotiColour].size() + numfinishedGotis[currentGotiColour] + getNumLockedGotis(currentGotiColour)) > 4 ){ //DEBUG
 		cout<<"inBoxGotis -> "<<getBoardBox(_ludo_coords.start_coords[currentGotiColour]).inBoxGotis.size()<<endl
 			<<"Finished -> "<<numfinishedGotis[currentGotiColour]<<endl
@@ -168,12 +170,10 @@ short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, _smartMoveData moveDat
 
 	getBoardBox(the_goti->curr_coords).removeGoti( the_goti );	//Reaches here only if move possible
 	if( getBoardBox(finalCoords).box_type == _boxHOME_END ){
-		cout<<"DEBUG REACHED HOME [START], with references to goti =  "<<the_goti.use_count()<<endl;
 
 		auto& lockBox = getBoardBox( getEmptyLocks(currentGotiColour) );
-		//DEBUG - Move above line to after 'Removing form MovingGotis'
-		cout<<"[DEBUG] GOT LOCKBOX at "<<lockBox.coords<<endl;
-		if(lockBox.coords == make_pair(0,0)){
+
+		if(lockBox.coords == make_pair(0,0)){	//debug
 
 			cout<<"movingGotis[curr].size() = "<<movingGotis[currentGotiColour].size()<<endl;
 			cout<<"inBoxGotis in the box of the goti "<<getBoardBox(the_goti->curr_coords).inBoxGotis.size()<<endl;
@@ -207,7 +207,7 @@ short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, _smartMoveData moveDat
 			endGame("eXTRA GOTIS of colour " + std::to_string(currentGotiColour) + " punGING");
 		}
 
-		++numfinishedGotis.at(currentGotiColour);	//[DEBUG RESULT] This is the culprit
+		++numfinishedGotis.at(currentGotiColour);
 
 		return 1;
 	}
@@ -216,7 +216,6 @@ short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, _smartMoveData moveDat
 		the_goti->curr_direction = finalDir;
 
 		if( getBoardBox(the_goti->curr_coords).appendGoti( the_goti ) == 0){	//appendGoti() signalled an Attack needed
-			cout<<"[DEBUG] GOING TO ATTACK"<<endl;
 			attack( {}, the_goti );
 
 			return 2;
@@ -254,14 +253,10 @@ bool game::autoMove(){	//! Return values same as the moveGoti_function
 	for( auto& i : dieNumbers ) cout<<i<<' ';
 	cout<<endl;
 
-	cout<<"[DEBUG] Gotis available - "; for(auto &i: movingGotis[currentGotiColour]) cout<<i->curr_coords<<endl;
 	if( movingGotis[currentGotiColour].empty() ){
-		cout<<"[DEBUG] It was empty as of now"<<endl;
 		auto iter = find( dieNumbers.begin(), dieNumbers.end(), 6 );
 		if( iter != dieNumbers.end() ){
-			cout<<"[DEBUG] Unlocking one now"<<endl;
 			unlockGoti();
-			cout<<"[DEBUG] Unlocked"<<endl;
 			dieNumbers.erase(iter);
 		}
 		else{
@@ -271,30 +266,21 @@ bool game::autoMove(){	//! Return values same as the moveGoti_function
 	}
 
 	int index = 0;
-	cout<<"dieNumbers length = "<<dieNumbers.size()<<endl;
 	// for( auto currentRoll : dieNumbers ){	//Outer loop iterates through the gotis
 		//BUG_solved_for_now - See the bugs.txt file for this
 	for( size_t i=0; i<dieNumbers.size(); ++i ){
 		auto currentRoll = dieNumbers[i];
-		if(currentRoll > 6) {
-			cout<<"Accessed at "<<index<<". CurrentRoll is "<<currentRoll<<". And, dieNumbers[tries] = "<<dieNumbers.at(index)<<endl;
-			for(auto i : dieNumbers) cout<<i<<' ';
-			endGame("Iterator invalidated, or DieNumbers corrupt");
-		}
 		++index;
 
-		cout<<" with currentRoll = "<<currentRoll<<endl;
 		updateDisplay();
 		customUtil::pause(1);
 
 		if( currentRoll == 6 ){
 			if( random()%2 == 1 && getNumLockedGotis(currentGotiColour)>0 ){	//50% chance of robot using 6 to unlockGoti
 				unlockGoti();
-				// Die::rolldie(dieNumbers);	//DEBUG UNCOMMENT THIS LATER
 				continue;
 			}
 		}
-		cout<<"[debug]dieNumbers = "; for(auto i:dieNumbers) cout<<i<<' '; cout<<endl;
 
 		do{	//! ie. gotis still remaining to try
 			if( movingGotis[currentGotiColour].empty() ) return false;
@@ -306,10 +292,6 @@ bool game::autoMove(){	//! Return values same as the moveGoti_function
 					break;	//Break out to the outer loop, thus rejecting currentRoll
 				}
 
-				if( movingGotis[currentGotiColour].at(random_goti_index)->curr_direction == NO_TURN ){
-					cout<<"[DEBUG] GIVING INVALID COORD GOTI TO MOVE\n";
-					endGame("Invalid goti in autoMove");	//DEBUG
-				}
 				moveObj = isMovePossible(movingGotis.at(currentGotiColour).at(random_goti_index), currentRoll);
 				if( moveObj.isPossible ){
 					wasSuccess = true;
@@ -345,7 +327,6 @@ void game::attack(std::vector<colours> coloursToRemove, std::shared_ptr<ludo_got
 	ludo_box& currBox = getBoardBox(attacker->curr_coords);
 
 	for( unsigned short i=0; i < currBox.inBoxGotis.size(); ++i ){	//Caution - May be a probable cause for iterator invalidation
-	cout<<"[DEBUG] ATTACK inBoxGotis.size()="<<currBox.inBoxGotis.size()<<endl;
 		if( std::find(coloursToRemove.begin(), coloursToRemove.end(), currBox.inBoxGotis[i]->gotiColour) != coloursToRemove.end() ){	//! emulating "if gotiColour in colourToRemove"
 			lockGoti(currBox.inBoxGotis[i]);
 			--i;
@@ -358,8 +339,7 @@ bool game::isValid(const std::pair<int,int>& coords) const{
 		return true;
 	}
 
-	cout<<"\n\n[DEBUG] - iNVALID COORDS, NEED TO DEBUG"<<endl;
-	endGame("Invalid Coords, in isValid");	//DEBUG
+	endGame("Invalid Coords, in isValid");
 	return false;
 }
 
@@ -368,7 +348,7 @@ bool game::isValid(const shared_ptr<ludo_goti>& goti) const{
 		return true;
 	}
 	cerr<<"GOTI COLOUR DOESN'T RELATE TO CURRENT_PLAYER"<<endl;
-	endGame();	//DEBUG
+	endGame();
 	return false;
 }
 
@@ -474,11 +454,8 @@ bool game::lockGoti(std::shared_ptr<ludo_goti> goti_to_lock){	//wrong gotiColour
 	auto&& lockBox = std::find_if(lockedPositions[goti_to_lock->gotiColour].begin(), lockedPositions[goti_to_lock->gotiColour].end(), [](std::reference_wrapper<ludo_box>& box){
 		return box.get().isEmpty();
 	});
-	// cout<<"[DEBUG] LOCK GOTI START and got real_lockBox = "<<lockBox->get().coords<<endl;	
 
 	lockBox->get().appendGoti(goti_to_lock);
-		//! coords of goti to be edited by appendGoti
-// cout<<"[DEBUG] LOCK GOTI END"<<endl;	
 
 	cout<<"AFTER MovingGotis -> "; for(auto &i : movingGotis[currentGotiColour]) cout<<i->curr_coords<<' ';	cout<<endl;
 	return true;
@@ -492,10 +469,6 @@ void game::takeIntro(){
 	cout<<endl;
 
 	//QUESTION - How to call the function pointer through an iterator ?
-	// cout<<"calling end"<<endl;
-	// auto n = shortcutsMap[":q"]; //DEBUG
-	// n();
-	// cout<<"called end"<<endl;
 
 	do{
 		tmpDimen = customUtil::getTerminalDimen();
@@ -518,8 +491,6 @@ void game::takeIntro(){
 		
 		customUtil::place_center(tmpDimen.first, string("Player") + to_string(p) + string(" - "));		
 
-		// playerName = "ROBOT";
-		//UNCOMMENT AFTER DEBUG
 		getline(cin, playerName, '\n');
 		playerName = customUtil::trimString(playerName);
 		if( playerName != ""){
@@ -603,11 +574,7 @@ vector<unsigned short> Die::rolldie(){
 
 void Die::rolldie(vector<unsigned short>& Vec){
 
-	Vec.push_back(6); Vec.push_back(1);	return; //Debug purposes
-
 	std::vector<unsigned short> tmpVec;
-
-	// Vec.push_back(6); Vec.push_back(6); Vec.push_back(4); return;	//DEBUG - REMOVE THESE LINE LATER
 
 	unsigned short dieNum = Die::dist[ random()%4 ](Die::mt[ random()%4 ] );
 	if( dieNum!=6 ){	//To prevent cases like, dieNumbers = {4, 6} (Think! It IS possible in the do-while)
@@ -637,8 +604,6 @@ void Die::rolldie(vector<unsigned short>& Vec){
 }
 
 void game::updateDisplay(){
-	// return;	// DEBUG - Dont PRINT
-
 	unsigned int boxlen = 0;
 	std::pair<int,int> tmpDimen(0,0);
 
@@ -692,8 +657,6 @@ void game::updateDisplay(){
 	BOARD_CENTER cout<<12; _board_printer.row_type1( 12 );	_board_printer.inter_type2();
 	BOARD_CENTER cout<<13; _board_printer.row_type2( 13 );	_board_printer.inter_type1();
 	BOARD_CENTER cout<<14; _board_printer.row_type1( 14 );
-
-	// DEBUG_PRINTBOARD
 
 	cout<<"  ";
 	BOARD_CENTER for (size_t i = 0; i <(boxlen+1)*15 + 1; i++)	cout<<'-';
@@ -796,19 +759,12 @@ void game::play(bool boolVal){
 		updateDisplay();
 		if( isRobot ){	//ie. It is a Robot Player
 
-			DEBUG_START
-			auto robo = thinker(this);
-			DEBUG_START
-			// for( auto &i : robo.getBestMove() ){
-			// 	cout<<i<<endl;
-			// }
-			DEBUG_END
-			this->endGame();
+			// auto robo = thinker(this);
 
-			if( robotPlayers[currentPlayer] == RobotKind::randomRobo )
+			// if( robotPlayers[currentPlayer] == RobotKind::thinkerRobo )
+			// 	robo.implementBestMove();
+			// else if( robotPlayers[currentPlayer] == RobotKind::randomRobo )
 				autoMove();
-			else if( robotPlayers[currentPlayer] == RobotKind::thinkerRobo )
-				// thinkerMove(currentGotiColour);
 			lambda_next();
 			continue;
 		}
@@ -895,9 +851,7 @@ void game::play(bool boolVal){
 					stream>>choice_num;
 					if(choice_num == 0){
 						if( lambda_isSIXinRoll() ){
-								cout<<"[UNLOCK_DEBUG] PASSING THIS"<<endl;
 							unlockGoti();
-								cout<<"[UNLOCK_DEBUG] PASSED"<<endl;
 							dieNumbers.erase(std::find(dieNumbers.begin(), dieNumbers.end(), 6));
 						}
 						else{
@@ -907,16 +861,13 @@ void game::play(bool boolVal){
 						}
 					}
 					else{	//! Usual Case - No unlock, nor any cheat/shortcut used
-						cout<<"[DEBUG] PASSING THIS"<<endl;
 						stream>>enteredRoll;
 
 						if(
 							customUtil::isSum(enteredRoll, dieNumbers)	//If output is 6,5 then entering 11 is valid
 									&& (choice_num <= counter)	//Verifies Entered values are valid
 						){
-								cout<<"[DEBUG] INSIDE IF and movingGotis length for this colour is "<<movingGotis[currentGotiColour].size()<<endl;
 							short moveVal = moveGoti(movingGotis[currentGotiColour][choice_num-1], enteredRoll);
-								cout<<"[DEBUG] PASSED"<<endl;
 							if( moveVal == -1){	//Failure
 								cout<<"Invalid Move"<<endl;
 								customUtil::pause(1);
@@ -1102,6 +1053,3 @@ game::game() : colourOrder({ColourLAAL, ColourNEELA, ColourPEELA, ColourHARA}){
 }
 
 game::~game(){}
-
-#include "minimal_ludoState.cpp"
-#include "thinker.cpp"
