@@ -6,6 +6,9 @@
 
 Ludo, our popular Indian board game, completely implemented in C++
 
+<img src=“./extras/ludoScreen.png”
+raw=true alt=“ScreenShot”>
+
 _Please do put your suggestions, ideas, and any problem (even if why g++ main.cpp doesn't work). I will be thankful to you for trying it out :D_
 
 ## Features
