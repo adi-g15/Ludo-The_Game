@@ -288,12 +288,11 @@ void customUtil::_resetColouredOutput(){
 }
 
 bool customUtil::isSum(unsigned int num, const std::vector<unsigned short> &v){
-    unsigned int sum = 0;
     auto total = 1<<v.size();
 
     for (int i = 0; i < total; ++i)
     {
-        sum=0;
+        unsigned sum = 0;
         for(size_t j=0; j<v.size(); ++j){
             if( i & 1<<j ){ //Cheching if the jth bit is set
                 sum += v[j];

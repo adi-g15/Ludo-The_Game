@@ -2,19 +2,19 @@
 
 import os
 
-directories_to_check = [ "includes",
-						 "src"	
+directoryectories_to_check = [ "includes",
+						 "src"
 					]
 
 flags = [ 'DEBUG', 'COMMENT', 'TODO']
 
 files_to_check = []
 
-for dir in os.listdir():
-	if dir in directories_to_check:
-		for filename in os.listdir('./' + dir):
+for directory in os.listdirectory():
+	if directory in directoryectories_to_check:
+		for filename in os.listdirectory('./' + directory):
 			if filename.endswith(".cpp") or filename.endswith(".hpp") or filename.endswith('.h'):
-				files_to_check.append( os.path.join('./',dir, filename) )
+				files_to_check.append( os.path.join('./',directory, filename) )
 
 for filename in files_to_check:
 	print( filename + '\n-----------------')
