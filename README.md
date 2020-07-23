@@ -22,6 +22,7 @@ _Please do put your suggestions, ideas, and any problem (even if why g++ main.cp
 * Display **adaptive** to width of screen
 * Memory-safe (using smart_pointers, and uncounted for 'new' statements)
 * **Multi-threaded** (for ThinkerRobo execution)
+* **0 dependencies** outside stdc++
 * Plus all basic ludo game features, and my own *custom* keywords _(you can create yours too :D )_
 
 ## Building
@@ -98,9 +99,20 @@ Either install cmake, and MSVC compiler, or open the Makefile, and execute the c
 
 5. Many more if when you search (yaar please consider point 1, if that's the case :-)
 
+## Contribution -
+Start an issue for whatever feature you believe should be good here.
+
+And, in case you want to be a contributer here, and work on it together, do ask.
+
+Do sugggest any other feature you would like, i do claim the codebase to be quite modular, and easily customisable.
+
+
 ## Future Plans -
+Currently, I am learning more of the 'web thing' ;D, and I have completed ALL i wanted in this initially, so lesser chance i will work much on it, but as i say, if you ask of something in it, I do consider.
 
 * Creating a _web version_ of this, probably using reactJS
+* Have an API endpoint, that connects the web version, the cli version, and the GUI.
+* Using REST libraries with the CLI version, so to connect with above given endpoint (when implemented)
 * Add more sensible cheatCodes
 
 > Thanks ! :D
