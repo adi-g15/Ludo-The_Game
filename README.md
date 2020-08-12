@@ -110,9 +110,8 @@ Do sugggest any other feature you would like, i do claim the codebase to be quit
 ## Future Plans -
 Currently, I am learning more of the 'web thing' ;D, and I have completed ALL i wanted in this initially, so lesser chance i will work much on it, but as i say, if you ask of something in it, I do consider.
 
-* Creating a _web version_ of this, probably using reactJS
-* Have an API endpoint, that connects the web version, the cli version, and the GUI.
-* Using REST libraries with the CLI version, so to connect with above given endpoint (when implemented)
+* Creating a _web version_ of this, probably using Angular
+* Have an API endpoint, that connects the web version, the cli version, and the GUI. (API basically done, will be customised, when i go for the web version)
 * Add more sensible cheatCodes
 
 > Thanks ! :D
