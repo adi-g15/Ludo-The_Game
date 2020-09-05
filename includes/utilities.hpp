@@ -247,6 +247,7 @@ void customUtil::pause(float seconds){  //Supports Win, Linux, Mac
     const timespec tmp = { sec,millisec*1000000L };
     nanosleep( &tmp , NULL);
   #else
+	//  deepcode ignore CppDeadCode: It is reachable on any other OS, eg. windows
     Sleep(1000*seconds);
   #endif
 }
