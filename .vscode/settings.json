@@ -3,8 +3,6 @@
         "*.tcc": "cpp",
         "deque": "cpp",
         "string": "cpp",
-        "unordered_map": "cpp",
-        "unordered_set": "cpp",
         "vector": "cpp",
         "map": "cpp",
         "array": "cpp",
@@ -54,5 +52,19 @@
         "condition_variable": "cpp",
         "mutex": "cpp",
         "thread": "cpp"
+    },
+    "editor.formatOnPaste": true,
+    // "editor.formatOnSave": true, //problematic... removes whitespaces between comments and code
+    // "editor.fontLigatures": true,    //requires a fontFamily that supports ligatures
+    "workbench.editor.highlightModifiedTabs": true,
+    "explorer.sortOrder": "type",
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    "editor.acceptSuggestionOnEnter": "off",
+    "deepcode.uploadApproved": true, //accepting suggestions using enter turned off
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#2B3105",
+        "titleBar.activeBackground": "#3C4407",
+        "titleBar.activeForeground": "#F8FCE1"
     }
 }

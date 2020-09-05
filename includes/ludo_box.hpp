@@ -1,13 +1,13 @@
 #pragma once
 
-#include "ludo_goti.h"
-#include<vector>
-#include<memory>
-#include<map>
-#include<string>
+#include "ludo_goti.hpp"
+#include <vector>
+#include <memory>
+#include <map>
+#include <string>
 
 class ludo_box{
-	const coordinate coords;
+	const _coord coords;
 	std::vector<std::shared_ptr<ludo_goti>> inBoxGotis;	//! Can make it a map too, but might be inefficient for such less data
 	std::string content;
 
@@ -24,9 +24,9 @@ public:
 	bool isPresent(const ludo_goti& goti) const;
 	inline bool isEmpty(void) const;
 
-	bool areOpponentsPresent(colours) const;
+	bool areOpponentsPresent(_colour) const;
 
-	ludo_box(const coordinate&, BOX_TYPE = _boxNORMAL);
+	ludo_box(const _coord&, BOX_TYPE = _boxNORMAL);
 
 	friend class game;
 	friend class _BoardPrinter;

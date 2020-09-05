@@ -1,5 +1,5 @@
-#include "ludo_coords.h"
-#include<utility>
+#include "ludo_coords.hpp"
+#include <utility>
 
 //COORD_CLASS_DEFINTIONS START
 void ludo_coords::InitCoords(){
@@ -21,7 +21,7 @@ void ludo_coords::InitCoords(){
 			{ {8,9}, SOUTH },
 			{ {5,8}, EAST }
 		};
-			
+
 		start_coords = {
 			{ ColourLAAL, {13,6} },
 			{ ColourHARA, {6,1} },

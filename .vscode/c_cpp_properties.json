@@ -3,11 +3,23 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**",
-                "includes"
+                "${workspaceFolder}/includes"
             ],
             "defines": [],
             "compilerPath": "C:\\MinGW\\bin\\g++",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        },
+        {
+            "name": "MSVC VS Code",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/includes"
+            ],
+            "defines": [],
+            "compilerPath": "C:\\Program Files (x86)\\Microsoft Visual Studio//2019//Community//VC//Tools//MSVC//14.26.28801//bin//Hostx64//x64//cl.exe",
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "clang-x64",

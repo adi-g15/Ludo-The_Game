@@ -1,6 +1,6 @@
-#include "ludo_state.h"
-#include "game.h"
-#include "thinker.h"
+#include "ludo_state.hpp"
+#include "game.hpp"
+#include "thinker.hpp"
 
 using namespace std;
 
@@ -9,17 +9,17 @@ ludo_state::ludo_state(const game *original){
 	this->update(original);
 }
 
-state_box& ludo_state::getBox(const coordinate& coord){
+state_box& ludo_state::getBox(const _coord& coord){
 	return board.at(coord.first).at(coord.second);
 }
 
-const state_box& ludo_state::getBox(const coordinate& coord) const{
+const state_box& ludo_state::getBox(const _coord& coord) const{
 	return board.at(coord.first).at(coord.second);
 }
 
 size_t ludo_state::getNumLocks(){
 	size_t retVal = 0;
-	for( auto &coord : this->lockedPositions ){ 
+	for( auto &coord : this->lockedPositions ){
 		if( board[coord.first][coord.second].type != BOX_TYPE::_boxLOCK ) continue;
 		else if( ! this->getBox(coord).inBoxGotis.empty() ){
 				++retVal;
@@ -47,7 +47,7 @@ void ludo_state::update(const game* original){
 }
 
 void ludo_state::resetBoard(){
-	map<colours, vector<state_goti*>> gotis ({{ColourLAAL, {}}, {ColourHARA, {}}, {ColourPEELA, {}}, {ColourNEELA, {}}});
+	map<_colour, vector<state_goti*>> gotis ({{ColourLAAL, {}}, {ColourHARA, {}}, {ColourPEELA, {}}, {ColourNEELA, {}}});
 	for ( int i=0; i < this->board.size(); ++i ){
 		for ( int j=0; j < this->board.at(i).size(); ++j ){
 			auto boxGotis = this->getBox({i,j}).inBoxGotis;
@@ -65,7 +65,7 @@ void ludo_state::resetBoard(){
 			goti->coords = coord;	//Should be enough gotis to pass through this
 			goti->currDir = thinker::getDirOfMovement(coord);
 			this->getBox(coord).appendGoti(goti);
-			gotis[pair.first].pop_back();			
+			gotis[pair.first].pop_back();
 		}
 	}
 }
@@ -111,7 +111,7 @@ state_goti* state_box::removeGoti(state_goti* goti){
 	throw std::exception();	//will return NULL otherwise
 }
 
-bool state_box::areOpponentsPresent(colours colour) const{
+bool state_box::areOpponentsPresent(_colour colour) const{
 	for( auto &i : this->inBoxGotis ) if( i->gotiColour != colour ) return true;
 	return false;
 }
@@ -123,6 +123,6 @@ state_box::~state_box(){
 	inBoxGotis.clear();
 }
 
-state_goti::state_goti(colours gotiColour, direction gotiDir, coordinate coord) : gotiColour(gotiColour), currDir(gotiDir), coords(coord){}
+state_goti::state_goti(_colour gotiColour, direction gotiDir, _coord coord) : gotiColour(gotiColour), currDir(gotiDir), coords(coord){}
 
 state_goti::~state_goti(){}

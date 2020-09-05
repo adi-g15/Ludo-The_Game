@@ -1,9 +1,9 @@
-#include "ludo_goti.h"
+#include "ludo_goti.hpp"
 
-#include<iostream>
-#include "ludo_coords.h"
+#include <iostream>
+#include "ludo_coords.hpp"
 
-coordinate ludo_goti::getCoords() const{
+_coord ludo_goti::getCoords() const{
     if(curr_coords.first == 0 && curr_coords.second == 0){
         std::cerr<<"Coordinates of Goti are corrupt (0,0)\n"<<std::endl;
     }
@@ -14,7 +14,7 @@ direction ludo_goti::get_curr_direction() const{
     return curr_direction;
 }
 
-colours ludo_goti::get_gotiColour(void) const{
+_colour ludo_goti::get_gotiColour(void) const{
     return gotiColour;
 }
 
@@ -22,7 +22,7 @@ bool ludo_goti::operator==(const ludo_goti& goti){
     return (this->curr_coords == goti.curr_coords) && (this->gotiColour == goti.gotiColour);
 }
 
-ludo_goti::ludo_goti(colours gotiColour,const coordinate& coords, direction dir) : gotiColour(gotiColour), curr_coords(coords) {
+ludo_goti::ludo_goti(_colour gotiColour,const _coord& coords, direction dir) : gotiColour(gotiColour), curr_coords(coords) {
     this->curr_direction = NO_TURN;
     this->curr_direction = dir;
 }

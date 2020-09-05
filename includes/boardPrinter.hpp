@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <array>
-#include "ludo_box.h"
+#include "ludo_box.hpp"
 #include "utilities.hpp"
 
 class _BoardPrinter{ //! @info Only for use by updateDisplay() & takeIntro()
@@ -10,8 +10,7 @@ private:
 	/*@note Also clears the screen, so that the titlebar is at top
 	  @returns Terminalstd::pair<int,int> as pair<int,int>*/
 
-	//Common data that will be used
-	const std::vector<std::vector<ludo_box>> &board;
+	const std::vector<std::vector<ludo_box>> &board;	//board that this printer links to
 
 	static void titleBar(int width);
 	static void titleBar(); /*@brief Simply just calls titleBar with (terminalDimen().first)*/
@@ -77,10 +76,10 @@ void _BoardPrinter::titleBar(int width){	//Considering sufficient width, to be a
 	 #ifdef __linux__
 	 	system("clear");
 	 #elif _WIN32
-	 	system("cls")
+	 	system("cls");
 	 #endif
 
-	std::cout<<std::endl;
+	std::cout << std::endl;
 	customUtil::align_text_center(width, "NAMASTE from \"Ludo - The Game\" :D");
 	std::cout<<'\n';
 	while (width--) std::cout<<'=';
@@ -114,7 +113,7 @@ void _BoardPrinter::row_type2(int nrow){
 	//!Explanatory comments in _BoardPrinter::row_type1
 	std::cout<<'|';
 
-	for (size_t i = 0; i < boxlen; i++)	std::cout<<'\\';	
+	for (size_t i = 0; i < boxlen; i++)	std::cout<<'\\';
 	customUtil::align_text_center(boxlen+2, board[nrow][1].content);
 	for (size_t i = 0; i < (boxlen)*2 + 1; i++)	std::cout<<'\\';
 	customUtil::align_text_center(boxlen+2, board[nrow][4].content);
@@ -143,7 +142,7 @@ void _BoardPrinter::row_type3(int nrow){
 		std::cout<<'|';
 	}
 
-	for (size_t i = 0; i < (boxlen+1)*3 -1; i++) std::cout<<' ';	
+	for (size_t i = 0; i < (boxlen+1)*3 -1; i++) std::cout<<' ';
 	std::cout<<'|';
 
 	for (size_t i = 9; i < 15; i++){
@@ -156,7 +155,7 @@ void _BoardPrinter::row_type3(int nrow){
 void _BoardPrinter::row_type4(int nrow){
 	//!Explanatory comments in _BoardPrinter::row_type1
 	std::cout<<'|';
-		
+
 	customUtil::align_text_center(boxlen, board[nrow][0].get_box_content());	std::cout<<'|';
 	for (size_t i = 1; i < 5; i++){
 		customUtil::align_text_center(boxlen, board[nrow][i].get_box_content());
@@ -164,7 +163,7 @@ void _BoardPrinter::row_type4(int nrow){
 	}
 	customUtil::align_text_center(boxlen, board[nrow][5].get_box_content());  std::cout<<'|';
 
-	for (size_t i = 0; i < (boxlen+1)*3 -1; i++) std::cout<<' ';	
+	for (size_t i = 0; i < (boxlen+1)*3 -1; i++) std::cout<<' ';
 	std::cout<<'|';
 
 	for (size_t i = 9; i < 13; i++){

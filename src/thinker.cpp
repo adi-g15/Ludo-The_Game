@@ -1,7 +1,7 @@
 #include <algorithm>
-#include <unordered_set>
-#include "thinker.h"
-#include "game.h"
+#include <set>
+#include "thinker.hpp"
+#include "game.hpp"
 
 typedef std::pair<unsigned short, unsigned short> combination;
 
@@ -45,7 +45,7 @@ bool thinker::unlock(){
 	return true;
 }
 
-direction thinker::getDirOfMovement( const coordinate& coord){
+inline direction thinker::getDirOfMovement( const _coord& coord){
 	direction retVal;
 	if( coord.first < (15/2 - 2) || coord.second  > (15/2 - 2) ){
 		if( coord.first == 0 )	retVal = direction::EAST;
@@ -62,7 +62,7 @@ direction thinker::getDirOfMovement( const coordinate& coord){
 	return retVal;
 }
 
-const _moveData thinker::isMovePossible(const coordinate& coord, int dist) const{
+const _moveData thinker::isMovePossible(const _coord& coord, int dist) const{
 	direction turnDir, currDir = this->getDirOfMovement(coord);
 
 	if( dist == 0 ) return { true, { coord, currDir,0} };
@@ -80,7 +80,7 @@ const _moveData thinker::isMovePossible(const coordinate& coord, int dist) const
 	    Stops +3
 	    Attack +4
 	    Crosses enemy -3 (ie. slightly more attacking)
-	*/	
+	*/
 	while(dist--){
 
 		increment_coord = {0,0};
@@ -103,7 +103,7 @@ const _moveData thinker::isMovePossible(const coordinate& coord, int dist) const
 		}
 		else{
 			turnDir = _ludo_coords.turnAtCorner(updated_coords, _ludo_coords.inner_turns); //For Inner Turns
-		
+
 			if (turnDir != NO_TURN)
 			{
 				currDir = turnDir;
@@ -211,7 +211,7 @@ bool thinker::setBestMove(){
 
 	Die::rolldie(dieNumbers);
 
-	std::unordered_set<unsigned short> usedRolls; 
+	std::set<unsigned short> usedRolls;
 
 	if( state->movingColours.at(state->currColour).empty() ){
         if( find(dieNumbers.begin(), dieNumbers.end(),6) != dieNumbers.end() ){
@@ -223,8 +223,8 @@ bool thinker::setBestMove(){
             return false;
         }
  	}
- 
- 	std::vector<coordinate> movingPos, opponentsPos;
+
+ 	std::vector<_coord> movingPos, opponentsPos;
  	for( size_t i=0; i < state->board.size(); ++i ){
 	 	for( size_t j=0; j < state->board.at(i).size(); ++j ){
 			if( state->board[i][j].areOpponentsPresent(state->currColour) )	opponentsPos.push_back({i,j});
@@ -245,7 +245,7 @@ bool thinker::setBestMove(){
 	return this->bestMove_available;
 }
 
-bool thinker::mindlessMovers ( unsigned short roll, std::vector<unsigned short> dieNumbers, unsigned short gotiIndex, std::vector<coordinate> movingColoursPos, std::vector<coordinate> opponentsPos, std::pair<std::vector<combination>, int> prevMoves ){
+bool thinker::mindlessMovers ( unsigned short roll, std::vector<unsigned short> dieNumbers, unsigned short gotiIndex, std::vector<_coord> movingColoursPos, std::vector<_coord> opponentsPos, std::pair<std::vector<combination>, int> prevMoves ){
 	if( dieNumbers.empty() ){
 		//This is the time for that 'heuristic' function's task
 		// m.lock();
@@ -254,7 +254,7 @@ bool thinker::mindlessMovers ( unsigned short roll, std::vector<unsigned short> 
 		return true;
 	}
 
-		/*Updated isMovePossible to take coordinate instead of goti pointer... 
+		/*Updated isMovePossible to take _coord instead of goti pointer...
 			BENEFITS -> 1. No need to update the gotis themselves
 						2. Passing a vector of coords, as movingGotis, is lighter, SAFER to pass by value to further chain*/
 	auto [ isPossible, smartData ] = this->isMovePossible(movingColoursPos.at(gotiIndex), roll);
@@ -298,7 +298,7 @@ bool thinker::mindlessMovers ( unsigned short roll, std::vector<unsigned short> 
 	    }
     }
 
-    std::unordered_set<unsigned short> set_rolls;
+    std::set<unsigned short> set_rolls;
 
 	std::vector<std::thread> threads;
 	for(size_t index=0; index < movingColoursPos.size() ; ++index){

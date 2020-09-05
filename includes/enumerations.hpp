@@ -1,9 +1,10 @@
 #pragma once
-#include<utility>
 
-typedef std::pair<int, int> coordinate;
+#include <utility>
 
-enum colours{
+typedef std::pair<int, int> _coord;
+
+enum _colour{
 	UnknownColour,
 	ColourLAAL,
 	ColourHARA,

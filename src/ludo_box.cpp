@@ -1,10 +1,11 @@
-#include "ludo_box.h"
+#include "ludo_box.hpp"
 
-#include "exceptions.h"
+#include "exceptions.hpp"
 #include "keywords.hpp"
-#include<iostream>
-#include<utility>	//ONLY for creating a temp pair, in appendGoti()
-#include<algorithm>
+#include <iostream>
+#include <utility>	//ONLY for creating a temp pair, in appendGoti()
+#include <algorithm>
+#include <array>
 
 using namespace std;
 
@@ -13,9 +14,9 @@ static inline std::ostream& operator<<(std::ostream& out, const std::pair<T1,T2>
 	return out<<'('<<p.first<<", "<<p.second<<')';
 }
 
-ludo_box::ludo_box(const coordinate& coord, BOX_TYPE type) : coords(coord), box_type(type){}
+ludo_box::ludo_box(const _coord& coord, BOX_TYPE type) : coords(coord), box_type(type){}
 
-bool ludo_box::areOpponentsPresent(colours colour) const{
+bool ludo_box::areOpponentsPresent(_colour colour) const{
 	auto colourChar = colourCodes.at(colour);
 
 	for ( auto const& ch : content )
@@ -34,7 +35,7 @@ bool ludo_box::removeGoti(std::shared_ptr<ludo_goti>& toBeRemoved){
 	{
 		//!Removing goti from the dataStructures is done by the next 3lines in the if block
 		if( boxGoti == toBeRemoved ){
-					
+
 				//Logically Removing the goti now
 			inBoxGotis.erase(std::find_if(inBoxGotis.begin(), inBoxGotis.end(), [&](shared_ptr<ludo_goti>& compare_goti){
 				return compare_goti == toBeRemoved;
@@ -70,11 +71,11 @@ bool ludo_box::removeGoti(std::shared_ptr<ludo_goti>& toBeRemoved){
 }
 
 short ludo_box::appendGoti(std::shared_ptr<ludo_goti> goti_to_add){
-	colours gotiColour = goti_to_add->get_gotiColour();
+	_colour gotiColour = goti_to_add->get_gotiColour();
 	auto colourChar = colourCodes.at(goti_to_add->gotiColour);
 
 	if(goti_to_add->getCoords() == make_pair(0,0)) return -1;
-	
+
 	if( box_type == _boxSTOP && isEmpty() )	content = colourChar;
 	else content.push_back(colourChar);
 	sanitizeContent();

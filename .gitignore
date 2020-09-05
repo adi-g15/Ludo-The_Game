@@ -2,4 +2,8 @@
 *sh
 experimental*
 includes/*.gch
-build/
+build/*
+!.gitkeep
+*.ilk
+*.pdb
+*.exe
