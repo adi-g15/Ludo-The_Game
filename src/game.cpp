@@ -1,15 +1,15 @@
 #include "game.hpp"
+#include "boardPrinter.hpp"
+#include "exceptions.hpp"
+#include "keywords.hpp"
+#include "thinker.hpp"
+#include "util/find_remove.hpp"
 
 #include <iostream>
 #include <utility>
 #include <algorithm>
 #include <set>
 #include <sstream>
-
-#include "boardPrinter.hpp"
-#include "exceptions.hpp"
-#include "keywords.hpp"
-#include "thinker.hpp"
 
 using namespace std;
 
@@ -240,7 +240,7 @@ short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, _smartMoveData moveDat
 	return 0;
 }
 
-bool game::handleMoveVal(short moveVal, vector<unsigned short> &dieNumbers, bool isRobot)
+bool game::handleMoveVal(short moveVal, vector<_dieVal> &dieNumbers, bool isRobot)
 { //! Messages won't print for robots
 	try
 	{
@@ -264,8 +264,8 @@ bool game::handleMoveVal(short moveVal, vector<unsigned short> &dieNumbers, bool
 /*BUG - For example for a random_goti_index the goti isn't movable, then that diceNumber is being discarded. [For eg. in 6,1 only 1 is moved and 6 not] */
 bool game::autoMove()
 { //! Return values same as the moveGoti_function
-	std::vector<unsigned short> dieNumbers;
-	std::set<unsigned short> triedGotis_indices; //! Stores the gotis that have been tried to move, FOR A SINGLE DIE_NUMBER
+	std::vector<_dieVal> dieNumbers;
+	std::set<unsigned> triedGotis_indices; //! Stores the gotis that have been tried to move, FOR A SINGLE DIE_NUMBER
 	_moveData moveObj;
 	bool wasSuccess = false;
 
@@ -299,7 +299,7 @@ bool game::autoMove()
 		++index;
 
 		updateDisplay();
-		customUtil::pause(1);
+		util::pause(1);
 
 		if (currentRoll == 6)
 		{
@@ -314,7 +314,7 @@ bool game::autoMove()
 		{ //! ie. gotis still remaining to try
 			if (movingGotis[currentGotiColour].empty())
 				return false;
-			unsigned short random_goti_index = rand() % (movingGotis[currentGotiColour].size()); // Randomly selected a goti to move this much units
+			unsigned random_goti_index = rand() % (movingGotis[currentGotiColour].size()); // Randomly selected a goti to move this much units
 
 			try
 			{
@@ -331,7 +331,7 @@ bool game::autoMove()
 					auto moveVal = moveGoti(movingGotis.at(currentGotiColour).at(random_goti_index), moveObj);
 					handleMoveVal(moveVal, dieNumbers);
 
-					customUtil::pause(0.7f);
+					util::pause(0.7f);
 				}
 			}
 			catch (std::out_of_range &e)
@@ -363,7 +363,7 @@ void game::attack(std::vector<_colour> coloursToRemove, std::shared_ptr<ludo_got
 
 	ludo_box &currBox = getBoardBox(attacker->curr_coords);
 
-	for (unsigned short i = 0; i < currBox.inBoxGotis.size(); ++i)
+	for (unsigned i = 0; i < currBox.inBoxGotis.size(); ++i)
 	{ //Caution - May be a probable cause for iterator invalidation
 		if (std::find(coloursToRemove.begin(), coloursToRemove.end(), currBox.inBoxGotis[i]->gotiColour) != coloursToRemove.end())
 		{ //! emulating "if gotiColour in colourToRemove"
@@ -470,7 +470,7 @@ bool game::unlockGoti()
 	}
 }
 
-unsigned short game::getNumLockedGotis(_colour gotiColour)
+unsigned game::getNumLockedGotis(_colour gotiColour)
 {
 	auto num = 0;
 	for (auto const &lockedBox : lockedPositions.find(gotiColour)->second)
@@ -528,23 +528,23 @@ bool game::lockGoti(std::shared_ptr<ludo_goti> goti_to_lock)
 void game::takeIntro()
 {
 	std::pair<int, int> tmpDimen(0, 0);
-	tmpDimen = customUtil::getTerminalDimen();
+	tmpDimen = util::getTerminalDimen();
 
-	customUtil::place_v_center("[NOTICE] Please ensure window is at least 62*31");
+	util::place_v_center("[NOTICE] Please ensure window is at least 31*31");
 	cout << endl;
 
 	//QUESTION - How to call the function pointer through an iterator ?
 
 	do
 	{
-		tmpDimen = customUtil::getTerminalDimen();
+		tmpDimen = util::getTerminalDimen();
 
-	} while (tmpDimen.first < 62 || tmpDimen.second < 31);
+	} while (tmpDimen.first < 31 || tmpDimen.second < 62);	//tmpDimen -> row*column
 
-	_BoardPrinter::titleBar(tmpDimen.first);
+	_BoardPrinter::titleBar(tmpDimen.second);
 
-	customUtil::place_v_center(tmpDimen.second - 7, "");
-	customUtil::align_text_center(tmpDimen.first, "Enter names of the Players (Leave empty if not playing, or type \"ROBOT\") : ");
+	util::place_v_center(tmpDimen.first - 7, "");
+	util::align_text_center(tmpDimen.second, "Enter names of the Players (Leave empty if not playing, or type \"ROBOT\") : ");
 
 	string playerName;
 	_colour colour;
@@ -556,23 +556,23 @@ void game::takeIntro()
 	while (p <= Player4)
 	{
 
-		customUtil::place_center(tmpDimen.first, string("Player") + to_string(p) + string(" - "));
+		util::place_center(tmpDimen.second, string("Player") + to_string(p) + string(" - "));
 
 		getline(cin, playerName, '\n');
-		customUtil::trim(playerName);
+		util::trim(playerName);
 		if (playerName != "")
 		{
 			if (shortcutsMap.find(playerName) != shortcutsMap.end())
 			{
 				shortcutsMap.find(playerName)->second; //Calling using the function pointer
 			}
-			else if (customUtil::icompare(playerName, robot_keyword))
+			else if (util::icompare(playerName, robot_keyword))
 			{
 				++numRobots;
 				activePlayerMap.insert({{p, {"ROBOT " + to_string(numRobots), colour}}});
 				robotPlayers.insert({p, RobotKind::randomRobo});
 			}
-			else if (customUtil::icompare(playerName, thinker_keyword))
+			else if (util::icompare(playerName, thinker_keyword))
 			{
 				++numThinkers;
 				activePlayerMap.insert({{p, {"Thinker " + to_string(numThinkers), colour}}});
@@ -580,7 +580,7 @@ void game::takeIntro()
 			}
 			else
 			{
-				customUtil::trim(playerName);
+				util::trim(playerName);
 				activePlayerMap.insert({{p, {playerName, colour}}});
 			}
 		}
@@ -623,12 +623,12 @@ bool game::isPlayerPlaying(player p)
 	return activePlayerMap.find(p) != activePlayerMap.end();
 }
 
-vector<unsigned short> Die::rolldie()
+vector<_dieVal> Die::rolldie()
 {
 
-	std::vector<unsigned short> v;
+	std::vector<_dieVal> v;
 
-	unsigned short dieNum = Die::dist[rand() % 4](Die::mt[rand() % 4]);
+	_dieVal dieNum = Die::dist[rand() % 4](Die::mt[rand() % 4]);
 	do
 	{
 		v.push_back(dieNum);
@@ -654,12 +654,12 @@ vector<unsigned short> Die::rolldie()
 	return v;
 }
 
-void Die::rolldie(vector<unsigned short> &Vec)
+void Die::rolldie(vector<_dieVal> &Vec)
 {
 
-	std::vector<unsigned short> tmpVec;
+	std::vector<_dieVal> tmpVec;
 
-	unsigned short dieNum = Die::dist[rand() % 4](Die::mt[rand() % 4]);
+	_dieVal dieNum = Die::dist[rand() % 4](Die::mt[rand() % 4]);
 	if (dieNum != 6)
 	{ //To prevent cases like, dieNumbers = {4, 6} (Think! It IS possible in the do-while)
 		Vec.push_back(dieNum);
@@ -697,14 +697,14 @@ void game::updateDisplay()
 
 	do
 	{
-		tmpDimen = customUtil::getTerminalDimen();
+		tmpDimen = util::getTerminalDimen();
 		boxlen = (2 * min(tmpDimen.first, tmpDimen.second) - 32) / 15;
 
 	} while (min(tmpDimen.first, tmpDimen.second) < 32);
 
 	_BoardPrinter::titleBar(tmpDimen.first);
 
-	customUtil::place_center(tmpDimen.first - 15 * (boxlen + 1) + 3 - 4);
+	util::place_center(tmpDimen.first - 15 * (boxlen + 1) + 3 - 4);
 	cout << "  ";
 	for (size_t i = 0; i < 10; i++)
 	{
@@ -719,7 +719,7 @@ void game::updateDisplay()
 		cout << i;
 	}
 	cout << "\n  ";
-	customUtil::place_center(tmpDimen.first - 15 * (boxlen + 1) + 3 - 4);
+	util::place_center(tmpDimen.first - 15 * (boxlen + 1) + 3 - 4);
 
 	for (size_t i = 0; i < (boxlen + 1) * 15 + 1; i++)
 		cout << '-';
@@ -783,7 +783,7 @@ void game::updateDisplay()
 #undef BOARD_CENTER
 
 	cout << "\n\n";
-	customUtil::align_text_center(activePlayerMap[currentPlayer].first);
+	util::align_text_center(activePlayerMap[currentPlayer].first);
 	cout << "\n";
 	for (int i = 0; i < tmpDimen.first; ++i)
 		cout << '-';
@@ -848,7 +848,7 @@ void game::play(bool boolVal)
 	currentGotiColour = colourOrder[0];
 	currentPlayer = coloursMap[currentGotiColour];
 
-	std::vector<unsigned short> dieNumbers;
+	std::vector<_dieVal> dieNumbers;
 
 	//Lambda Definti ons
 	auto lambda_next = [&]() {
@@ -873,18 +873,14 @@ void game::play(bool boolVal)
 		dieNumbers.clear();
 	};
 	auto lambda_isSIXinRoll = [&]() {
-		for (auto &&i : dieNumbers)
-		{
-			if (i == 6)
-				return true;
-		}
-		return false;
+		return std::find(dieNumbers.begin(), dieNumbers.end(), 6) != dieNumbers.end();
 	};
 	//Lambda Defintions
 
 	while (!this->gameisFinished())
 	{ //The gameplay loop
-		unsigned short enteredRoll, choice_num;
+		_dieVal enteredRoll;
+		unsigned choice_num;
 		bool isRobot = robotPlayers.find(currentPlayer) != robotPlayers.end();
 		string inputStr; //! Note - To use shortcuts like ":settings", ":rules, and to have 'variable number of inputs'
 		updateDisplay();
@@ -914,21 +910,22 @@ void game::play(bool boolVal)
 		//Automating Condition #1
 		if (movingGotis[currentGotiColour].empty())
 		{
-			if (!lambda_isSIXinRoll())
+				//no six
+			if ( ! util::contains<unsigned>(dieNumbers, 6) )
 			{ //No movable goti, so continue to next player
 				cout << "\nNo movable goti, for the moves" << endl;
-				customUtil::pause(1.0f);
+				util::pause(1.0f);
 
 				lambda_next();
 				continue;
 			}
 			else
 			{ //No movable gotis currently, hence automatically open one, since 6 is available
-				customUtil::pause(0.4f);
+				util::pause(0.4f);
 				unlockGoti();
 				updateDisplay();
 				cout << "Goti unlocked!" << endl;
-				customUtil::pause(0.8f);
+				util::pause(0.8f);
 				dieNumbers.erase(find(dieNumbers.begin(), dieNumbers.end(), 6));
 			}
 		}
@@ -937,7 +934,7 @@ void game::play(bool boolVal)
 		{
 
 			updateDisplay();
-			unsigned short counter = 1;
+			unsigned counter = 1;
 			cout << "\nChose from these gotis : ";
 			if (lambda_isSIXinRoll())
 				cout << "\n0. Unlock New Goti (just type 0)\n\n";
@@ -960,7 +957,7 @@ void game::play(bool boolVal)
 				if (!moveData.isPossible)
 				{
 					cout << "Move not possible" << endl;
-					customUtil::pause(0.6f);
+					util::pause(0.6f);
 				}
 				else
 				{ //goti has been moved
@@ -968,7 +965,7 @@ void game::play(bool boolVal)
 					handleMoveVal(moveVal, dieNumbers, false);
 
 					updateDisplay();
-					customUtil::pause(1);
+					util::pause(1);
 				}
 				dieNumbers.erase(dieNumbers.begin()); //! Removing the used goti number (which is actually dieNumbers[0])
 				lambda_next();
@@ -981,7 +978,7 @@ void game::play(bool boolVal)
 			do
 			{
 				getline(cin, inputStr);
-				customUtil::trim(inputStr);
+				util::trim(inputStr);
 			} while (inputStr.empty());
 
 			//! This is just a simple block, for separating the process, of Fetching choice_num and enteredRoll
@@ -1005,7 +1002,7 @@ void game::play(bool boolVal)
 						else
 						{
 							cout << "Chhaka to aaye pehle, tab na goti niklegi yar!\n";
-							customUtil::pause(1);
+							util::pause(1);
 							continue; //Wrong Input
 						}
 					}
@@ -1014,7 +1011,7 @@ void game::play(bool boolVal)
 						stream >> enteredRoll;
 
 						if (
-							customUtil::isSum(enteredRoll, dieNumbers) //If output is 6,5 then entering 11 is valid
+							util::isSum(enteredRoll, dieNumbers) //If output is 6,5 then entering 11 is valid
 							&& (choice_num <= counter)				   //Verifies Entered values are valid
 						)
 						{
@@ -1022,17 +1019,17 @@ void game::play(bool boolVal)
 							if (moveVal == -1)
 							{ //Failure
 								cout << "Invalid Move" << endl;
-								customUtil::pause(1);
+								util::pause(1);
 							}
 							else
 							{ //goti has been moved
 								handleMoveVal(moveVal, dieNumbers);
 
-								auto elements = customUtil::isSumOfElements(enteredRoll, dieNumbers);
-								for_each(elements.crbegin(), elements.crend(), [&](unsigned short i) {
+								auto elements = util::isSumOfElements(enteredRoll, dieNumbers);
+								for_each(elements.crbegin(), elements.crend(), [&](_dieVal i) {
 									dieNumbers.erase(std::find(dieNumbers.begin(), dieNumbers.end(), i));
 								});
-								customUtil::pause(0.5);
+								util::pause(0.5);
 							}
 						}
 					}
@@ -1065,41 +1062,41 @@ void game::endGame(string cause) const
 //TODO - Complete Logic for the options (Will implement after i have made a gui, or web version)
 void game::settingsMenu()
 {
-	auto termDimen = customUtil::getTerminalDimen();
-	unsigned short choice = 11;
+	auto termDimen = util::getTerminalDimen();
+	unsigned choice = 11;
 	std::string inputStr;
 
 	do
 	{
-		_BoardPrinter::titleBar(termDimen.first);
+		_BoardPrinter::titleBar(termDimen.second);
 
-		customUtil::place_v_center(termDimen.second - 2 * (2 + 11 + 4)); //height of 2 taken by titleBar, 11 by Choices, and 4 by Input
+		util::place_v_center(termDimen.first - 2 * (2 + 11 + 4)); //height of 2 taken by titleBar, 11 by Choices, and 4 by Input
 
-		customUtil::align_text_center(termDimen.first, "1. Change 'GamePlay' Order (PlayerWise)");
+		util::align_text_center(termDimen.second, "1. Change 'GamePlay' Order (PlayerWise)");
 		cout << '\n';
-		customUtil::align_text_center(termDimen.first, "2. Change 'Number of gotis_per_user'");
+		util::align_text_center(termDimen.second, "2. Change 'Number of gotis_per_user'");
 		cout << '\n';
-		customUtil::align_text_center(termDimen.first, "3. Which goti should 'Start' First?");
+		util::align_text_center(termDimen.second, "3. Which goti should 'Start' First?");
 		cout << '\n';
-		customUtil::align_text_center(termDimen.first, "4. Assign Colours to Players");
+		util::align_text_center(termDimen.second, "4. Assign Colours to Players");
 		cout << '\n';
-		customUtil::align_text_center(termDimen.first, "5. Remove 'stops'");
+		util::align_text_center(termDimen.second, "5. Remove 'stops'");
 		cout << '\n';
-		customUtil::align_text_center(termDimen.first, "6. Change Title shown at Top");
+		util::align_text_center(termDimen.second, "6. Change Title shown at Top");
 		cout << '\n';
-		customUtil::align_text_center(termDimen.first, "7. Change Player Names");
+		util::align_text_center(termDimen.second, "7. Change Player Names");
 		cout << '\n';
-		customUtil::align_text_center(termDimen.first, "8. Reset to Original Positions");
+		util::align_text_center(termDimen.second, "8. Reset to Original Positions");
 		cout << '\n';
-		customUtil::align_text_center(termDimen.first, "9. Use different Random_Sequence for each (y/n)");
+		util::align_text_center(termDimen.second, "9. Use different Random_Sequence for each (y/n)");
 		cout << '\n';
-		customUtil::align_text_center(termDimen.first, "10. Let's Cheat... ;D (Can remove opponents gotis)");
+		util::align_text_center(termDimen.second, "10. Let's Cheat... ;D (Can remove opponents gotis)");
 		cout << '\n';
-		customUtil::align_text_center(termDimen.first, "[ 11. Alwida... ]");
+		util::align_text_center(termDimen.second, "[ 11. Alwida... ]");
 		cout << "\n\n";
 
-		customUtil::align_text_center(termDimen.first, "----------------------------");
-		customUtil::align_text_center(termDimen.first - 2, "Enter Choice : ");
+		util::align_text_center(termDimen.second, "----------------------------");
+		util::align_text_center(termDimen.second - 2, "Enter Choice : ");
 		cin >> choice;
 	} while (choice <= 11);
 
@@ -1107,12 +1104,12 @@ void game::settingsMenu()
 	{
 	case 1:
 	{
-		_BoardPrinter::titleBar(termDimen.first);
-		customUtil::place_v_center(termDimen.second - 2 * (2 + 1)); //height of 2 taken by titleBar, 11 by Choices, and 4 by Input
+		_BoardPrinter::titleBar(termDimen.second);
+		util::place_v_center(termDimen.first - 2 * (2 + 1)); //height of 2 taken by titleBar, 11 by Choices, and 4 by Input
 
 		cout << "Type playerNumbers in order (for eg. \"1432\") : ";
 		cin >> inputStr;
-		// customUtil::strip(inputStr, ' ');
+		// util::strip(inputStr, ' ');
 		// inputNum = std::stoi(inputStr);
 
 		//TODO
@@ -1158,8 +1155,8 @@ void game::notYetImplementedScr() const
 
 	_BoardPrinter::titleBar();
 
-	customUtil::place_v_center();
-	customUtil::align_text_center("This feature has not yet been implemented !");
+	util::place_v_center();
+	util::align_text_center("This feature has not yet been implemented !");
 }
 
 game::game() : colourOrder({ColourLAAL, ColourNEELA, ColourPEELA, ColourHARA})
@@ -1188,7 +1185,7 @@ game::game() : colourOrder({ColourLAAL, ColourNEELA, ColourPEELA, ColourHARA})
 
 	});
 
-	unsigned short i, j;
+	unsigned i, j;
 	//! Marking the LockRooms and the HomePath
 	for (i = 0; i < 6; i++)
 	{

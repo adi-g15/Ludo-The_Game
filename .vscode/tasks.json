@@ -9,6 +9,7 @@
                 "/EHsc",
                 "/std:c++17",
                 "/I${workspaceFolder}\\includes",
+                "/I${workspaceFolder}\\.",
                 "/Fe:",
                 "${workspaceFolder}\\ludo.exe",
                 "${workspaceFolder}\\main.cpp",

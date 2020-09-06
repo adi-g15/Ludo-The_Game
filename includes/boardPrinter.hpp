@@ -3,7 +3,7 @@
 #include <iostream>
 #include <array>
 #include "ludo_box.hpp"
-#include "utilities.hpp"
+#include "util/terminal.hpp"
 
 class _BoardPrinter{ //! @info Only for use by updateDisplay() & takeIntro()
 private:
@@ -44,23 +44,23 @@ public:
 
 //Defintions Start
 _BoardPrinter::_BoardPrinter( const std::vector<std::vector<ludo_box>>& boardToLink ) : board(boardToLink){
-	boxlen = 0;
-	termWidth = customUtil::getTerminalDimen().first;
+	this->boxlen = 0;
+	this->termWidth = util::getTerminalDimen().second;
 }
 
 void _BoardPrinter::refresh_Dimensions(){
-	termWidth = customUtil::getTerminalDimen().first;
+	this->termWidth = util::getTerminalDimen().second;
 }
 
 //	DEFINITIONS	start//
 void _BoardPrinter::msgScreen(const std::string& msg){
 	titleBar();
-	std::pair<int,int> termDimen = customUtil::getTerminalDimen();
+	std::pair<int,int> termDimen = util::getTerminalDimen();
 	std::cout<<'\n';
 
-	for(int i=0; i<(termDimen.second-3)/2; ++i)	std::cout<<'\n';
-	customUtil::align_text_center(customUtil::getTerminalDimen().first, msg);
-	for(int i=0; i<termDimen.second - (termDimen.second-3)/2; ++i)	std::cout<<'\n';
+	for(int i=0; i<(termDimen.first-3)/2; ++i)	std::cout<<'\n';
+	util::align_text_center(util::getTerminalDimen().second, msg);
+	for(int i=0; i<termDimen.first - (termDimen.first-3)/2; ++i)	std::cout<<'\n';
 }
 
 void _BoardPrinter::errorScreen(const std::string& errMsg){
@@ -80,14 +80,14 @@ void _BoardPrinter::titleBar(int width){	//Considering sufficient width, to be a
 	 #endif
 
 	std::cout << std::endl;
-	customUtil::align_text_center(width, "NAMASTE from \"Ludo - The Game\" :D");
+	util::align_text_center(width, "NAMASTE from \"Ludo - The Game\" :D");
 	std::cout<<'\n';
 	while (width--) std::cout<<'=';
 }
 
 void _BoardPrinter::titleBar(){
 
-	return titleBar( customUtil::getTerminalDimen().first );
+	return titleBar( util::getTerminalDimen().second );
 }
 
 void _BoardPrinter::row_type1(int nrow){
@@ -100,7 +100,7 @@ void _BoardPrinter::row_type1(int nrow){
 	std::cout<<'|';
 
 	for (size_t i = 0; i < 3; i++){
-		customUtil::align_text_center(boxlen, board[nrow][6+i].content);
+		util::align_text_center(boxlen, board[nrow][6+i].content);
 		std::cout<<'|';
 	}
 
@@ -114,21 +114,21 @@ void _BoardPrinter::row_type2(int nrow){
 	std::cout<<'|';
 
 	for (size_t i = 0; i < boxlen; i++)	std::cout<<'\\';
-	customUtil::align_text_center(boxlen+2, board[nrow][1].content);
+	util::align_text_center(boxlen+2, board[nrow][1].content);
 	for (size_t i = 0; i < (boxlen)*2 + 1; i++)	std::cout<<'\\';
-	customUtil::align_text_center(boxlen+2, board[nrow][4].content);
+	util::align_text_center(boxlen+2, board[nrow][4].content);
 	for (size_t i = 0; i < boxlen; i++) std::cout<<'\\';
 	std::cout<<'|';
 
 	for (size_t i = 0; i < 3; i++){
-		customUtil::align_text_center(boxlen, board[nrow][6+i].get_box_content());
+		util::align_text_center(boxlen, board[nrow][6+i].get_box_content());
 		std::cout<<'|';
 	}
 
 	for (size_t i = 0; i < boxlen; i++)	std::cout<<'\\';
-	customUtil::align_text_center(boxlen+2, board[nrow][10].get_box_content());
+	util::align_text_center(boxlen+2, board[nrow][10].get_box_content());
 	for (size_t i = 0; i < (boxlen)*2 + 1; i++)	std::cout<<'\\';
-	customUtil::align_text_center(boxlen+2, board[nrow][13].get_box_content());
+	util::align_text_center(boxlen+2, board[nrow][13].get_box_content());
 	for (size_t i = 0; i < boxlen; i++) std::cout<<'\\';
 	std::cout<<"|\n";
 }
@@ -138,7 +138,7 @@ void _BoardPrinter::row_type3(int nrow){
 	//!Explanatory comments in _BoardPrinter::row_type1
 	std::cout<<'|';
 	for (size_t i = 0; i < 6; i++){
-		customUtil::align_text_center(boxlen, board[nrow][i].get_box_content());
+		util::align_text_center(boxlen, board[nrow][i].get_box_content());
 		std::cout<<'|';
 	}
 
@@ -146,7 +146,7 @@ void _BoardPrinter::row_type3(int nrow){
 	std::cout<<'|';
 
 	for (size_t i = 9; i < 15; i++){
-		customUtil::align_text_center(boxlen, board[nrow][i].get_box_content());
+		util::align_text_center(boxlen, board[nrow][i].get_box_content());
 		std::cout<<'|';
 	}
 	std::cout<<'\n';
@@ -156,21 +156,21 @@ void _BoardPrinter::row_type4(int nrow){
 	//!Explanatory comments in _BoardPrinter::row_type1
 	std::cout<<'|';
 
-	customUtil::align_text_center(boxlen, board[nrow][0].get_box_content());	std::cout<<'|';
+	util::align_text_center(boxlen, board[nrow][0].get_box_content());	std::cout<<'|';
 	for (size_t i = 1; i < 5; i++){
-		customUtil::align_text_center(boxlen, board[nrow][i].get_box_content());
+		util::align_text_center(boxlen, board[nrow][i].get_box_content());
 		std::cout<<' ';
 	}
-	customUtil::align_text_center(boxlen, board[nrow][5].get_box_content());  std::cout<<'|';
+	util::align_text_center(boxlen, board[nrow][5].get_box_content());  std::cout<<'|';
 
 	for (size_t i = 0; i < (boxlen+1)*3 -1; i++) std::cout<<' ';
 	std::cout<<'|';
 
 	for (size_t i = 9; i < 13; i++){
-		customUtil::align_text_center(boxlen, board[nrow][i].get_box_content());	std::cout<<' ';
+		util::align_text_center(boxlen, board[nrow][i].get_box_content());	std::cout<<' ';
 	}
 	for (size_t i = 13; i < 15; i++){
-		customUtil::align_text_center(boxlen, board[nrow][i].get_box_content());
+		util::align_text_center(boxlen, board[nrow][i].get_box_content());
 		std::cout<<'|';
 	}
 	std::cout<<'\n';
@@ -178,7 +178,7 @@ void _BoardPrinter::row_type4(int nrow){
 
 void _BoardPrinter::inter_type1(){
 		//Inter-Row line Start
-    customUtil::place_center(termWidth - 15*(boxlen+1) +3 -4);
+    util::place_center(termWidth - 15*(boxlen+1) +3 -4);
 	std::cout<<"  |";
 	for (size_t i = 0; i < boxlen; i++)	std::cout<<'\\';
 	for (size_t i = 0; i < boxlen+2; i++) std::cout<<'-';
@@ -202,7 +202,7 @@ void _BoardPrinter::inter_type1(){
 }
 
 void _BoardPrinter::inter_type2(){
-    customUtil::place_center(termWidth - 15*(boxlen+1) +3 -4);
+    util::place_center(termWidth - 15*(boxlen+1) +3 -4);
 	std::cout<<"  |";
 	for (size_t i = 0; i < boxlen; i++)	std::cout<<'\\';
 	for (size_t i = 0; i < boxlen+2; i++) std::cout<<'-';
@@ -227,7 +227,7 @@ void _BoardPrinter::inter_type2(){
 }
 
 void _BoardPrinter::inter_type3(){
-    customUtil::place_center(termWidth - 15*(boxlen+1) +3 -4);	std::cout<<"  |";
+    util::place_center(termWidth - 15*(boxlen+1) +3 -4);	std::cout<<"  |";
 	for (size_t i = 0; i < (boxlen+1)*6-1; i++)	std::cout<<'\\';
 	std::cout<<'|';
 
@@ -243,14 +243,14 @@ void _BoardPrinter::inter_type3(){
 }
 
 void _BoardPrinter::inter_type4(){
-    customUtil::place_center(termWidth - 15*(boxlen+1) +3 -4);
+    util::place_center(termWidth - 15*(boxlen+1) +3 -4);
 	std::cout<<"  |";
 	for (size_t i = 0; i < (boxlen+1)*15-1; i++)	std::cout<<'-';
 	std::cout<<"|\n";
 }
 
 void _BoardPrinter::inter_type5(){
-    customUtil::place_center(termWidth - 15*(boxlen+1) +3 -4);
+    util::place_center(termWidth - 15*(boxlen+1) +3 -4);
 	std::cout<<"  |";
 	for (size_t i = 0; i < (boxlen+1)*6-1; i++) std::cout<<'-';
     std::cout<<'|';

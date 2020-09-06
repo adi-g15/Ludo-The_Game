@@ -14,5 +14,6 @@ find_package(Threads REQUIRED)
 target_link_libraries(ludo PRIVATE Threads::Threads)
 
 target_include_directories(ludo PRIVATE includes)
+target_include_directories(ludo PRIVATE .)
 
 include(CPack)

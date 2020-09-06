@@ -53,16 +53,15 @@ Either install cmake, and MSVC compiler, or open the Makefile, and execute the c
 │   ├── boardPrinter.hpp
 │   ├── die.hpp
 │   ├── enumerations.hpp
-|   ├── exceptions.h
-|   ├── game.h
+|   ├── exceptions.hpp
+|   ├── game.hpp
 |   ├── keywords.hpp
-|   ├── ludo_box.h
-|   ├── ludo_coords.h
-|   ├── ludo_goti.h
-|   ├── ludo_state.h
+|   ├── ludo_box.hpp
+|   ├── ludo_coords.hpp
+|   ├── ludo_goti.hpp
+|   ├── ludo_state.hpp
 │   ├── simpleTuple.hpp
-|   ├── thinker.h
-│   └── utilities.hpp
+│   └── thinker.hpp
 ├── src
 |   ├── exceptions.cpp
 |   ├── game.cpp
@@ -72,6 +71,7 @@ Either install cmake, and MSVC compiler, or open the Makefile, and execute the c
 |   ├── ludo_state.cpp
 |   ├── thinker.cpp
 |   └── main.cpp
+├── util    //my utility library
 ├── CMakeLists.txt
 ├── LICENSE.md
 └── README.md

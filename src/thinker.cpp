@@ -3,8 +3,6 @@
 #include "thinker.hpp"
 #include "game.hpp"
 
-typedef std::pair<unsigned short, unsigned short> combination;
-
 thinker::thinker(game* original){
 	this->state = new ludo_state(original);
 	this->original = original;
@@ -15,7 +13,7 @@ thinker::~thinker(){
 }
 
 // namespace Die{
-// 	void rolldie(std::vector<unsigned short>& dieNumbers){
+// 	void rolldie(std::vector<_dieVal>& dieNumbers){
 // 		dieNumbers.push_back(6);
 // 		dieNumbers.push_back(1);
 // 	}
@@ -204,14 +202,14 @@ std::vector<combination> thinker::getBestMove(){
 }
 
 bool thinker::setBestMove(){
-	std::vector<unsigned short> dieNumbers;
+	std::vector<_dieVal> dieNumbers;
 	std::map<std::vector<combination>, int> completeMoves;
 
 	int maxProfit = 0;
 
 	Die::rolldie(dieNumbers);
 
-	std::set<unsigned short> usedRolls;
+	std::set<_dieVal> usedRolls;
 
 	if( state->movingColours.at(state->currColour).empty() ){
         if( find(dieNumbers.begin(), dieNumbers.end(),6) != dieNumbers.end() ){
@@ -245,7 +243,7 @@ bool thinker::setBestMove(){
 	return this->bestMove_available;
 }
 
-bool thinker::mindlessMovers ( unsigned short roll, std::vector<unsigned short> dieNumbers, unsigned short gotiIndex, std::vector<_coord> movingColoursPos, std::vector<_coord> opponentsPos, std::pair<std::vector<combination>, int> prevMoves ){
+bool thinker::mindlessMovers ( _dieVal roll, std::vector<_dieVal> dieNumbers, _dieVal gotiIndex, std::vector<_coord> movingColoursPos, std::vector<_coord> opponentsPos, std::pair<std::vector<combination>, int> prevMoves ){
 	if( dieNumbers.empty() ){
 		//This is the time for that 'heuristic' function's task
 		// m.lock();
@@ -298,7 +296,7 @@ bool thinker::mindlessMovers ( unsigned short roll, std::vector<unsigned short> 
 	    }
     }
 
-    std::set<unsigned short> set_rolls;
+    std::set<_dieVal> set_rolls;
 
 	std::vector<std::thread> threads;
 	for(size_t index=0; index < movingColoursPos.size() ; ++index){

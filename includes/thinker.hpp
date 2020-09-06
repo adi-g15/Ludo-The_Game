@@ -1,15 +1,17 @@
+#include "keywords.hpp"
+#include "ludo_state.hpp"
+#include "die.hpp"
+
 #include <vector>
 #include <mutex>
 #include <thread>
-#include "keywords.hpp"
-#include "ludo_state.hpp"
 
 	//To solve - "game doesn't name a type, even thogh game.h is included"
 struct _moveData;
 class game;
 class ludo_state;
 
-typedef std::pair<unsigned short, unsigned short> combination;
+typedef std::pair<unsigned, _dieVal> combination;
 
 class thinker{
 	/*Each 'combination' holds these -
@@ -36,7 +38,7 @@ public:
 	//NOTE - A consideration that has been used is, that when any move is made by any colour, then its goti CANT BE REMOVED, so the indexes of gotis that will be in combination will be valid for the whole move, since neither their order will change being in a set*/
 	bool setBestMove();	//Uses 'lots' of midlessMovers to gather moveProfit from each, then pick out the best ones
 	std::vector<combination> getBestMove();
-	bool mindlessMovers ( unsigned short roll, std::vector<unsigned short> dieNumbers, unsigned short gotiIndex, std::vector<_coord> movingColoursPos, std::vector<_coord> opponentsPos, std::pair<std::vector<combination>, int> prevMoves );
+	bool mindlessMovers ( _dieVal roll, std::vector<_dieVal> dieNumbers, unsigned gotiIndex, std::vector<_coord> movingColoursPos, std::vector<_coord> opponentsPos, std::pair<std::vector<combination>, int> prevMoves );
 	bool implementBestMove();
 
 	bool updateState(game*);

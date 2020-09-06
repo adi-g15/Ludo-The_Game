@@ -12,23 +12,20 @@ int main(int argc, char const *argv[])
 	game newGame;
 
 	//GamePlay starts
-
 	try
 	{
 
 		short playConsent = 1;
 		do
 		{
-			// for(; numGamePlays<1000; ++numGamePlays)
+			if (!newGame.InitGame(playConsent))
 			{
-				if (!newGame.InitGame(playConsent))
-				{
-					std::cerr << "Couldn't initiate the game... Exiting" << std::endl;
-					return -1;
-				}
-
-				newGame.play();
+				std::cerr << "Couldn't initiate the game... Exiting" << std::endl;
+				return -1;
 			}
+
+			newGame.play();
+
 			std::cout << "Enter 1 if you want to play again and reset\nEnter 2 if you want to play with same players\nAnything else to say GoodBye :-)\nYour Consent : ";
 			std::cin >> playConsent;
 
@@ -37,9 +34,7 @@ int main(int argc, char const *argv[])
 	}
 	catch (endApplication &e)
 	{
-		std::cout << "That was the " << numGamePlays + 1 << "th run" << std::endl;
 		std::cerr << e.what() << std::endl;
-		;
 		return 0;
 	}
 	catch (std::exception &e)

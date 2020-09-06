@@ -96,7 +96,7 @@ void ludo_box::sanitizeContent(void){
     std::array<char, 4> gotiChar = {'R', 'G', 'Y', 'B'};
 
     for( auto &i : gotiChar ){
-	    unsigned short gotiCount = 0;
+	    unsigned gotiCount = 0;
         auto loc = content.find(i);
         if( loc == static_cast<size_t>(-1) ){ continue; }
         ++gotiCount; ++loc;

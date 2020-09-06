@@ -49,7 +49,7 @@ private:
 	std::vector<std::vector<ludo_box>> board;
 	std::map<_colour, std::vector<std::reference_wrapper<ludo_box>>> lockedPositions;
 	std::map<_colour, std::vector<std::shared_ptr<ludo_goti>>> movingGotis;
-	std::map<_colour, unsigned short> numfinishedGotis;
+	std::map<_colour, unsigned> numfinishedGotis;
 
 	/*@brief 1st in this order is the one at bottom left, and next ones anti-clockwise to this*/
 	std::array<_colour,4> colourOrder;
@@ -63,7 +63,7 @@ private:
 
 	inline bool gameisFinished(void);
 	inline bool isPlayerPlaying(player);
-	unsigned short getNumLockedGotis(_colour);
+	unsigned getNumLockedGotis(_colour);
 	/*  @brief Simply moves a goti of same colour from the locked goti positions,
 			   and move the goti to movingGotis, and the std::make_shared to starting box
 		@returns bool indicating whether enough locked gotis were available*/
@@ -94,7 +94,7 @@ public:
 	inline short moveGoti(std::shared_ptr<ludo_goti>, unsigned int dist);
 	inline short moveGoti(std::shared_ptr<ludo_goti>, _moveData moveData);
 	short moveGoti(std::shared_ptr<ludo_goti>, _smartMoveData moveData);	//Moves goti to ENDPOINT 'DIRECTLY' (basic checks only)
-	bool handleMoveVal( short, std::vector<unsigned short> &dieNumbers, bool isRobot = true);	//Handles value returned by moveGoti() calls
+	bool handleMoveVal( short, std::vector<_dieVal> &dieNumbers, bool isRobot = true);	//Handles value returned by moveGoti() calls
 
 	const _moveData isMovePossible(std::shared_ptr<ludo_goti>&, int dist);	//! Can use std::variant too
 																	//The first is goti_index, and 2nd is tried roll
