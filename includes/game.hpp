@@ -43,8 +43,8 @@ private:
 
 	ludo_coords _ludo_coords; //! An object to make the ludo_coords available to us
 
-	inline bool gameisFinished();
-	inline bool isPlayerPlaying(player);
+	bool gameisFinished();
+	bool isPlayerPlaying(player);
 	unsigned getNumLockedGotis(_colour);
 	/*  @brief Simply moves a goti of same colour from the locked goti positions,
 			   and move the goti to movingGotis, and the std::make_shared to starting box
@@ -73,7 +73,7 @@ public:
 	std::map<player, std::pair<std::string, _colour>> activePlayerMap;
 	std::map<player, RobotKind> robotPlayers;
 
-	inline short moveGoti(std::shared_ptr<ludo_goti>, unsigned int dist);
+	short moveGoti(std::shared_ptr<ludo_goti>, unsigned int dist);
 	short moveGoti(std::shared_ptr<ludo_goti>, _smartMoveData moveData);			  //Moves goti to ENDPOINT 'DIRECTLY' (basic checks only)
 	bool handleMoveVal(short, std::vector<_dieVal> &dieNumbers, bool isRobot = true); //Handles value returned by moveGoti() calls
 
@@ -95,12 +95,12 @@ public:
 	void play(bool = true);
 	void settingsMenu();
 	void notYetImplementedScr() const;
-	inline ludo_box &getBoardBox(const _coord &coords);
-	inline const ludo_box &getBoardBox(const _coord &coords) const;
+	ludo_box &getBoardBox(const _coord &coords);
+	const ludo_box &getBoardBox(const _coord &coords) const;
 
 	//Current State Validation Methods
-	inline bool isValid(const _coord &coords) const;
-	inline bool isValid(const std::shared_ptr<ludo_goti> &) const;
+	bool isValid(const _coord &coords) const;
+	bool isValid(const std::shared_ptr<ludo_goti> &) const;
 
 	game();
 	~game();

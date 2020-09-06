@@ -51,7 +51,7 @@ bool thinker::unlock()
 	return true;
 }
 
-inline direction thinker::getDirOfMovement(const _coord &coord)
+static direction thinker::getDirOfMovement(const _coord &coord)
 {
 	direction retVal;
 	if (coord.first < (15 / 2 - 2) || coord.second > (15 / 2 - 2))

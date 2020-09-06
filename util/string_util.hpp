@@ -12,7 +12,7 @@ namespace util
     std::string trim_copy(const std::string &);                 //@returns trimmed std::string, but doesnt modify original string
     void strip(std::string &, char toRemove);                   /*Returns a string without the passed character*/
     std::string strip_copy(const std::string &, char toRemove); /*Returns a string without the passed character*/
-    inline bool icompare(const std::string &s1, const std::string &s2) noexcept;
+    bool icompare(const std::string &s1, const std::string &s2) noexcept;
 
 } // namespace util
 
@@ -67,7 +67,7 @@ std::string util::strip_copy(const std::string &s, char toRemove)
     return str_out;
 }
 
-inline bool util::icompare(const std::string &s1, const std::string &s2) noexcept
+bool util::icompare(const std::string &s1, const std::string &s2) noexcept
 {
     for (size_t i = 0; i < s1.size(); ++i)
     {

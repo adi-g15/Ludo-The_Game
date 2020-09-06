@@ -11,30 +11,30 @@ namespace util
 
     /*CAUTION - Unless a container argument is `const`, the algorithm will be MODIFIED*/
     // template <typename T>
-    // inline size_t remove_common(std::_Tree<T> &container, const std::_Tree<T> &duplicateValues);
+    // size_t remove_common(std::_Tree<T> &container, const std::_Tree<T> &duplicateValues);
     // template <typename T>
-    // inline size_t take_common(std::_Tree<T> &container, const std::_Tree<T> &duplicateValues);
+    // size_t take_common(std::_Tree<T> &container, const std::_Tree<T> &duplicateValues);
     // template <typename T>
-    // inline size_t remove_distinct(std::_Tree<T> &container, const std::_Tree<T> &duplicateValues);
+    // size_t remove_distinct(std::_Tree<T> &container, const std::_Tree<T> &duplicateValues);
     template <typename T>
-    inline size_t remove_common(std::set<T> &container, const std::set<T> &duplicateValues);
+    size_t remove_common(std::set<T> &container, const std::set<T> &duplicateValues);
     template <typename T>
-    inline void remove_common(std::vector<T> &, const std::vector<T> &);
+    void remove_common(std::vector<T> &, const std::vector<T> &);
     template <typename T>
-    inline size_t take_common(std::set<T> &container, const std::set<T> &duplicateValues);
+    size_t take_common(std::set<T> &container, const std::set<T> &duplicateValues);
     template <typename T>
-    inline size_t remove_distinct(std::set<T> &container, const std::set<T> &duplicateValues);
+    size_t remove_distinct(std::set<T> &container, const std::set<T> &duplicateValues);
 
     //contains... for < C++20... these are there in C++20, and implemented in all 4 major compilers
     template <typename T = int>
-    inline bool contains(const std::set<T> &C, const T &val); //for sets, maps
+    bool contains(const std::set<T> &C, const T &val); //for sets, maps
 
-    // inline bool contains(const std::_Tree<T> &C, const T &val); //for sets, maps
+    // bool contains(const std::_Tree<T> &C, const T &val); //for sets, maps
     // template <typename T>
     template <typename T = int>
-    inline bool contains(const std::vector<T> &C, const T &val);
+    bool contains(const std::vector<T> &C, const T &val);
     template <typename T = int>
-    inline bool contains(const std::list<T> &C, const T &val);
+    bool contains(const std::list<T> &C, const T &val);
     //contains... for < C++20
 
 } // namespace util
@@ -66,7 +66,7 @@ size_t util::remove_common(std::set<T> &container, const std::set<T> &duplicateV
 }
 
 template <typename T>
-inline void util::remove_common(std::vector<T> &first, const std::vector<T> &second){
+void util::remove_common(std::vector<T> &first, const std::vector<T> &second){
     std::for_each(second.crbegin(), second.crend(), [&](T i) {
         first.erase(std::find(first.begin(), first.end(), i));
     });

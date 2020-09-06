@@ -37,7 +37,7 @@ class state_box{
 	std::vector<state_goti*> inBoxGotis;
 public:
 	BOX_TYPE type;
-	inline bool appendGoti(state_goti*);
+	bool appendGoti(state_goti*);
 	state_goti* removeGoti(state_goti*);	//It doesn't delete the goti pointer, delete it yourself, from returned pointer or use this pointer to append somewhere else
 	bool areOpponentsPresent(_colour) const;
 

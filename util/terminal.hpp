@@ -11,15 +11,15 @@ typedef std::pair<int, int> _coord;
 namespace util{
     _coord getTerminalDimen();
 
-    inline bool align_text_center(const std::string & = "");                          //With empty string, it sets the cursor to the horizontal center
-    inline bool align_text_center(unsigned int max_length, const std::string & = ""); //NOTE - This functions does NOT add an extra '\n' at end
-    inline bool place_center(unsigned int max_length, const std::string & = "");
+    bool align_text_center(const std::string & = "");                          //With empty string, it sets the cursor to the horizontal center
+    bool align_text_center(unsigned int max_length, const std::string & = ""); //NOTE - This functions does NOT add an extra '\n' at end
+    bool place_center(unsigned int max_length, const std::string & = "");
     /*@brief Places the cursor at end of vertically centered printed string
       @params Terminal Height, and the string to print
       @returns bool indicating success or faiure to print the string
       NOTE - the string is not horizontally centered, for that, first call place_v_center() with empty string, then align_text_center()*/
-    inline bool place_v_center(unsigned int v_length, const std::string & = "");
-    inline bool place_v_center(const std::string & = ""); //Places cursor at vecrtically middle line
+    bool place_v_center(unsigned int v_length, const std::string & = "");
+    bool place_v_center(const std::string & = ""); //Places cursor at vecrtically middle line
 
 }
 

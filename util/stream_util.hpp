@@ -13,11 +13,11 @@
 
 //LINKER_ERROR - When this fuinction is uncommented, and When utilities.hpp included in ludo_box.cpp, and game.cpp, then 'multiple defintion errors show up for the mebmbers of the util namespace (Wait...WHAT? WHY?... I dont know now)'
 // template<typename T1, typename T2>
-// static inline std::ostream& operator<<(std::ostream& out, const std::pair<T1,T2>& p){
+// static std::ostream& operator<<(std::ostream& out, const std::pair<T1,T2>& p){
 // 	return out<<'('<<p.first<<", "<<p.second<<')';
 // }
 
-// inline std::ostream& operator<<(std::ostream& out, const std::pair<int,int>& p){
+// std::ostream& operator<<(std::ostream& out, const std::pair<int,int>& p){
 // 	return out<<'('<<p.first<<", "<<p.second<<')';
 // }
 
