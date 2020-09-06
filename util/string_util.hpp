@@ -17,12 +17,32 @@ namespace util
 } // namespace util
 
     //DEFINITIONS
-
-//@todo - Chose the better one among this, and the one in calculator project
 void util::trim(std::string &s)
 {
-    s.erase(std::find_if(s.begin(), s.end(), isspace), s.rend().base());
-    s.erase(std::find_if(s.rbegin(), s.rend(), isspace).base(), s.end());
+    auto i = s.end() - 1;
+    for (; i != s.begin(); --i)
+    {
+        if (!isspace(static_cast<unsigned char>(*i)))
+        {
+            ++i;
+            break;
+        }
+    }
+    s.erase(i, s.end());
+
+    i = s.begin();
+    for (; i != s.end(); ++i)
+    {
+        if (!isspace(static_cast<unsigned char>(*i)))
+        {
+            break;
+        }
+    }
+    s.erase(s.begin(), i);
+
+        //earlier one, but has bug
+    // s.erase(std::find_if(s.begin(), s.end(), isspace), s.rend().base());
+    // s.erase(std::find_if(s.rbegin(), s.rend(), isspace).base(), s.end());
 }
 
 std::string util::trim_copy(const std::string &s)

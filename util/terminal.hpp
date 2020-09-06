@@ -6,8 +6,10 @@
 
 //You may find `coloured output` functions in stream_util.hpp
 
+typedef std::pair<int, int> _coord;
+
 namespace util{
-    std::pair<int, int> getTerminalDimen();
+    _coord getTerminalDimen();
 
     inline bool align_text_center(const std::string & = "");                          //With empty string, it sets the cursor to the horizontal center
     inline bool align_text_center(unsigned int max_length, const std::string & = ""); //NOTE - This functions does NOT add an extra '\n' at end
@@ -35,9 +37,9 @@ namespace util{
 #endif
 
 //returns row*column dimension
-std::pair<int, int> util::getTerminalDimen()
+_coord util::getTerminalDimen()
 {
-    std::pair<int, int> outTuple(0, 0);
+    _coord outTuple(0, 0);
 #ifdef __linux__
     winsize windowsSize;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowsSize);

@@ -14,7 +14,7 @@ namespace util
 } // namespace util
 
     //DEFINITIONS
-template <typename T = int>
+template <typename T>
 bool util::isSum(T num, const std::vector<T> &v)
 {
     auto total = 1 << v.size();
@@ -36,7 +36,7 @@ bool util::isSum(T num, const std::vector<T> &v)
     return false;
 }
 
-template <typename T = int>
+template <typename T>
 std::vector<T> util::isSumOfElements(T num, const std::vector<T> &v)
 {
     auto sum = 0;

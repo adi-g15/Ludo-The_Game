@@ -5,7 +5,7 @@
 #include <list>
 #include <algorithm>
 
-inline namespace util
+namespace util
 {
     /*NOTE - Read respective details about the function and what it does in respective function definitions*/
 
@@ -19,19 +19,21 @@ inline namespace util
     template <typename T>
     inline size_t remove_common(std::set<T> &container, const std::set<T> &duplicateValues);
     template <typename T>
+    inline void remove_common(std::vector<T> &, const std::vector<T> &);
+    template <typename T>
     inline size_t take_common(std::set<T> &container, const std::set<T> &duplicateValues);
     template <typename T>
     inline size_t remove_distinct(std::set<T> &container, const std::set<T> &duplicateValues);
 
     //contains... for < C++20... these are there in C++20, and implemented in all 4 major compilers
-    template <typename T>
+    template <typename T = int>
     inline bool contains(const std::set<T> &C, const T &val); //for sets, maps
 
     // inline bool contains(const std::_Tree<T> &C, const T &val); //for sets, maps
     // template <typename T>
-    template <typename T>
+    template <typename T = int>
     inline bool contains(const std::vector<T> &C, const T &val);
-    template <typename T>
+    template <typename T = int>
     inline bool contains(const std::list<T> &C, const T &val);
     //contains... for < C++20
 
@@ -61,6 +63,13 @@ size_t util::remove_common(std::set<T> &container, const std::set<T> &duplicateV
         removedCount += container.erase(val); //_Tree::erase() returns number of elements removed
 
     return removedCount;
+}
+
+template <typename T>
+inline void util::remove_common(std::vector<T> &first, const std::vector<T> &second){
+    std::for_each(second.crbegin(), second.crend(), [&](T i) {
+        first.erase(std::find(first.begin(), first.end(), i));
+    });
 }
 
 template <typename T>
@@ -117,6 +126,11 @@ bool util::contains(const std::set<T> &C, const T &val) //for sets, maps
 
     return C.find(val) != C.end();
 }
+
+/*
+The compiler failed to deduce the argument
+'bool util::contains(const std::set<T,std::less<_Ty>,std::allocator<_Ty>> &,const T &)': could not deduce template argument for 'const std::set<T,std::less<_Ty>,std::allocator<_Ty>> &' from 'std::vector<_dieVal,std::allocator<_dieVal>>'
+*/
 
 template <typename T>
 bool util::contains(const std::vector<T> &C, const T &val)
