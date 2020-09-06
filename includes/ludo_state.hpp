@@ -1,5 +1,9 @@
 #pragma once
 
+#include "enumerations.hpp"
+#include "ludo_coords.hpp"
+#include "forward_decl.hpp"
+
 /*@brief It 'will' be a class to store the 'states' of the game at that time, for which the state is created.
 		1. I thought of this kind of feature to be highly helpful in saving, loading, resetting the game, and only this much data as available in a ludo_state object will be required.
 		2. It was also thought of being highly helpful, to the AI algorithm i was trying to develop -
@@ -11,11 +15,6 @@
 	@worst_part - Likely i wont be developing it further, the earlier is a brief of the idea.
 				   If you like it, and succeed in developing this, first of all I will be very thankful, secondly, you keep all the AI credits! :D
 		*/
-
-#include "enumerations.hpp"
-#include "ludo_coords.hpp"
-
-class game;
 
 #include <set>
 
@@ -38,7 +37,7 @@ class state_box{
 	std::vector<state_goti*> inBoxGotis;
 public:
 	BOX_TYPE type;
-	inline bool appendGoti(state_goti*);
+	bool appendGoti(state_goti*);
 	state_goti* removeGoti(state_goti*);	//It doesn't delete the goti pointer, delete it yourself, from returned pointer or use this pointer to append somewhere else
 	bool areOpponentsPresent(_colour) const;
 

@@ -5,9 +5,10 @@
 */
 #pragma once
 
+#include "enumerations.hpp"
+
 #include <string>
 #include <map>
-#include "enumerations.hpp"
 
 static std::string robot_keyword = "ROBOT";
 

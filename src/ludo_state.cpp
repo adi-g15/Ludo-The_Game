@@ -1,5 +1,5 @@
-#include "ludo_state.hpp"
 #include "game.hpp"
+#include "ludo_state.hpp"
 #include "thinker.hpp"
 
 using namespace std;

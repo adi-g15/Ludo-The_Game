@@ -1,7 +1,7 @@
-#include "game.hpp"
-#include "boardPrinter.hpp"
-#include "exceptions.hpp"
 #include "keywords.hpp"
+#include "exceptions.hpp"
+#include "boardPrinter.hpp"
+#include "game.hpp"
 #include "thinker.hpp"
 #include "util/find_remove.hpp"
 #include "util/string_util.hpp"
@@ -19,7 +19,7 @@ using namespace std;
 
 //@todo - Remove it after successfully solving problem with util/stream_util.hpp
 template <typename T1, typename T2> //Utility function
-static inline std::ostream &operator<<(std::ostream &out, const std::pair<T1, T2> &p)
+static std::ostream &operator<<(std::ostream &out, const std::pair<T1, T2> &p)
 {
 	return out << '(' << p.first << ", " << p.second << ')';
 }
@@ -139,7 +139,7 @@ short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, unsigned int dist)
 	return -1;
 }
 
-//For this function, the move will initially be considered 'possible', since it is meant to be called through the inline overloads
+//For this function, the move will initially be considered 'possible', since it is meant to be called through the overloads
 short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, _smartMoveData moveData)
 {
 	if (!isValid(moveData.finalCoords) || getBoardBox(moveData.finalCoords).box_type == _boxUNUSABLE)

@@ -1,7 +1,7 @@
-#include "ludo_box.hpp"
-
 #include "exceptions.hpp"
 #include "keywords.hpp"
+#include "ludo_box.hpp"
+
 #include <iostream>
 #include <utility>	//ONLY for creating a temp pair, in appendGoti()
 #include <algorithm>
@@ -10,7 +10,7 @@
 using namespace std;
 
 template<typename T1, typename T2>	//Utility function
-static inline std::ostream& operator<<(std::ostream& out, const std::pair<T1,T2>& p){
+static std::ostream& operator<<(std::ostream& out, const std::pair<T1,T2>& p){
 	return out<<'('<<p.first<<", "<<p.second<<')';
 }
 
@@ -92,7 +92,7 @@ string ludo_box::get_box_content() const{
 	return content;
 }
 
-void ludo_box::sanitizeContent(void){
+void ludo_box::sanitizeContent(){
     std::array<char, 4> gotiChar = {'R', 'G', 'Y', 'B'};
 
     for( auto &i : gotiChar ){

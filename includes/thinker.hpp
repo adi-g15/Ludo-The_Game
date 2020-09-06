@@ -26,10 +26,10 @@ private:
 
 public:
 	bool unlock(); //! Only friend 'thinker' can use these to modify the class
-	inline bool move();
-	inline bool operator()(); //Both, move(), and the () operator will call 'getBestMove'
+	bool move();
+	bool operator()(); //Both, move(), and the () operator will call 'getBestMove'
 
-	static inline direction getDirOfMovement(const _coord &);
+	static direction getDirOfMovement(const _coord &);
 	const std::optional<_smartMoveData> isMovePossible(const _coord &, int dist) const; //! This will use 'currColour from state only'
 
 	//NOTE - A consideration that has been used is, that when any move is made by any colour, then its goti CANT BE REMOVED, so the indexes of gotis that will be in combination will be valid for the whole move, since neither their order will change being in a set*/

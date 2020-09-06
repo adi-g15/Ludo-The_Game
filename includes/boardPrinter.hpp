@@ -1,9 +1,10 @@
 #pragma once
 
-#include <iostream>
-#include <array>
 #include "ludo_box.hpp"
 #include "util/terminal.hpp"
+
+#include <iostream>
+#include <array>
 
 class _BoardPrinter{ //! @info Only for use by updateDisplay() & takeIntro()
 private:
@@ -16,7 +17,7 @@ private:
 	static void titleBar(); /*@brief Simply just calls titleBar with (terminalDimen().first)*/
 	static void msgScreen(const std::string& msg);
 	static void errorScreen(const std::string& errMsg);
-    static void finishedScreen(void);
+    static void finishedScreen();
     	/*FUTURE - It can be modified to show who's the 1st and who's the 4th, BUT FOR NOW I WILL NOT IMPLEMENT IT HERE, SINCE I HAVE FURTHER PENDING PLANS FOR GUI*/
 
     void row_type1(int nrow);
