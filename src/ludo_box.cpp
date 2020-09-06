@@ -1,7 +1,7 @@
-#include "ludo_box.hpp"
-
 #include "exceptions.hpp"
 #include "keywords.hpp"
+#include "ludo_box.hpp"
+
 #include <iostream>
 #include <utility>	//ONLY for creating a temp pair, in appendGoti()
 #include <algorithm>

@@ -1,7 +1,8 @@
 #pragma once
 
-#include <functional>
 #include "enumerations.hpp"
+
+#include <functional>
 
 class ludo_goti{
 private:

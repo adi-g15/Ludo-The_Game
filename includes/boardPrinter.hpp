@@ -1,9 +1,10 @@
 #pragma once
 
-#include <iostream>
-#include <array>
 #include "ludo_box.hpp"
 #include "util/terminal.hpp"
+
+#include <iostream>
+#include <array>
 
 class _BoardPrinter{ //! @info Only for use by updateDisplay() & takeIntro()
 private:

@@ -1,7 +1,8 @@
+#include "enumerations.hpp"
+
 #include <map>
 #include <vector>
 #include <functional>
-#include "enumerations.hpp"
 
 class ludo_coords{
 public:

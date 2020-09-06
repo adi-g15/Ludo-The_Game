@@ -1,9 +1,9 @@
 #pragma once
 
 #include "die.hpp"
-#include "ludo_state.hpp"
-#include "ludo_box.hpp"
 #include "exceptions.hpp"
+#include "ludo_box.hpp"
+#include "ludo_state.hpp"
 
 #include <map>
 #include <set>
