@@ -14,7 +14,7 @@ direction ludo_goti::get_curr_direction() const{
     return curr_direction;
 }
 
-_colour ludo_goti::get_gotiColour(void) const{
+_colour ludo_goti::get_gotiColour() const{
     return gotiColour;
 }
 

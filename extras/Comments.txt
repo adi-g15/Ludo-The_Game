@@ -238,8 +238,8 @@ includes/utilities
 */
 /*[LEARNT] To point to member functions, we need to have "Member pointers"
     NOTE - Member pointers can't point to non-member functions, and normal function pointers can point to class member functions
-        typedef (void)(game::*functionPointer)();   //Member pointer, BUT STILL USING 'game::' is required when we will be using it
-        typedef (void)(*functionPointer)(); //Normal function pointers
+        typedef ()(game::*functionPointer)();   //Member pointer, BUT STILL USING 'game::' is required when we will be using it
+        typedef ()(*functionPointer)(); //Normal function pointers
     */
 
 /*LEARNT - We can't create a dynamically allocated array of objects of a class with no default constructor using 'new' -

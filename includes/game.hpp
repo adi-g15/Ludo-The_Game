@@ -26,7 +26,7 @@ class ludo_state;
 class game
 {
 private:
-	typedef void (game::*functionPointer)(void);
+	typedef void (game::*functionPointer)();
 
 	std::vector<std::vector<ludo_box>> board;
 	std::map<_colour, std::vector<std::reference_wrapper<ludo_box>>> lockedPositions;
@@ -43,15 +43,15 @@ private:
 
 	ludo_coords _ludo_coords; //! An object to make the ludo_coords available to us
 
-	inline bool gameisFinished(void);
+	inline bool gameisFinished();
 	inline bool isPlayerPlaying(player);
 	unsigned getNumLockedGotis(_colour);
 	/*  @brief Simply moves a goti of same colour from the locked goti positions,
 			   and move the goti to movingGotis, and the std::make_shared to starting box
 		@returns bool indicating whether enough locked gotis were available*/
-	bool unlockGoti(void);
+	bool unlockGoti();
 	bool lockGoti(std::shared_ptr<ludo_goti>);
-	void takeIntro(void); //! Initializes the PlayerMap
+	void takeIntro(); //! Initializes the PlayerMap
 	void endGame() const; //Only for use by shortcutsMap, and DEBUGGING purpose
 	void endGame(std::string cause) const;
 
@@ -87,14 +87,14 @@ public:
 	*/
 	void attack(std::vector<_colour> coloursToRemove, std::shared_ptr<ludo_goti> attacker);
 
-	void updateDisplay(void);
+	void updateDisplay();
 	/*NOTE - getEmptyLocks(...) == {0,0} is a good test for 'ZERO LOCKED POSITIONS'*/
 	_coord getEmptyLocks(_colour) const;
 
 	bool InitGame(short = 1); //! Starts/Resets the game
 	void play(bool = true);
 	void settingsMenu();
-	void notYetImplementedScr(void) const;
+	void notYetImplementedScr() const;
 	inline ludo_box &getBoardBox(const _coord &coords);
 	inline const ludo_box &getBoardBox(const _coord &coords) const;
 

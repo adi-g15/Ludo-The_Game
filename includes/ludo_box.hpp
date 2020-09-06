@@ -21,9 +21,9 @@ public:
 	//! Returns 0 if attacked other goti, -1 if unsuccessful; In most cases, this return value will be ignored, only in moveGoti functions it work
 	short appendGoti(std::shared_ptr<ludo_goti>);
 	std::string get_box_content() const;
-	void sanitizeContent(void);
+	void sanitizeContent();
 	bool isPresent(const ludo_goti& goti) const;
-	inline bool isEmpty(void) const;
+	bool isEmpty() const;
 
 	bool areOpponentsPresent(_colour) const;
 

@@ -13,7 +13,7 @@ private:
 public:
 	_coord getCoords() const;
     direction get_curr_direction() const;
-    _colour get_gotiColour(void) const;
+    _colour get_gotiColour() const;
 
 	friend class game;
 	friend class ludo_box;

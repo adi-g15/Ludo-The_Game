@@ -92,7 +92,7 @@ string ludo_box::get_box_content() const{
 	return content;
 }
 
-void ludo_box::sanitizeContent(void){
+void ludo_box::sanitizeContent(){
     std::array<char, 4> gotiChar = {'R', 'G', 'Y', 'B'};
 
     for( auto &i : gotiChar ){
