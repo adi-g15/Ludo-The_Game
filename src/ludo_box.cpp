@@ -9,11 +9,6 @@
 
 using namespace std;
 
-template<typename T1, typename T2>	//Utility function
-static std::ostream& operator<<(std::ostream& out, const std::pair<T1,T2>& p){
-	return out<<'('<<p.first<<", "<<p.second<<')';
-}
-
 ludo_box::ludo_box(const _coord& coord, BOX_TYPE type) : coords(coord), box_type(type){}
 
 bool ludo_box::areOpponentsPresent(_colour colour) const{
