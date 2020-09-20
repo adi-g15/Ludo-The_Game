@@ -11,15 +11,11 @@
     util::_resetColouredOutput();
 /*xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/
 
-//LINKER_ERROR - When this fuinction is uncommented, and When utilities.hpp included in ludo_box.cpp, and game.cpp, then 'multiple defintion errors show up for the mebmbers of the util namespace (Wait...WHAT? WHY?... I dont know now)'
-// template<typename T1, typename T2>
-// static std::ostream& operator<<(std::ostream& out, const std::pair<T1,T2>& p){
-// 	return out<<'('<<p.first<<", "<<p.second<<')';
-// }
-
-// std::ostream& operator<<(std::ostream& out, const std::pair<int,int>& p){
-// 	return out<<'('<<p.first<<", "<<p.second<<')';
-// }
+template <typename T1, typename T2> //Utility function
+static std::ostream &operator<<(std::ostream &out, const std::pair<T1, T2> &p)
+{
+    return out << '(' << p.first << ", " << p.second << ')';
+}
 
 namespace util
 {
