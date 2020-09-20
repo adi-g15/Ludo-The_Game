@@ -80,28 +80,6 @@ string ludo_box::get_box_content() const{
 }
 
 void ludo_box::sanitizeContent(){
-<<<<<<< HEAD
-    std::array<char, 4> gotiChar = {'R', 'G', 'Y', 'B'};
-
-    for( auto &i : gotiChar ){
-	    unsigned gotiCount = 0;
-        auto loc = content.find(i);
-        if( loc == static_cast<size_t>(-1) ){ continue; }
-        ++gotiCount; ++loc;
-        while( loc<content.size() ){
-            if( content[loc] == i ){
-                ++gotiCount;
-                content.erase(content.begin() + loc);
-                --loc;
-            }
-            ++loc;
-        }
-        if( gotiCount > 1 ){
-        	if( content[content.find(i)+1] >=48 && content[content.find(i)+1] <=57 )	content[content.find(i)+1] += gotiCount-1;
-            else content.insert(content.find(i)+1, 1, static_cast<char>(48+gotiCount) );
-        }
-    }
-=======
 	std::array<char, 4> gotiChar = { 'R', 'G', 'Y', 'B' };
 
 	for( auto& i : gotiChar ){
@@ -122,7 +100,6 @@ void ludo_box::sanitizeContent(){
 			else content.insert(content.find(i) + 1, 1, static_cast<char>(48 + gotiCount));
 		}
 	}
->>>>>>> master
 }
 
 bool ludo_box::isPresent(const ludo_goti& goti) const{
