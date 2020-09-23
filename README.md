@@ -30,16 +30,20 @@ _Please do put your suggestions, ideas, and any problem (even if why g++ main.cp
 ### On Linux -
 
 ```sh
-mkdir build -p
-cd build
-cmake ..
-make
-./game
+mkdir build -p && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build .
 ```
 
 ### For Windows -
+```sh
+mkdir build -p
+cd build
+cmake ..
+cmake --build . --config Release
+```
 
-Either install cmake, and MSVC compiler, or open the Makefile, and execute the commands by yourself, in the order, starting from the 'run' target.
+> After building you will have a `ludo.exe` inside build/Release or build/Debug etc, as per your build type, that's your executable 😃
 
 ## Files in the Project
 

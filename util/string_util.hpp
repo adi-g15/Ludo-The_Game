@@ -140,7 +140,7 @@ namespace util::view_util
                     throw std::logic_error("Parsing Error: Odd number of quotes in passed string, end of input");
                 }
                 //++end so that it includes the last found returned by std::find
-                end = ++std::find(++end, s.end(), '"');
+                end = std::find(++end, s.end(), '"')+1;
             }
             retVec.push_back( std::string( s.substr(start - s.begin(), end - start) ) );
 

@@ -6,6 +6,7 @@
 #include <iostream>
 #include <array>
 #include <string>
+#include <cstdarg>
 
 class _BoardPrinter{ //! @info Only for use by updateDisplay() & takeIntro()
 private:
