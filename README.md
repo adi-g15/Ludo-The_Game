@@ -1,5 +1,6 @@
 ![CMake](https://github.com/AdityaGupta150/Ludo-The_Game/workflows/CMake/badge.svg)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/af9190f3627842869828fb1c8307b818)](https://app.codacy.com/manual/AdityaGupta150/Ludo-The_Game?utm_source=github.com&utm_medium=referral&utm_content=AdityaGupta150/Ludo-The_Game&utm_campaign=Badge_Grade_Dashboard)
+[![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6IkFkaXR5YUd1cHRhMTUwIiwicmVwbzEiOiJMdWRvLVRoZV9HYW1lIiwiaW5jbHVkZUxpbnQiOmZhbHNlLCJhdXRob3JJZCI6MjIzMzksImlhdCI6MTYwMDg5MDE2NH0.bip9zdSe9te0vQIgIyzTOp_Ga4j2dmkWRlmpt7oC4Gc)](https://www.deepcode.ai/app/gh/AdityaGupta150/Ludo-The_Game/_/dashboard?utm_content=gh%2FAdityaGupta150%2FLudo-The_Game)
 [![Build Status](https://travis-ci.org/AdityaGupta150/Ludo-The_Game.svg?branch=master)](https://travis-ci.org/AdityaGupta150/Ludo-The_Game)
 
 # Ludo - The Game v2.0
