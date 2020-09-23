@@ -7,11 +7,49 @@
 
 #include "enumerations.hpp"
 
-#include <string>
+#include <string_view>
 #include <map>
 
-static std::string robot_keyword = "ROBOT";
+static const char* robot_keyword = "ROBOT";
 
-static std::string thinker_keyword = "Jai Hind";
+static const char* thinker_keyword = "Jai Hind";
 
-static std::map<_colour, char> colourCodes = {{_colour::ColourLAAL, 'R'}, {_colour::ColourHARA, 'G'}, {_colour::ColourPEELA, 'Y'}, {_colour::ColourNEELA, 'B'}};
+static std::map<_colour, std::string_view> colourNames{
+	{_colour::LAAL, "RED"},
+	{_colour::HARA, "HARA"},
+	{_colour::PEELA, "PEELA"},
+	{_colour::NEELA, "BLUE"}
+};
+
+static std::map<Direction, std::string_view> dirNames{
+	{ Direction::NO_TURN, "No_Turn"},
+	{ Direction::NORTH, "UP" },
+	{ Direction::EAST, "RIGHT" },
+	{ Direction::WEST, "LEFT" },
+	{ Direction::SOUTH, "DOWN" }
+};
+
+static std::map<_colour, char> colourCodes{
+	{_colour::LAAL, 'R'},
+	{_colour::HARA, 'G'},
+	{_colour::PEELA, 'Y'},
+	{_colour::NEELA, 'B'}
+};
+
+static std::map<Player, std::string_view> playerId{
+	{ Player::NotDefined, "NULL" },
+	{ Player::_1, "1" },
+	{ Player::_2, "2" },
+	{ Player::_3, "3" },
+	{ Player::_4, "4" },
+};
+
+static std::ostream& operator<<(std::ostream& stream, const _colour c){
+	stream << colourNames[c];
+	return stream;
+}
+
+static std::ostream& operator<<(std::ostream& stream, const Direction d){
+	stream << dirNames[d];
+	return stream;
+}

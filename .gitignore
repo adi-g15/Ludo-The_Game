@@ -3,6 +3,8 @@
 experimental*
 includes/*.gch
 build/*
+
+delete.cpp
 !.gitkeep
 *.ilk
 *.pdb

@@ -1,106 +1,97 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <utility>
 #include <string>
+#include <string_view>
 
 //You may find `coloured output` functions in stream_util.hpp
 
-typedef std::pair<int, int> _coord;
+typedef std::pair<uint_fast16_t, uint_fast16_t> _coord;
 
 namespace util{
     _coord getTerminalDimen();
 
-    bool align_text_center(const std::string & = "");                          //With empty string, it sets the cursor to the horizontal center
-    bool align_text_center(unsigned int max_length, const std::string & = ""); //NOTE - This functions does NOT add an extra '\n' at end
-    bool place_center(unsigned int max_length, const std::string & = "");
+    /*
+        TIP - align* functions, and place_center() can be used for file streams too
+    */
+    bool align_text_center(std::string_view = "", std::ostream& stream = std::cout);                          //With empty string, it sets the cursor to the horizontal center
+    bool align_text_center(unsigned int max_length, std::string_view = "", std::ostream& stream = std::cout); //NOTE - This functions does NOT add an extra '\n' at end
+    bool place_center(unsigned int max_length, std::string_view = "", std::ostream& stream = std::cout);
     /*@brief Places the cursor at end of vertically centered printed string
       @params Terminal Height, and the string to print
       @returns bool indicating success or faiure to print the string
       NOTE - the string is not horizontally centered, for that, first call place_v_center() with empty string, then align_text_center()*/
-    bool place_v_center(unsigned int v_length, const std::string & = "");
-    bool place_v_center(const std::string & = ""); //Places cursor at vecrtically middle line
+    bool place_v_center(unsigned int v_length, std::string_view = "");
+    bool place_v_center(std::string_view = ""); //Places cursor at vecrtically middle line
 
 }
 
-    //DEFINITIONS
+//DEFINITIONS
 
-#ifdef __linux__
+#if defined(__unix__) || defined(__unix) || defined(__linux__) || defined(__APPLE__) || defined(__MACH__)
 #include <sys/ioctl.h>
 #include <unistd.h>
-#elif __MINGW32
+#define OS_LINUX
+#elif defined(WIN32) || defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
-#elif __CYGWIN32
-#include <windows.h>
-#else //@todo - replace with flag for MSVC
-#include <Windows.h>
+#define OS_WIN
+#else
+#define OS_Unknown
 #endif
 
 //returns row*column dimension
-_coord util::getTerminalDimen()
-{
+_coord util::getTerminalDimen(){
     _coord outTuple(0, 0);
-#ifdef __linux__
+#ifdef OS_LINUX
     winsize windowsSize;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowsSize);
-    outTuple = {windowsSize.ws_row, windowsSize.ws_col};
+    outTuple = { windowsSize.ws_row, windowsSize.ws_col };
 
-#else //Windows API
-    {
-        CONSOLE_SCREEN_BUFFER_INFO csbi;
-        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-        outTuple = {csbi.srWindow.Bottom - csbi.srWindow.Top + 1, csbi.srWindow.Right - csbi.srWindow.Left + 1};
-    }
-
+#elif defined(OS_WIN)
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    outTuple = { csbi.srWindow.Bottom - csbi.srWindow.Top + 1, csbi.srWindow.Right - csbi.srWindow.Left + 1 };
 #endif
 
     return outTuple;
 }
 
-bool util::align_text_center(const std::string &str)
-{ //@returns bool indicating, if max_len is enough or not
-
-    return align_text_center(getTerminalDimen().first, str);
+bool util::align_text_center(std::string_view str, std::ostream& stream){ //@returns bool indicating, if max_len is enough or not
+    return align_text_center(getTerminalDimen().first, str, stream);
 }
 
-bool util::align_text_center(unsigned int max_length, const std::string &str)
-{ //@returns bool indicating, if max_len is enough or not
-    if (place_center(max_length, str) == true)
-    {
-        for (size_t i = 0; i < (max_length - str.size()) - (max_length - str.size()) / 2; i++)
-            std::cout << ' ';
+bool util::align_text_center(unsigned int max_length, std::string_view str, std::ostream& stream){ //@returns bool indicating, if max_len is enough or not
+    if( place_center(max_length, str) == true ){
+        for( size_t i = 0; i < (max_length - str.size()) - (max_length - str.size()) / 2; i++ )
+            stream << ' ';
         return true;
     }
     return false;
 }
 
-bool util::place_center(unsigned int max_length, const std::string &str)
-{ //@returns bool indicating, if max_len is enough or not
-    if (max_length < str.size())
-    {
+bool util::place_center(unsigned int max_length, std::string_view str, std::ostream& stream){ //@returns bool indicating, if max_len is enough or not
+    if( max_length < str.size() ){
         return false;
-    }
-    else
-    {
-        for (size_t i = 0; i < (max_length - str.size()) / 2; i++)
-            std::cout << ' ';
-        std::cout << str;
+    } else{
+        for( size_t i = 0; i < (max_length - str.size()) / 2; i++ )
+            stream << ' ';
+        stream << str;
     }
     return true;
 }
 
-bool util::place_v_center(const std::string &str)
-{
+bool util::place_v_center(std::string_view str){
     return place_v_center(getTerminalDimen().second, str);
 }
 
-bool util::place_v_center(unsigned int vert_length, const std::string &str)
-{
-    if (vert_length < 1)
+bool util::place_v_center(unsigned int vert_length, std::string_view str){
+    if( vert_length < 1 )
         return false;
 
-    for (size_t i = 0; i < (vert_length / 2) - 1; i++)
-    {
+    for( size_t i = 0; i < (vert_length / 2) - 1; i++ ){
         std::cout << '\n';
     }
     std::cout << str;

@@ -16,7 +16,7 @@ class ludo_box{
     bool removeGoti(std::shared_ptr<ludo_goti>&);
 
 public:
-	BOX_TYPE box_type;
+	Box box_type;
 
 	//! Returns 0 if attacked other goti, -1 if unsuccessful; In most cases, this return value will be ignored, only in moveGoti functions it work
 	short appendGoti(std::shared_ptr<ludo_goti>);
@@ -27,7 +27,7 @@ public:
 
 	bool areOpponentsPresent(_colour) const;
 
-	ludo_box(const _coord&, BOX_TYPE = _boxNORMAL);
+	ludo_box(const _coord&, Box = Box::NORMAL);
 
 	friend class game;
 	friend class _BoardPrinter;

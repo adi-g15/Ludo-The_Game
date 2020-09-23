@@ -21,7 +21,7 @@ private:
 	bool bestMove_available = false; //signifies, whether getBestMove() has been called earlier
 	std::vector<combination> bestMove;
 	std::map<int, std::vector<combination>> completeMoves; //Mapping profit to the move, instead of move(a whole vector) to an int, to lesser the hash function's 'probable' overhead, also it will automatically chose the last found move with same profit, which would indead have been the case, even when we would have used
-	ludo_state *state;									   //The colour and player used will be of these
+	ludo_state *state;									   //The colour and Player used will be of these
 	ludo_coords _ludo_coords;
 
 public:
@@ -29,7 +29,7 @@ public:
 	bool move();
 	bool operator()(); //Both, move(), and the () operator will call 'getBestMove'
 
-	static direction getDirOfMovement(const _coord &);
+	static Direction getDirOfMovement(const _coord &);
 	const std::optional<_smartMoveData> isMovePossible(const _coord &, int dist) const; //! This will use 'currColour from state only'
 
 	//NOTE - A consideration that has been used is, that when any move is made by any colour, then its goti CANT BE REMOVED, so the indexes of gotis that will be in combination will be valid for the whole move, since neither their order will change being in a set*/

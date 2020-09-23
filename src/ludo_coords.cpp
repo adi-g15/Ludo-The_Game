@@ -5,35 +5,35 @@
 void ludo_coords::InitCoords(){
 
 		outer_corners = {
-			{ {0,6}, EAST },
-			{ {0,8}, SOUTH },
-			{ {6,0}, EAST },
-			{ {6,14}, SOUTH },
-			{ {8,0}, NORTH },
-			{ {8,14}, WEST },
-			{ {14,6}, NORTH },
-			{ {14,8}, WEST }
+			{ {0,6}, Direction::EAST },
+			{ {0,8}, Direction::SOUTH },
+			{ {6,0}, Direction::EAST },
+			{ {6,14}, Direction::SOUTH },
+			{ {8,0}, Direction::NORTH },
+			{ {8,14}, Direction::WEST },
+			{ {14,6}, Direction::NORTH },
+			{ {14,8}, Direction::WEST }
 		};
 
 		inner_turns = {
-			{ {9,6}, WEST },
-			{ {6,5}, NORTH },
-			{ {8,9}, SOUTH },
-			{ {5,8}, EAST }
+			{ {9,6}, Direction::WEST },
+			{ {6,5}, Direction::NORTH },
+			{ {8,9}, Direction::SOUTH },
+			{ {5,8}, Direction::EAST }
 		};
 
 		start_coords = {
-			{ ColourLAAL, {13,6} },
-			{ ColourHARA, {6,1} },
-			{ ColourPEELA, {1,8} },
-			{ ColourNEELA, {8,13} }
+			{ _colour::LAAL, {13,6} },
+			{ _colour::HARA, {6,1} },
+			{ _colour::PEELA, {1,8} },
+			{ _colour::NEELA, {8,13} }
 		};
 
 		start_dir = {
-			{ ColourLAAL, NORTH },
-			{ ColourHARA, EAST },
-			{ ColourPEELA, SOUTH },
-			{ ColourNEELA, WEST }
+			{ _colour::LAAL, Direction::NORTH },
+			{ _colour::HARA, Direction::EAST },
+			{ _colour::PEELA, Direction::SOUTH },
+			{ _colour::NEELA, Direction::WEST }
 		};
 
 		stops = { {2,6}, {6,12}, {12,8}, {8,2} };
@@ -42,20 +42,20 @@ void ludo_coords::InitCoords(){
 		}
 
 		home_turns = {
-			{ ColourLAAL, { {14,7}, NORTH}},
-			{ ColourHARA, { {7,0}, EAST}},
-			{ ColourPEELA, { {0,7}, SOUTH }},
-			{ ColourNEELA, { {7,14}, WEST }}
+			{ _colour::LAAL, { {14,7}, Direction::NORTH}},
+			{ _colour::HARA, { {7,0}, Direction::EAST}},
+			{ _colour::PEELA, { {0,7}, Direction::SOUTH }},
+			{ _colour::NEELA, { {7,14}, Direction::WEST }}
 		};
 }
 
-direction ludo_coords::turnAtCorner(const std::pair<int,int>& curr_coords, const std::map<std::pair<int,int>, direction>& corners_vec) const{
+Direction ludo_coords::turnAtCorner(const _coord& curr_coords, const std::map<_coord, Direction>& corners_vec) const{
 	for ( auto corner : corners_vec ){
 		if(curr_coords == corner.first){
 			return corner.second;
 		}
 	}
-	return NO_TURN;
+	return Direction::NO_TURN;
 }
 
 ludo_coords::ludo_coords(){
