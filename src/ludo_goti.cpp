@@ -10,7 +10,7 @@ _coord ludo_goti::getCoords() const{
     return curr_coords;
 }
 
-direction ludo_goti::get_curr_direction() const{
+Direction ludo_goti::get_curr_direction() const{
     return curr_direction;
 }
 
@@ -22,7 +22,7 @@ bool ludo_goti::operator==(const ludo_goti& goti){
     return (this->curr_coords == goti.curr_coords) && (this->gotiColour == goti.gotiColour);
 }
 
-ludo_goti::ludo_goti(_colour gotiColour,const _coord& coords, direction dir) : gotiColour(gotiColour), curr_coords(coords) {
-    this->curr_direction = NO_TURN;
+ludo_goti::ludo_goti(_colour gotiColour,const _coord& coords, Direction dir) : gotiColour(gotiColour), curr_coords(coords) {
+    this->curr_direction = Direction::NO_TURN;
     this->curr_direction = dir;
 }

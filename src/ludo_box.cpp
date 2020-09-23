@@ -9,13 +9,13 @@
 
 using namespace std;
 
-ludo_box::ludo_box(const _coord& coord, BOX_TYPE type) : coords(coord), box_type(type){}
+ludo_box::ludo_box(const _coord& coord, Box type) : coords(coord), box_type(type){}
 
 bool ludo_box::areOpponentsPresent(_colour colour) const{
 	auto colour_char = colourCodes.at(colour);
 
 	for( auto const& ch : content ){
-		if( !isdigit(ch) && ch != colour_char && box_type == _boxNORMAL ){
+		if( !isdigit(ch) && ch != colour_char && box_type == Box::NORMAL ){
 			return true;
 		}
 	}
@@ -46,7 +46,7 @@ bool ludo_box::removeGoti(std::shared_ptr<ludo_goti>& toBeRemoved){
 				}
 			} else content.erase(content.begin() + loc);
 
-			if( isEmpty() && box_type == _boxSTOP ){
+			if( isEmpty() && box_type == Box::STOP ){
 					content = "X";
 			}
 
@@ -61,16 +61,16 @@ short ludo_box::appendGoti(std::shared_ptr<ludo_goti> goti_to_add){
 	_colour gotiColour = goti_to_add->get_gotiColour();
 	auto colour_char = colourCodes.at(goti_to_add->gotiColour);
 
-	if( goti_to_add->getCoords() == make_pair(0, 0) ) return -1;
+	if( goti_to_add->getCoords() == _coord(0, 0) ) return -1;
 
-	if( box_type == _boxSTOP && isEmpty() )	content = colour_char;
+	if( box_type == Box::STOP && isEmpty() )	content = colour_char;
 	else content.push_back(colour_char);
 	sanitizeContent();
 
 	goti_to_add->curr_coords = coords;
 	inBoxGotis.push_back(goti_to_add);
 
-	if( areOpponentsPresent(gotiColour) && box_type == _boxNORMAL ) return 0;
+	if( areOpponentsPresent(gotiColour) && box_type == Box::NORMAL ) return 0;
 
 	return 1;
 }
@@ -112,6 +112,6 @@ bool ludo_box::isPresent(const ludo_goti& goti) const{
 }
 
 bool ludo_box::isEmpty() const{
-	if( box_type == _boxUNUSABLE )	return false;
+	if( box_type == Box::UNUSABLE )	return false;
 	else return this->inBoxGotis.empty();
 }
