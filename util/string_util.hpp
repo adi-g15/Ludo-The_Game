@@ -28,7 +28,6 @@ namespace util{
 
         std::vector< std::string > tokenizeIt(std::string_view dir, char sep);
         std::vector<std::string> split(std::string_view s, char delim = ',');
-
     } // namespace view_util
 
 
@@ -128,12 +127,10 @@ namespace util::view_util
 
     //@todo - Debug it
     std::vector<std::string> split(std::string_view s, char delim) {
-
         std::vector<std::string> retVec;
 
         auto start = s.begin(), end = std::find(s.begin(), s.end(), delim);
         while( end != s.end() ){
-
             //this while loops while there is an unclosed quote present
             while( std::count(start, end, '"') % 2 != 0 ){	//ie. odd number of quotes
                 if( end == s.end() ){

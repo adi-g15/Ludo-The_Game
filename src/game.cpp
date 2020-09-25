@@ -31,16 +31,12 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 
 	_coord increment_coord({ 0, 0 });
 	_coord updated_coords(the_goti->curr_coords);
-	reference_wrapper<const ludo_box> currBox = getBoardBox(updated_coords);
-
 	Direction turnDirection, currDirection = the_goti->curr_direction;
 
 	while( dist-- ){
-
 		increment_coord = { 0, 0 };
 		turnDirection = _ludo_coords.turnAtCorner(updated_coords, _ludo_coords.outer_corners); //! For Outer Corners
 		if( turnDirection != Direction::NO_TURN ){ //! ie. a turn will happen to go to next box
-
 			currDirection = turnDirection;
 			if( currDirection == Direction::NORTH ){
 				increment_coord = { -1, 0 };
@@ -86,7 +82,7 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 
 		updated_coords.first += increment_coord.first;
 		updated_coords.second += increment_coord.second;
-		currBox = getBoardBox(updated_coords);
+		reference_wrapper<const ludo_box> currBox = getBoardBox(updated_coords);
 
 		if( currBox.get().box_type == Box::HOME_END && dist != 0 ){ //! Reached finished point, but move still incomplete
 			return {};
@@ -133,11 +129,9 @@ short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, _smartMoveData moveDat
 
 	getBoardBox(the_goti->curr_coords).removeGoti(the_goti); //Reaches here only if move possible
 	if( getBoardBox(finalCoord).box_type == Box::HOME_END ){
-
 		auto& lockBox = getBoardBox(getEmptyLocks(curr_colour));
 
 		if( lockBox.coords == _coord(0,0) ){ //debug
-
 			cout << "movingGotis[curr].size() = " << movingGotis[curr_colour].size() << endl;
 			cout << "inBoxGotis in the box of the goti " << getBoardBox(the_goti->curr_coords).inBoxGotis.size() << endl;
 			endGame("Invalid lockbox");
@@ -267,7 +261,6 @@ bool game::autoMove(){ //! Return values same as the moveGoti_function
 				random_goti_index = std::rand() % (movingGotis[curr_colour].size()); //Since, AFTER FINISH, MOVINGGOTIS maybe empty by this time, causing FLOATING POINT EXCEPTION
 
 			triedGotis_indices.insert(random_goti_index);
-
 		} while( !moveObj.has_value() && !movingGotis[curr_colour].empty() );
 
 		triedGotis_indices.clear();
@@ -440,7 +433,6 @@ void game::takeIntro(){
 
 	do{
 		tmpDimen = util::getTerminalDimen();
-
 	} while( tmpDimen.first < 31 || tmpDimen.second < 62 ); //tmpDimen -> row*column
 
 	_BoardPrinter::titleBar(tmpDimen.second);
@@ -456,7 +448,6 @@ void game::takeIntro(){
 	colour = colourOrder.front();
 
 	while( p <= Player::_4 ){
-
 		util::place_center(tmpDimen.second, string("Player").append( playerId[p] ).append( " - " ));
 
 		getline(cin, playerName);
@@ -520,7 +511,6 @@ bool game::isPlayerPlaying(Player p){
 }
 
 vector<_dieVal> Die::rolldie(){
-
 	std::vector<_dieVal> v;
 
 	_dieVal dieNum = Die::dist[rand() % 4](Die::mt[rand() % 4]);
@@ -547,7 +537,6 @@ vector<_dieVal> Die::rolldie(){
 }
 
 void Die::rolldie(vector<_dieVal>& Vec){
-
 	std::vector<_dieVal> tmpVec;
 
 	_dieVal dieNum = Die::dist[rand() % 4](Die::mt[rand() % 4]);
@@ -584,7 +573,6 @@ void game::updateDisplay(){
 	do{
 		tmpDimen = util::getTerminalDimen();
 		boxlen = (2 * min(tmpDimen.first, tmpDimen.second) - 32) / 15;
-
 	} while( min(tmpDimen.first, tmpDimen.second) < 32 );
 
 	_BoardPrinter::titleBar(tmpDimen.first);
@@ -683,7 +671,6 @@ _coord game::getEmptyLocks(_colour gotiColour) const{
 }
 
 bool game::InitGame(short playerConsent){ //! 1 for complete reset, 2 is with previous playerMap
-
 	if( playerConsent != 1 && playerConsent != 2 ){
 		return false;
 	} else{
@@ -727,7 +714,6 @@ void game::play(bool boolVal){
 		do{
 			this->curr_player = iter->first;
 			this->curr_colour = iter->second.second;
-
 		} while( iter != this->activePlayerMap.end()
 					&& !gameisFinished()
 						&& (this->numfinished[this->curr_colour] == this->goti_per_user) );
@@ -744,7 +730,6 @@ void game::play(bool boolVal){
 		if( isRobot ){ //ie. It is a Robot Player
 
 			// auto robo = thinker(this);
-
 			// if( robotPlayers[curr_player] == RobotKind::thinkerRobo )
 			// 	robo.implementBestMove();
 			// else if( robotPlayers[curr_player] == RobotKind::randomRobo )
@@ -782,7 +767,6 @@ void game::play(bool boolVal){
 		}
 		//! Actual logic to move each player is this nested while loop
 		while( !dieNumbers.empty() && !movingGotis[curr_colour].empty() ){
-
 			updateDisplay();
 			unsigned counter = 1;
 			cout << "\nChose from these gotis : ";
@@ -985,7 +969,6 @@ void game::settingsMenu(){
 void game::notYetImplementedScr() const{
 
 	_BoardPrinter::titleBar();
-
 	util::place_v_center();
 	util::align_text_center("This feature has not yet been implemented !");
 }

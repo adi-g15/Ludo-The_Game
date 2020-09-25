@@ -32,5 +32,4 @@ public:
 	friend class game;
 	friend class _BoardPrinter;
 	friend class ludo_state;
-
 };
