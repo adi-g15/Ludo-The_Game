@@ -31,8 +31,6 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 
 	_coord increment_coord({ 0, 0 });
 	_coord updated_coords(the_goti->curr_coords);
-	reference_wrapper<const ludo_box> currBox = getBoardBox(updated_coords);
-
 	Direction turnDirection, currDirection = the_goti->curr_direction;
 
 	while( dist-- ){
@@ -86,7 +84,7 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 
 		updated_coords.first += increment_coord.first;
 		updated_coords.second += increment_coord.second;
-		currBox = getBoardBox(updated_coords);
+		reference_wrapper<const ludo_box> currBox = getBoardBox(updated_coords);
 
 		if( currBox.get().box_type == Box::HOME_END && dist != 0 ){ //! Reached finished point, but move still incomplete
 			return {};
