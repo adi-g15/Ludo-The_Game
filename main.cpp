@@ -8,13 +8,11 @@ using std::clog;
 
 int main(int argc, char const *argv[])
 {
-
 	game newGame;
 
 	//GamePlay starts
 	try
 	{
-
 		short playConsent = 1;
 		do
 		{
@@ -28,7 +26,6 @@ int main(int argc, char const *argv[])
 
 			std::cout << "Enter 1 if you want to play again and reset\nEnter 2 if you want to play with same players\nAnything else to say GoodBye :-)\nYour Consent : ";
 			std::cin >> playConsent;
-
 		} while (playConsent == 1 || playConsent == 2);
 		std::cout << "Khelne ke liye Dhanyawaad :-D" << std::endl;
 	}

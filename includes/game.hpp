@@ -94,5 +94,4 @@ public:
 	friend class ludo_state;
 	friend class ludo_state;
 	friend class thinker;
-
 };

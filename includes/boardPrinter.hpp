@@ -49,7 +49,6 @@ public:
 	int termWidth;
 	explicit _BoardPrinter(const std::vector<std::vector<ludo_box>>&);	//! Links to the board
 	_BoardPrinter() = delete;
-
 };
 
 //Defintions Start
@@ -115,7 +114,6 @@ void _BoardPrinter::finishedScreen(){
 }
 
 void _BoardPrinter::titleBar(int width){	//Considering sufficient width, to be able to play the game
-
 #ifdef __linux__
 	system("clear");
 #elif _WIN32
@@ -129,7 +127,6 @@ void _BoardPrinter::titleBar(int width){	//Considering sufficient width, to be a
 }
 
 void _BoardPrinter::titleBar(){
-
 	return titleBar(util::getTerminalDimen().second);
 }
 

@@ -28,7 +28,6 @@ bool ludo_box::removeGoti(std::shared_ptr<ludo_goti>& toBeRemoved){
 	for( auto& boxGoti : inBoxGotis ){
 		//! Removing goti from the dataStructures is done by the next 3lines in the if block
 		if( boxGoti == toBeRemoved ){
-
 			//Logically Removing the goti now
 			inBoxGotis.erase(std::find_if(inBoxGotis.begin(), inBoxGotis.end(), [&](shared_ptr<ludo_goti>& compare_goti){
 				return compare_goti == toBeRemoved;
