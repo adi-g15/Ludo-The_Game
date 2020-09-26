@@ -7,11 +7,9 @@
 #include <string>
 #include <string_view>
 
-//You may find `coloured output` functions in stream_util.hpp
-
-typedef std::pair<uint_fast16_t, uint_fast16_t> _coord;
-
 namespace util{
+    typedef std::pair<long, long> _coord;
+
     _coord getTerminalDimen();
 
     /*
@@ -43,24 +41,23 @@ namespace util{
 #endif
 
 //returns row*column dimension
-_coord util::getTerminalDimen(){
+util::_coord util::getTerminalDimen(){
     _coord outTuple(0, 0);
-#ifdef OS_LINUX
-    winsize windowsSize;
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowsSize);
-    outTuple = { windowsSize.ws_row, windowsSize.ws_col };
-
-#elif defined(OS_WIN)
+#ifdef OS_WIN
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
     outTuple = { csbi.srWindow.Bottom - csbi.srWindow.Top + 1, csbi.srWindow.Right - csbi.srWindow.Left + 1 };
+#else
+    winsize windowsSize;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowsSize);
+    outTuple = { windowsSize.ws_row, windowsSize.ws_col };
 #endif
 
     return outTuple;
 }
 
 bool util::align_text_center(std::string_view str, std::ostream& stream){ //@returns bool indicating, if max_len is enough or not
-    return align_text_center(getTerminalDimen().first, str, stream);
+    return align_text_center(getTerminalDimen().second, str, stream);
 }
 
 bool util::align_text_center(unsigned int max_length, std::string_view str, std::ostream& stream){ //@returns bool indicating, if max_len is enough or not
@@ -84,7 +81,7 @@ bool util::place_center(unsigned int max_length, std::string_view str, std::ostr
 }
 
 bool util::place_v_center(std::string_view str){
-    return place_v_center(getTerminalDimen().second, str);
+    return place_v_center(getTerminalDimen().first, str);
 }
 
 bool util::place_v_center(unsigned int vert_length, std::string_view str){

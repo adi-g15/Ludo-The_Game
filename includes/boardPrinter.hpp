@@ -10,14 +10,14 @@
 #include <cstdarg>
 
 class _BoardPrinter{ //! @info Only for use by updateDisplay() & takeIntro()
-private:
+	private:
 	/*@note Also clears the screen, so that the titlebar is at top
 	  @returns Terminalstd::pair<int,int> as pair<int,int>*/
 
 	const std::vector<std::vector<ludo_box>>& board;	//board that this printer links to
 
 	static void titleBar(int width);
-	static void titleBar(); /*@brief Simply just calls titleBar with (terminalDimen().first)*/
+	static void titleBar(); /*@brief Simply just calls titleBar with (terminalDimen().n_row)*/
 
 	static void msgScreen(std::string_view msg);
 	static void msgScreen(int n, ...);	//NOTE - The later arguments must be char*
@@ -45,7 +45,7 @@ private:
 
 	friend class game;
 
-public:
+	public:
 	unsigned int boxlen;
 	int termWidth;
 	explicit _BoardPrinter(const std::vector<std::vector<ludo_box>>&);	//! Links to the board
@@ -81,12 +81,12 @@ void _BoardPrinter::msgScreen(va_list args, int n){
 	va_end(args);
 
 	titleBar();
-	auto termDimen = util::getTerminalDimen();
+	_coord termDimen = util::getTerminalDimen();
 	std::cout << '\n';
 
-	for( unsigned i = 0; i < (termDimen.first - 3) / 2; ++i )	std::cout << '\n';
-	util::align_text_center(util::getTerminalDimen().second, msg);
-	for( unsigned i = 0; i < termDimen.first - (termDimen.first - 3) / 2; ++i )	std::cout << '\n';
+	for( auto i = 0; i < (termDimen.n_row - 3) / 2; ++i )	std::cout << '\n';
+	util::align_text_center(termDimen.n_col, msg);
+	for( auto i = 0; i < termDimen.n_row - (termDimen.n_row - 3) / 2; ++i )	std::cout << '\n';
 }
 
 void _BoardPrinter::msgScreen(int n, ...){
@@ -101,11 +101,11 @@ void _BoardPrinter::errorScreen(std::string_view errMsg){
 }
 
 void _BoardPrinter::errorScreen(va_list args, int n){
-	std::cout << rang::Fg::red << rang::Bg::magenta << rang::Style::bold ;
+	std::cout << rang::Fg::red << rang::Style::bold;
 
 	_BoardPrinter::msgScreen(args, n);
 
-	std::cout << rang::Bg::reset << rang::Fg::reset << rang::Style::reset ;
+	std::cout << rang::Fg::reset << rang::Style::reset;
 }
 
 void _BoardPrinter::errorScreen(int n, ...){
@@ -127,16 +127,17 @@ void _BoardPrinter::titleBar(int width){	//Considering sufficient width, to be a
 	system("cls");
 #endif
 
-	std::cout << std::endl;
-	util::align_text_center(width, "NAMASTE from \"Ludo - The Game\" :D", std::cout << rang::Bg::green );
+	std::cout << rang::Bg::reset;
+	std::cout << rang::Fg::green << rang::Style::bold << std::endl;
+	util::align_text_center(width, "NAMASTE from \"Ludo - The Game\" :D");
 	std::cout << '\n';
 	while( width-- ) std::cout << '=';
 
-	std::cout << rang::Bg::black;
+	std::cout << rang::Fg::reset << rang::Style::reset ;
+	// rang::rang_implementation::resetAll();
 }
 
 void _BoardPrinter::titleBar(){
-
 	return titleBar(util::getTerminalDimen().second);
 }
 

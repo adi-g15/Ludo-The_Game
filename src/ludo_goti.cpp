@@ -4,7 +4,7 @@
 #include <iostream>
 
 _coord ludo_goti::getCoords() const{
-    if(curr_coords.first == 0 && curr_coords.second == 0){
+    if(curr_coords.n_row == 0 && curr_coords.n_col == 0){
         std::cerr<<"Coordinates of Goti are corrupt (0,0)\n"<<std::endl;
     }
     return curr_coords;

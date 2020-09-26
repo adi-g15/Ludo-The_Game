@@ -31,7 +31,7 @@ bool thinker::unlock()
 	{
 		auto &box = state->getBox(coord);
 
-		if (goti != nullptr && state->board[coord.first][coord.second].type != Box::LOCK)
+		if (goti != nullptr && state->board[coord.n_row][coord.n_col].type != Box::LOCK)
 			break;
 		else if (!box.inBoxGotis.empty())
 			continue;
@@ -54,24 +54,24 @@ bool thinker::unlock()
 Direction thinker::getDirOfMovement(const _coord &coord)
 {
 	Direction retVal;
-	if (coord.first < (15 / 2 - 2) || coord.second > (15 / 2 - 2))
+	if (coord.n_row < (15 / 2 - 2) || coord.n_col > (15 / 2 - 2))
 	{
-		if (coord.first == 0)
+		if (coord.n_row == 0)
 			retVal = Direction::EAST;
-		else if (coord.first == (15 - 1))
+		else if (coord.n_row == (15 - 1))
 			retVal = Direction::WEST;
-		else if (coord.second < 15 / 2)
+		else if (coord.n_col < 15 / 2)
 			retVal = Direction::NORTH;
 		else
 			retVal = Direction::SOUTH;
 	}
 	else
 	{
-		if (coord.second == 0)
+		if (coord.n_col == 0)
 			retVal = Direction::NORTH;
-		else if (coord.second == (15 - 1))
+		else if (coord.n_col == (15 - 1))
 			retVal = Direction::SOUTH;
-		else if (coord.first > (15 / 2))
+		else if (coord.n_row > (15 / 2))
 			retVal = Direction::EAST;
 		else
 			retVal = Direction::WEST;
@@ -169,8 +169,8 @@ const std::optional<_smartMoveData> thinker::isMovePossible(const _coord &coord,
 			}
 		}
 
-		updated_coords.first += increment_coord.first;
-		updated_coords.second += increment_coord.second;
+		updated_coords.n_row += increment_coord.n_row;
+		updated_coords.n_col += increment_coord.n_col;
 		currBox = state->getBox(updated_coords);
 
 		//Judging the profit START
@@ -270,9 +270,9 @@ bool thinker::setBestMove()
 	}
 
 	std::vector<_coord> movingPos, opponentsPos;
-	for (size_t i = 0; i < state->board.size(); ++i)
+	for (long i = 0; i < state->board.size(); ++i)
 	{
-		for (size_t j = 0; j < state->board.at(i).size(); ++j)
+		for (long j = 0; j < state->board.at(i).size(); ++j)
 		{
 			if (state->board[i][j].areOpponentsPresent(state->currColour))
 				opponentsPos.push_back({i, j});

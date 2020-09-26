@@ -1,11 +1,20 @@
 #pragma once
 
-#include <utility>
 #include <algorithm>
 #include <vector>
 #include <ostream>
 
-typedef std::pair<uint_fast16_t, uint_fast16_t> _coord;
+struct _coord{
+	typedef long _type;
+	_type n_row, n_col;
+
+	bool operator==(const _coord& c) const{ return this->n_row == c.n_row && this->n_col == c.n_col; }
+	bool operator<(const _coord& c) const{ if( this->n_row < c.n_row ) return true; else return this->n_col < c.n_col; }
+	_coord() : _coord(_type{}, _type{}){}
+	_coord(_type x, _type y) : n_row(x), n_col(y){}
+	_coord(const _coord& c) : _coord(c.n_row, c.n_col){}
+	_coord(const std::pair<_type, _type>& p): _coord(p.first, p.second){}
+};
 
 enum class _colour{
 	LAAL,
@@ -59,14 +68,18 @@ enum class RobotKind{
 };
 
 
-namespace util_lamdas{
-	auto nextColour = [](_colour &c, std::vector<_colour>& order){
+namespace util_lamdas{	//the bool return values here, can simply be ignored
+	auto nextColour = [](_colour &c, std::vector<_colour>& order) -> void{
 		auto iter = std::find(order.begin(), order.end(), c);
 
 		if( iter != order.end() && ++iter != order.end() )	c = *iter;
 		else c = order.front();
 	};
-	auto nextPlayer = [](Player &p){
+
+	auto nextPlayer = [](Player &p) -> bool{
+		bool repeated{ false };	//returns true if, player_1 returned, since player_4 was passed
+		repeated = p == Player::_4;
+
 		switch( p ){
 			case Player::_1: p = Player::_2; break;
 			case Player::_2: p = Player::_3; break;
@@ -74,5 +87,7 @@ namespace util_lamdas{
 
 			default: p = Player::_1;
 		}
+
+		return repeated;
 	};
 }

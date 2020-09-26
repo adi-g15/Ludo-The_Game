@@ -24,6 +24,10 @@ static std::ostream& operator<<(std::ostream& out, const std::pair<T1, T2>& p){
 	return out << '(' << p.first << ", " << p.second << ')';
 }
 
+static std::ostream& operator<<(std::ostream& out, const _coord& p){
+	return out << '(' << p.n_row << ", " << p.n_col << ')';
+}
+
 //GAME_CLASS_DEFINTIONS START
 const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_goti>& the_goti, int dist) const{
 	if( dist == 0 )
@@ -84,8 +88,8 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 			}
 		}
 
-		updated_coords.first += increment_coord.first;
-		updated_coords.second += increment_coord.second;
+		updated_coords.n_row += increment_coord.n_row;
+		updated_coords.n_col += increment_coord.n_col;
 		currBox = getBoardBox(updated_coords);
 
 		if( currBox.get().box_type == Box::HOME_END && dist != 0 ){ //! Reached finished point, but move still incomplete
@@ -200,22 +204,27 @@ bool game::handleMoveVal(short moveVal, vector<_dieVal>& dieNumbers, bool isRobo
 
 /*BUG - For example for a random_goti_index the goti isn't movable, then that diceNumber is being discarded. [For eg. in 6,1 only 1 is moved and 6 not] */
 bool game::autoMove(){ //! Return values same as the moveGoti_function
-	std::vector<_dieVal> dieNumbers;
+	std::vector<_dieVal> dieNumbers{ Die::rolldie() };
 	std::set<unsigned> triedGotis_indices; //! Stores the gotis that have been tried to move, FOR A SINGLE DIE_NUMBER
 	std::optional< _smartMoveData > moveObj;
 	bool wasSuccess = false;
 
-	Die::rolldie(dieNumbers);
+	updateDisplay();
 	cout << "Roll Output : ";
 	for( auto& i : dieNumbers )
 		cout << i << ' ';
-	cout << endl;
 
 	if( movingGotis[curr_colour].empty() ){
 		auto iter = find(dieNumbers.begin(), dieNumbers.end(), 6);
 		if( iter != dieNumbers.end() ){
 			unlockGoti();
 			dieNumbers.erase(iter);
+
+			updateDisplay();
+			cout << "Roll Output : ";
+			for( auto& i : dieNumbers )
+				cout << i << ' ';
+
 		} else{
 			clog << "Can't Move, due to absence of gotis" << endl;
 			return false;
@@ -228,9 +237,6 @@ bool game::autoMove(){ //! Return values same as the moveGoti_function
 	for( size_t i = 0; i < dieNumbers.size(); ++i ){
 		auto currentRoll = dieNumbers[i];
 		++index;
-
-		updateDisplay();
-		util::pause(1);
 
 		if( currentRoll == 6 ){
 			if( rand() % 2 == 1 && getNumLockedGotis(curr_colour) > 0 ){ //50% chance of robot using 6 to unlockGoti
@@ -252,11 +258,10 @@ bool game::autoMove(){ //! Return values same as the moveGoti_function
 
 				moveObj = isMovePossible(movingGotis.at(curr_colour).at(random_goti_index), currentRoll);
 				if( moveObj.has_value() ){
-					wasSuccess = true;
 					auto moveVal = moveGoti(movingGotis.at(curr_colour).at(random_goti_index), moveObj.value());
 					handleMoveVal(moveVal, dieNumbers);
 
-					util::pause(0.7f);
+					wasSuccess = true;
 				}
 			} catch( std::out_of_range& e ){
 				cerr << e.what();
@@ -297,7 +302,7 @@ void game::attack(std::vector<_colour> coloursToRemove, std::shared_ptr<ludo_got
 }
 
 bool game::isValid(const _coord& coords) const{
-	if( coords.first >= 0 && coords.first < 15 && coords.second >= 0 && coords.second < 15 ){
+	if( coords.n_row >= 0 && coords.n_row < 15 && coords.n_col >= 0 && coords.n_col < 15 ){
 		return true;
 	}
 
@@ -316,14 +321,14 @@ bool game::isValid(const shared_ptr<ludo_goti>& goti) const{
 
 ludo_box& game::getBoardBox(const _coord& coords){
 	if( isValid(coords) )
-		return board[coords.first][coords.second];
+		return board[coords.n_row][coords.n_col];
 	else
 		throw std::out_of_range("OUT_OF_RANGE: Board indices, passed to getBoardBox, are out of bounds");
 }
 
 const ludo_box& game::getBoardBox(const _coord& coords) const{
 	if( isValid(coords) )
-		return board[coords.first][coords.second];
+		return board[coords.n_row][coords.n_col];
 	else
 		throw std::out_of_range("OUT_OF_RANGE: Board indices, passed to getBoardBox, are out of bounds");
 }
@@ -433,19 +438,19 @@ void game::takeIntro(){
 	_coord tmpDimen(0, 0);
 	tmpDimen = util::getTerminalDimen();
 
-	_BoardPrinter::errorScreen("[NOTICE] Please ensure window is at least 31*31");
+	_BoardPrinter::errorScreen("Please ensure window size is at least 31*31");
 	cout << endl;
 
 	//QUESTION - How to call the function pointer through an iterator ?
 	do{
 		tmpDimen = util::getTerminalDimen();
 
-	} while( tmpDimen.first < 31 || tmpDimen.second < 62 ); //tmpDimen -> row*column
+	} while( tmpDimen.n_row < 31 || tmpDimen.n_col < 62 ); //tmpDimen -> row*column
 
-	_BoardPrinter::titleBar(tmpDimen.second);
+	_BoardPrinter::titleBar(tmpDimen.n_col);
 
-	util::place_v_center(tmpDimen.first - 7, "");
-	util::align_text_center(tmpDimen.second, "Enter names of the Players (Leave empty if not playing, or type \"ROBOT\") : ");
+	util::place_v_center(tmpDimen.n_row - 7, "");
+	util::align_text_center(tmpDimen.n_col, "Enter names of the Players (Leave empty if not playing, or type \"ROBOT\") : ");
 
 	string playerName;
 	_colour colour;
@@ -456,7 +461,7 @@ void game::takeIntro(){
 
 	for( auto i = 0;i < 4;++i ){	//Loop it 4 times (not mandatory to give details of all players though)
 
-		util::place_center(tmpDimen.second, string("Player").append(playerId[p]).append(" - "));
+		util::place_center(tmpDimen.n_col, string("Player").append(playerId[p]).append(" - "));
 
 		getline(cin, playerName);
 		util::trim(playerName);
@@ -519,29 +524,8 @@ bool game::isPlayerPlaying(Player p){
 }
 
 vector<_dieVal> Die::rolldie(){
-
 	std::vector<_dieVal> v;
-
-	_dieVal dieNum = Die::dist[rand() % 4](Die::mt[rand() % 4]);
-	do{
-		v.push_back(dieNum);
-		dieNum = Die::dist[rand() % 4](Die::mt[rand() % 4]);
-	} while( dieNum == 6 );
-	v.push_back(dieNum); //To insert the last left non-6
-
-	//! Main logic is above only, below are some cleansing and optimisations
-	std::vector<size_t> sixPos;
-	for( size_t i = 0; i < v.size(); ++i ){
-		if( v[i] == 6 )
-			sixPos.push_back(i);
-	}
-	while( sixPos.size() > 3 ){
-		v.erase(v.begin() + sixPos[sixPos.size() - 1]); //Removing from end positions
-		v.erase(v.begin() + sixPos[sixPos.size() - 2]);
-		v.erase(v.begin() + sixPos[sixPos.size() - 3]);
-		sixPos.erase(sixPos.begin() + sixPos.size() - 3, sixPos.end());
-	}
-
+	Die::rolldie(v);
 	return v;
 }
 
@@ -580,15 +564,21 @@ void game::updateDisplay(){
 	unsigned int boxlen = 0;
 	_coord tmpDimen(0, 0);
 
+	util::pause(0.5f);
+
+	bool isScreenSmall = false;
 	do{
+		if( isScreenSmall )
+			_BoardPrinter::errorScreen("Please ensure window size is at least 31*31");
 		tmpDimen = util::getTerminalDimen();
-		boxlen = (2 * min(tmpDimen.first, tmpDimen.second) - 32) / 15;
+		boxlen = (2 * min(tmpDimen.n_row, tmpDimen.n_col) - 32) / 15;
+		isScreenSmall = !isScreenSmall;	//nevertheless, it won't reach again if the loop only runs once
 
-	} while( min(tmpDimen.first, tmpDimen.second) < 32 );
+	} while( min(tmpDimen.n_row, tmpDimen.n_col) < 32 );
 
-	_BoardPrinter::titleBar(tmpDimen.first);
+	_BoardPrinter::titleBar(tmpDimen.n_col);
 
-	util::place_center(tmpDimen.first - 15 * (boxlen + 1) + 3 - 4);
+	util::place_center(tmpDimen.n_col - 15 * (boxlen + 1) + 3 - 4);
 	cout << "  ";
 	for( size_t i = 0; i < 10; i++ ){
 		for( auto j = boxlen; j-- > 0;) //NOTE - '-->' is a combination of the 2 operators '--' and '>' ;D
@@ -601,63 +591,48 @@ void game::updateDisplay(){
 		cout << i;
 	}
 	cout << "\n  ";
-	util::place_center(tmpDimen.first - 15 * (boxlen + 1) + 3 - 4);
+	util::place_center(tmpDimen.n_col - 15 * (boxlen + 1) + 3 - 4);
 
 	for( size_t i = 0; i < (boxlen + 1) * 15 + 1; i++ )
 		cout << '-';
 	cout << "\n";
 
-#define BOARD_CENTER util::place_center(tmpDimen.first - 15 * (boxlen + 1) + 3 - 4);
+#define BOARD_CENTER util::place_center(tmpDimen.n_col - 15 * (boxlen + 1) + 3 - 4);
 
 	_BoardPrinter _board_printer(board);
 	_board_printer.boxlen = boxlen;
 
-	BOARD_CENTER cout << 0 << ' ';
-	_board_printer.row_type1(0);
+	BOARD_CENTER cout << 0 << ' ';	_board_printer.row_type1(0);
 	_board_printer.inter_type1();
-	BOARD_CENTER cout << 1 << ' ';
-	_board_printer.row_type2(1);
+	BOARD_CENTER cout << 1 << ' ';	_board_printer.row_type2(1);
 	_board_printer.inter_type2();
-	BOARD_CENTER cout << 2 << ' ';
-	_board_printer.row_type1(2);
+	BOARD_CENTER cout << 2 << ' ';	_board_printer.row_type1(2);
 	_board_printer.inter_type3();
-	BOARD_CENTER cout << 3 << ' ';
-	_board_printer.row_type1(3);
+	BOARD_CENTER cout << 3 << ' ';	_board_printer.row_type1(3);
 	_board_printer.inter_type2();
-	BOARD_CENTER cout << 4 << ' ';
-	_board_printer.row_type2(4);
+	BOARD_CENTER cout << 4 << ' ';	_board_printer.row_type2(4);
 	_board_printer.inter_type2();
-	BOARD_CENTER cout << 5 << ' ';
-	_board_printer.row_type1(5);
+	BOARD_CENTER cout << 5 << ' ';	_board_printer.row_type1(5);
 	_board_printer.inter_type4();
 
-	BOARD_CENTER cout << 6 << ' ';
-	_board_printer.row_type3(6);
+	BOARD_CENTER cout << 6 << ' ';	_board_printer.row_type3(6);
 	_board_printer.inter_type5();
-	BOARD_CENTER cout << 7 << ' ';
-	_board_printer.row_type4(7);
+	BOARD_CENTER cout << 7 << ' ';	_board_printer.row_type4(7);
 	_board_printer.inter_type5();
-	BOARD_CENTER cout << 8 << ' ';
-	_board_printer.row_type3(8);
+	BOARD_CENTER cout << 8 << ' ';	_board_printer.row_type3(8);
 	_board_printer.inter_type4();
 
-	BOARD_CENTER cout << 9 << ' ';
-	_board_printer.row_type1(9);
+	BOARD_CENTER cout << 9 << ' ';	_board_printer.row_type1(9);
 	_board_printer.inter_type2();
-	BOARD_CENTER cout << 10;
-	_board_printer.row_type2(10);
+	BOARD_CENTER cout << 10;		_board_printer.row_type2(10);
 	_board_printer.inter_type2();
-	BOARD_CENTER cout << 11;
-	_board_printer.row_type1(11);
+	BOARD_CENTER cout << 11;		_board_printer.row_type1(11);
 	_board_printer.inter_type3();
-	BOARD_CENTER cout << 12;
-	_board_printer.row_type1(12);
+	BOARD_CENTER cout << 12;		_board_printer.row_type1(12);
 	_board_printer.inter_type2();
-	BOARD_CENTER cout << 13;
-	_board_printer.row_type2(13);
+	BOARD_CENTER cout << 13;		_board_printer.row_type2(13);
 	_board_printer.inter_type1();
-	BOARD_CENTER cout << 14;
-	_board_printer.row_type1(14);
+	BOARD_CENTER cout << 14;		_board_printer.row_type1(14);
 
 	cout << "  ";
 	BOARD_CENTER for( size_t i = 0; i < (boxlen + 1) * 15 + 1; i++ ) cout << '-';
@@ -667,9 +642,11 @@ void game::updateDisplay(){
 	cout << "\n\n";
 	util::align_text_center(activePlayerMap[curr_player].first);
 	cout << "\n";
-	for( unsigned i = 0; i < tmpDimen.first; ++i )
+	for( unsigned i = 0; i < tmpDimen.n_col; ++i )
 		cout << '-';
 	cout << '\n';
+
+
 }
 
 _coord game::getEmptyLocks(_colour gotiColour) const{
@@ -722,14 +699,12 @@ void game::play(bool boolVal){
 
 	//Lambda Defintions
 	auto lambda_next = [&](){
-		auto iter = this->activePlayerMap.begin();
 		do{
-			this->curr_player = iter->first;
-			this->curr_colour = iter->second.second;
-
-		} while( iter != this->activePlayerMap.end()
-			&& !gameisFinished()
-			&& (this->numfinished[this->curr_colour] == this->goti_per_user) );
+			util_lamdas::nextPlayer(this->curr_player);
+			util_lamdas::nextColour(this->curr_colour, this->colourOrder);
+		} while( (! gameisFinished() && (this->numfinished[this->curr_colour] == this->goti_per_user))
+					|| this->coloursMap.find(curr_colour) == this->coloursMap.end()	//ie. curr_colour is not playing, then keep looping, until a playing colour is chosen
+					);
 
 		dieNumbers.clear();
 	};
@@ -739,7 +714,6 @@ void game::play(bool boolVal){
 		unsigned choice_num;
 		bool isRobot = robotPlayers.find(curr_player) != robotPlayers.end();
 		string inputStr; //! Note - To use shortcuts like ":settings", ":rules, and to have 'variable number of inputs'
-		updateDisplay();
 		if( isRobot ){ //ie. It is a Robot Player
 
 			// auto robo = thinker(this);
@@ -752,6 +726,7 @@ void game::play(bool boolVal){
 			continue;
 		}
 
+		updateDisplay();
 		cout << "\nPress Enter to roll the die...";
 		cin.get();
 		Die::rolldie(dieNumbers);
@@ -766,12 +741,10 @@ void game::play(bool boolVal){
 			//no six
 			if( !util::contains<_dieVal>(dieNumbers, 6) ){ //No movable goti, so continue to next player
 				cout << "\nNo movable goti, for the moves" << endl;
-				util::pause(1.0f);
 
 				lambda_next();
 				continue;
 			} else{ //No movable gotis currently, hence automatically open one, since 6 is available
-				util::pause(0.4f);
 				unlockGoti();
 				updateDisplay();
 				cout << "Goti unlocked!" << endl;
@@ -788,7 +761,7 @@ void game::play(bool boolVal){
 			if( util::contains<_dieVal>(dieNumbers, 6) )
 				cout << "\n0. Unlock New Goti (just type 0)\n\n";
 			for( auto&& goti_ptr : movingGotis[curr_colour] ){
-				cout << counter << ". [" << goti_ptr->curr_coords.first << "][" << goti_ptr->curr_coords.second << "]\n";
+				cout << counter << ". [" << goti_ptr->curr_coords.n_row << "][" << goti_ptr->curr_coords.n_col << "]\n";
 				++counter;
 			}
 			cout << "\nRoll Output - ";
@@ -802,13 +775,9 @@ void game::play(bool boolVal){
 				auto moveData = isMovePossible(movingGotis[curr_colour][0], dieNumbers[0]);
 				if( !moveData.has_value() ){
 					cout << "Move not possible" << endl;
-					util::pause(0.6f);
 				} else{ //goti has been moved
 					auto moveVal = moveGoti(movingGotis[curr_colour][0], moveData.value());
 					handleMoveVal(moveVal, dieNumbers, false);
-
-					updateDisplay();
-					util::pause(1);
 				}
 				dieNumbers.erase(dieNumbers.begin()); //! Removing the used goti number (which is actually dieNumbers[0])
 				lambda_next();
@@ -837,7 +806,6 @@ void game::play(bool boolVal){
 							dieNumbers.erase(std::find(dieNumbers.begin(), dieNumbers.end(), 6));
 						} else{
 							cout << "Chhaka to aaye pehle, tab na goti niklegi yar!\n";
-							util::pause(1);
 							continue; //Wrong Input
 						}
 					} else{ //! Usual Case - No unlock, nor any cheat/shortcut used
@@ -856,13 +824,12 @@ void game::play(bool boolVal){
 
 								auto elements = util::isSumOfElements(enteredRoll, dieNumbers);
 								util::remove_common(dieNumbers, elements);
-								util::pause(0.5);
 							}
 						}
 					}
 				}
 			}
-			updateDisplay();
+			// updateDisplay();
 		}
 		//! dieNumbers is again Empty
 		lambda_next();
@@ -895,48 +862,48 @@ void game::endGame(int n, ...) const{
 //! Source is the name of function from which it was called
 //TODO - Complete Logic for the options (Will implement after i have made a gui, or web version)
 void game::settingsMenu(){
-	auto termDimen = util::getTerminalDimen();
+	_coord termDimen = util::getTerminalDimen();
 	unsigned choice = 11;
 	std::string inputStr;
 
 	do{
-		_BoardPrinter::titleBar(termDimen.second);
+		_BoardPrinter::titleBar(termDimen.n_col);
 
-		util::place_v_center(termDimen.first - 2 * (2 + 11 + 4)); //height of 2 taken by titleBar, 11 by Choices, and 4 by Input
+		util::place_v_center(termDimen.n_row - 2 * (2 + 11 + 4)); //height of 2 taken by titleBar, 11 by Choices, and 4 by Input
 
-		util::align_text_center(termDimen.second, "1. Change 'GamePlay' Order (PlayerWise)");
+		util::align_text_center(termDimen.n_col, "1. Change 'GamePlay' Order (PlayerWise)");
 		cout << '\n';
-		util::align_text_center(termDimen.second, "2. Change 'Number of gotis_per_user'");
+		util::align_text_center(termDimen.n_col, "2. Change 'Number of gotis_per_user'");
 		cout << '\n';
-		util::align_text_center(termDimen.second, "3. Which goti should 'Start' First?");
+		util::align_text_center(termDimen.n_col, "3. Which goti should 'Start' First?");
 		cout << '\n';
-		util::align_text_center(termDimen.second, "4. Assign Colours to Players");
+		util::align_text_center(termDimen.n_col, "4. Assign Colours to Players");
 		cout << '\n';
-		util::align_text_center(termDimen.second, "5. Remove 'stops'");
+		util::align_text_center(termDimen.n_col, "5. Remove 'stops'");
 		cout << '\n';
-		util::align_text_center(termDimen.second, "6. Change Title shown at Top");
+		util::align_text_center(termDimen.n_col, "6. Change Title shown at Top");
 		cout << '\n';
-		util::align_text_center(termDimen.second, "7. Change Player Names");
+		util::align_text_center(termDimen.n_col, "7. Change Player Names");
 		cout << '\n';
-		util::align_text_center(termDimen.second, "8. Reset to Original Positions");
+		util::align_text_center(termDimen.n_col, "8. Reset to Original Positions");
 		cout << '\n';
-		util::align_text_center(termDimen.second, "9. Use different Random_Sequence for each (y/n)");
+		util::align_text_center(termDimen.n_col, "9. Use different Random_Sequence for each (y/n)");
 		cout << '\n';
-		util::align_text_center(termDimen.second, "10. Let's Cheat... ;D (Can remove opponents gotis)");
+		util::align_text_center(termDimen.n_col, "10. Let's Cheat... ;D (Can remove opponents gotis)");
 		cout << '\n';
-		util::align_text_center(termDimen.second, "[ 11. Alwida... ]");
+		util::align_text_center(termDimen.n_col, "[ 11. Alwida... ]");
 		cout << "\n\n";
 
-		util::align_text_center(termDimen.second, "----------------------------");
-		util::align_text_center(termDimen.second - 2, "Enter Choice : ");
+		util::align_text_center(termDimen.n_col, "----------------------------");
+		util::align_text_center(termDimen.n_col - 2, "Enter Choice : ");
 		cin >> choice;
 	} while( choice <= 11 );
 
 	switch( choice ){
 		case 1:
 		{
-			_BoardPrinter::titleBar(termDimen.second);
-			util::place_v_center(termDimen.first - 2 * (2 + 1)); //height of 2 taken by titleBar, 11 by Choices, and 4 by Input
+			_BoardPrinter::titleBar(termDimen.n_col);
+			util::place_v_center(termDimen.n_row - 2 * (2 + 1)); //height of 2 taken by titleBar, 11 by Choices, and 4 by Input
 
 			cout << "Type playerNumbers in order (for eg. \"1432\") : ";
 			cin >> inputStr;

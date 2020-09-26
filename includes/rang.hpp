@@ -366,15 +366,15 @@ namespace rang{
 
         inline void setWinSGR(rang::Style style, SGR& state) noexcept{
             switch( style ){
-            case rang::Style::reset: state = defaultState(); break;
-            case rang::Style::bold: state.bold = FOREGROUND_INTENSITY; break;
-            case rang::Style::underline:
-            case rang::Style::blink:
-                state.underline = BACKGROUND_INTENSITY;
-                break;
-            case rang::Style::reversed: state.inverse = TRUE; break;
-            case rang::Style::conceal: state.conceal = TRUE; break;
-            default: break;
+                case rang::Style::reset: state = defaultState(); break;
+                case rang::Style::bold: state.bold = FOREGROUND_INTENSITY; break;
+                case rang::Style::underline:
+                case rang::Style::blink:
+                    state.underline = BACKGROUND_INTENSITY;
+                    break;
+                case rang::Style::reversed: state.inverse = TRUE; break;
+                case rang::Style::conceal: state.conceal = TRUE; break;
+                default: break;
             }
         }
 
@@ -437,10 +437,24 @@ namespace rang{
             }
             return os;
         }
+
+        inline void resetAll() noexcept{
+            static SGR state = current_state();
+            setWinSGR(rang::Style::reset, state);
+            setWinSGR(rang::Fg::reset, state);
+            setWinSGR(rang::Bg::reset, state);
+        }
+
 #else
         template <typename T>
         inline enableStd<T> setColor(std::ostream& os, T const value){
             return os << "\033[" << static_cast<int>(value) << "m";
+        }
+
+        inline void resetAll(std::ostream& os) noexcept{
+            setColor(os, rang::Style::reset);
+            setColor(os, rang::Fg::reset);
+            setColor(os, rang::Bg::reset);
         }
 #endif
     }  // namespace rang_implementation
@@ -450,22 +464,23 @@ namespace rang{
         const T value){
         const Control option = rang_implementation::controlMode();
         switch( option ){
-        case Control::Auto:
-            return rang_implementation::supportsColor()
-                && rang_implementation::isTerminal(os.rdbuf())
-                ? rang_implementation::setColor(os, value)
-                : os;
-        case Control::Force: return rang_implementation::setColor(os, value);
-        default: return os;
+            case Control::Auto:
+                return (rang_implementation::supportsColor()
+                    && rang_implementation::isTerminal(os.rdbuf())
+                    ? rang_implementation::setColor(os, value)
+                    : os);
+            case Control::Force:
+                return rang_implementation::setColor(os, value);
+            default: return os;
         }
     }
 
     inline void setWinTermMode(const rang::WinTerm value) noexcept{
-        rang_implementation::winTermMode() = value;
+        rang_implementation::winTermMode().store(value);
     }
 
     inline void setControlMode(const Control value) noexcept{
-        rang_implementation::controlMode() = value;
+        rang_implementation::controlMode().store(value);
     }
 
 }  // namespace rang

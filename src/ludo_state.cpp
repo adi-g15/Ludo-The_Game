@@ -11,17 +11,17 @@ ludo_state::ludo_state(const game *original){
 }
 
 state_box& ludo_state::getBox(const _coord& coord){
-	return board.at(coord.first).at(coord.second);
+	return board.at(coord.n_row).at(coord.n_col);
 }
 
 const state_box& ludo_state::getBox(const _coord& coord) const{
-	return board.at(coord.first).at(coord.second);
+	return board.at(coord.n_row).at(coord.n_col);
 }
 
 size_t ludo_state::getNumLocks(){
 	size_t retVal = 0;
 	for( auto &coord : this->lockedPositions ){
-		if( board[coord.first][coord.second].type != Box::LOCK ) continue;
+		if( board[coord.n_row][coord.n_col].type != Box::LOCK ) continue;
 		else if( ! this->getBox(coord).inBoxGotis.empty() ){
 				++retVal;
 				break;
@@ -32,8 +32,8 @@ size_t ludo_state::getNumLocks(){
 
 // #include <iostream>
 void ludo_state::update(const game* original){
-	for( unsigned row=0; row < original->board.size(); ++row ){
-		for( unsigned col=0; col < original->board[row].size(); ++col ){
+	for( auto row=0; row < original->board.size(); ++row ){
+		for( auto col=0; col < original->board[row].size(); ++col ){
 			this->board.at(row).at(col).type = original->board.at(row).at(col).box_type;
 			if( this->board[row][col].type == Box::UNUSABLE ) continue;
 			for( auto &i : original->board[row][col].inBoxGotis ){
