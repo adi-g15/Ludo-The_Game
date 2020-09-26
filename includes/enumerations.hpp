@@ -75,7 +75,6 @@ namespace util_lamdas{	//the bool return values here, can simply be ignored
 		if( iter != order.end() && ++iter != order.end() )	c = *iter;
 		else c = order.front();
 	};
-
 	auto nextPlayer = [](Player &p) -> bool{
 		bool repeated{ false };	//returns true if, player_1 returned, since player_4 was passed
 		repeated = p == Player::_4;
@@ -87,7 +86,6 @@ namespace util_lamdas{	//the bool return values here, can simply be ignored
 
 			default: p = Player::_1;
 		}
-
 		return repeated;
 	};
 }

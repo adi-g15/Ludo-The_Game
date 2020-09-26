@@ -50,7 +50,6 @@ class _BoardPrinter{ //! @info Only for use by updateDisplay() & takeIntro()
 	int termWidth;
 	explicit _BoardPrinter(const std::vector<std::vector<ludo_box>>&);	//! Links to the board
 	_BoardPrinter() = delete;
-
 };
 
 //Defintions Start
@@ -120,7 +119,6 @@ void _BoardPrinter::finishedScreen(){
 }
 
 void _BoardPrinter::titleBar(int width){	//Considering sufficient width, to be able to play the game
-
 #ifdef __linux__
 	system("clear");
 #elif _WIN32
@@ -132,7 +130,6 @@ void _BoardPrinter::titleBar(int width){	//Considering sufficient width, to be a
 	util::align_text_center(width, "NAMASTE from \"Ludo - The Game\" :D");
 	std::cout << '\n';
 	while( width-- ) std::cout << '=';
-
 	std::cout << rang::Fg::reset << rang::Style::reset ;
 	// rang::rang_implementation::resetAll();
 }

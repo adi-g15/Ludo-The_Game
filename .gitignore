@@ -1,8 +1,6 @@
 experiment*
 delete*
 *sh
-# build/
-# !.gitkeep
 
 # C++
 #CMake

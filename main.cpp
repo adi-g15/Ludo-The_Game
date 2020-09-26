@@ -8,13 +8,11 @@ using std::clog;
 
 int main(int argc, char const *argv[])
 {
-
 	game newGame;
 
 	//GamePlay starts
 	try
 	{
-
 		short playConsent = 1;
 		do
 		{

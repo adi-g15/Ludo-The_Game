@@ -16,7 +16,6 @@ public:
 
 	friend class game;
 public:
-
 	void InitCoords();
     Direction turnAtCorner(const _coord& curr_coords, const std::map<_coord, Direction>&) const;
 	ludo_coords();

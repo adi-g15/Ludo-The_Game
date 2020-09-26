@@ -35,16 +35,12 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 
 	_coord increment_coord({ 0, 0 });
 	_coord updated_coords(the_goti->curr_coords);
-	reference_wrapper<const ludo_box> currBox = getBoardBox(updated_coords);
-
 	Direction turnDirection, currDirection = the_goti->curr_direction;
 
 	while( dist-- ){
-
 		increment_coord = { 0, 0 };
 		turnDirection = _ludo_coords.turnAtCorner(updated_coords, _ludo_coords.outer_corners); //! For Outer Corners
 		if( turnDirection != Direction::NO_TURN ){ //! ie. a turn will happen to go to next box
-
 			currDirection = turnDirection;
 			if( currDirection == Direction::NORTH ){
 				increment_coord = { -1, 0 };
@@ -90,7 +86,7 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 
 		updated_coords.n_row += increment_coord.n_row;
 		updated_coords.n_col += increment_coord.n_col;
-		currBox = getBoardBox(updated_coords);
+		reference_wrapper<const ludo_box> currBox { getBoardBox(updated_coords) };
 
 		if( currBox.get().box_type == Box::HOME_END && dist != 0 ){ //! Reached finished point, but move still incomplete
 			return {};
@@ -137,11 +133,9 @@ short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, _smartMoveData moveDat
 
 	getBoardBox(the_goti->curr_coords).removeGoti(the_goti); //Reaches here only if move possible
 	if( getBoardBox(finalCoord).box_type == Box::HOME_END ){
-
 		auto& lockBox = getBoardBox(getEmptyLocks(curr_colour));
 
-		if( lockBox.coords == _coord(0, 0) ){ //debug
-
+		if( lockBox.coords == _coord(0,0) ){ //debug
 			cout << "movingGotis[curr].size() = " << movingGotis[curr_colour].size() << endl;
 			cout << "inBoxGotis in the box of the goti " << getBoardBox(the_goti->curr_coords).inBoxGotis.size() << endl;
 			endGame("Invalid lockbox");
@@ -272,7 +266,6 @@ bool game::autoMove(){ //! Return values same as the moveGoti_function
 				random_goti_index = std::rand() % (movingGotis[curr_colour].size()); //Since, AFTER FINISH, MOVINGGOTIS maybe empty by this time, causing FLOATING POINT EXCEPTION
 
 			triedGotis_indices.insert(random_goti_index);
-
 		} while( !moveObj.has_value() && !movingGotis[curr_colour].empty() );
 
 		triedGotis_indices.clear();
@@ -281,10 +274,10 @@ bool game::autoMove(){ //! Return values same as the moveGoti_function
 	return wasSuccess;
 }
 
-/* @brief Simply removes the 1st goti, if attack request found valid
-   **IMPORTANT_NOTE - For simplicity, an empty vector passed for coloursToRemove will be considered as 'Remove all except this gotiColour'
-   FUTURE - If have used a vector of _colour, in favor of future scope of support of FRIEND GOTIS
-*/
+	/* @brief Simply removes the 1st goti, if attack request found valid
+	   **IMPORTANT_NOTE - For simplicity, an empty vector passed for coloursToRemove will be considered as 'Remove all except this gotiColour'
+	   FUTURE - If have used a vector of _colour, in favor of future scope of support of FRIEND GOTIS
+	*/
 void game::attack(std::vector<_colour> coloursToRemove, std::shared_ptr<ludo_goti> attacker){
 	if( coloursToRemove.empty() ){ //Will consider all other _colour as opponents
 		coloursToRemove.insert(coloursToRemove.begin(), { _colour::NEELA, _colour::HARA, _colour::PEELA, _colour::LAAL });
@@ -442,9 +435,9 @@ void game::takeIntro(){
 	cout << endl;
 
 	//QUESTION - How to call the function pointer through an iterator ?
+
 	do{
 		tmpDimen = util::getTerminalDimen();
-
 	} while( tmpDimen.n_row < 31 || tmpDimen.n_col < 62 ); //tmpDimen -> row*column
 
 	_BoardPrinter::titleBar(tmpDimen.n_col);
@@ -460,7 +453,6 @@ void game::takeIntro(){
 	colour = colourOrder.front();
 
 	for( auto i = 0;i < 4;++i ){	//Loop it 4 times (not mandatory to give details of all players though)
-
 		util::place_center(tmpDimen.n_col, string("Player").append(playerId[p]).append(" - "));
 
 		getline(cin, playerName);
@@ -472,18 +464,18 @@ void game::takeIntro(){
 			} else if( util::icompare(playerName, robot_keyword) ){
 				++numRobots;
 				activePlayerMap.insert(
-					{ p, {string("ROBOT ").append(to_string(numRobots)), colour} }
+					{p, {string("ROBOT ").append(to_string(numRobots)), colour}}
 				);
 				robotPlayers.insert({ p, RobotKind::randomRobo });
 			} else if( util::icompare(playerName, thinker_keyword) ){
 				++numThinkers;
 				activePlayerMap.insert(
-					{ p, {string("Thinker").append(to_string(numThinkers)), colour} }
+					{p, {string("Thinker").append(to_string(numThinkers)), colour}}
 				);
 				robotPlayers.insert({ p, RobotKind::thinkerRobo });
 			} else{
 				activePlayerMap.insert(
-					{ p, {playerName, colour} }
+					{p, {playerName, colour}}
 				);
 			}
 		}
@@ -530,7 +522,6 @@ vector<_dieVal> Die::rolldie(){
 }
 
 void Die::rolldie(vector<_dieVal>& Vec){
-
 	std::vector<_dieVal> tmpVec;
 
 	_dieVal dieNum = Die::dist[rand() % 4](Die::mt[rand() % 4]);
@@ -659,7 +650,6 @@ _coord game::getEmptyLocks(_colour gotiColour) const{
 }
 
 bool game::InitGame(short playerConsent){ //! 1 for complete reset, 2 is with previous playerMap
-
 	if( playerConsent != 1 && playerConsent != 2 ){
 		return false;
 	} else{
@@ -754,7 +744,6 @@ void game::play(bool boolVal){
 		}
 		//! Actual logic to move each player is this nested while loop
 		while( !dieNumbers.empty() && !movingGotis[curr_colour].empty() ){
-
 			updateDisplay();
 			unsigned counter = 1;
 			cout << "\nChose from these gotis : ";
@@ -951,7 +940,6 @@ void game::settingsMenu(){
 void game::notYetImplementedScr() const{
 
 	_BoardPrinter::titleBar();
-
 	util::place_v_center();
 	util::align_text_center("This feature has not yet been implemented !");
 }

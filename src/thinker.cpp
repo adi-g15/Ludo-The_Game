@@ -101,12 +101,10 @@ const std::optional<_smartMoveData> thinker::isMovePossible(const _coord &coord,
 	*/
 	while (dist--)
 	{
-
 		increment_coord = {0, 0};
 		turnDir = _ludo_coords.turnAtCorner(updated_coords, _ludo_coords.outer_corners); //! For Outer Corners
 		if (turnDir != Direction::NO_TURN)
 		{ //! ie. a turn will happen to go to next box
-
 			currDir = turnDir;
 			if (currDir == Direction::NORTH)
 			{

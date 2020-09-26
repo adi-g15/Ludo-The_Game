@@ -3,7 +3,6 @@
 
 //COORD_CLASS_DEFINTIONS START
 void ludo_coords::InitCoords(){
-
 		outer_corners = {
 			{ {0,6}, Direction::EAST },
 			{ {0,8}, Direction::SOUTH },
