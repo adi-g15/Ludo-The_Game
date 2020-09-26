@@ -136,7 +136,7 @@ short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, _smartMoveData moveDat
 
 		auto& lockBox = getBoardBox(getEmptyLocks(curr_colour));
 
-		if( lockBox.coords == _coord(0,0) ){ //debug
+		if( lockBox.coords == _coord(0, 0) ){ //debug
 
 			cout << "movingGotis[curr].size() = " << movingGotis[curr_colour].size() << endl;
 			cout << "inBoxGotis in the box of the goti " << getBoardBox(the_goti->curr_coords).inBoxGotis.size() << endl;
@@ -276,10 +276,10 @@ bool game::autoMove(){ //! Return values same as the moveGoti_function
 	return wasSuccess;
 }
 
-	/* @brief Simply removes the 1st goti, if attack request found valid
-	   **IMPORTANT_NOTE - For simplicity, an empty vector passed for coloursToRemove will be considered as 'Remove all except this gotiColour'
-	   FUTURE - If have used a vector of _colour, in favor of future scope of support of FRIEND GOTIS
-	*/
+/* @brief Simply removes the 1st goti, if attack request found valid
+   **IMPORTANT_NOTE - For simplicity, an empty vector passed for coloursToRemove will be considered as 'Remove all except this gotiColour'
+   FUTURE - If have used a vector of _colour, in favor of future scope of support of FRIEND GOTIS
+*/
 void game::attack(std::vector<_colour> coloursToRemove, std::shared_ptr<ludo_goti> attacker){
 	if( coloursToRemove.empty() ){ //Will consider all other _colour as opponents
 		coloursToRemove.insert(coloursToRemove.begin(), { _colour::NEELA, _colour::HARA, _colour::PEELA, _colour::LAAL });
@@ -433,11 +433,10 @@ void game::takeIntro(){
 	_coord tmpDimen(0, 0);
 	tmpDimen = util::getTerminalDimen();
 
-	util::place_v_center("[NOTICE] Please ensure window is at least 31*31");
+	_BoardPrinter::errorScreen("[NOTICE] Please ensure window is at least 31*31");
 	cout << endl;
 
 	//QUESTION - How to call the function pointer through an iterator ?
-
 	do{
 		tmpDimen = util::getTerminalDimen();
 
@@ -455,9 +454,9 @@ void game::takeIntro(){
 
 	colour = colourOrder.front();
 
-	while( p <= Player::_4 ){
+	for( auto i = 0;i < 4;++i ){	//Loop it 4 times (not mandatory to give details of all players though)
 
-		util::place_center(tmpDimen.second, string("Player").append( playerId[p] ).append( " - " ));
+		util::place_center(tmpDimen.second, string("Player").append(playerId[p]).append(" - "));
 
 		getline(cin, playerName);
 		util::trim(playerName);
@@ -468,18 +467,18 @@ void game::takeIntro(){
 			} else if( util::icompare(playerName, robot_keyword) ){
 				++numRobots;
 				activePlayerMap.insert(
-					{p, {string("ROBOT ").append(to_string(numRobots)), colour}}
+					{ p, {string("ROBOT ").append(to_string(numRobots)), colour} }
 				);
 				robotPlayers.insert({ p, RobotKind::randomRobo });
 			} else if( util::icompare(playerName, thinker_keyword) ){
 				++numThinkers;
 				activePlayerMap.insert(
-					{p, {string("Thinker").append(to_string(numThinkers)), colour}}
+					{ p, {string("Thinker").append(to_string(numThinkers)), colour} }
 				);
 				robotPlayers.insert({ p, RobotKind::thinkerRobo });
 			} else{
 				activePlayerMap.insert(
-					{p, {playerName, colour}}
+					{ p, {playerName, colour} }
 				);
 			}
 		}
@@ -729,8 +728,8 @@ void game::play(bool boolVal){
 			this->curr_colour = iter->second.second;
 
 		} while( iter != this->activePlayerMap.end()
-					&& !gameisFinished()
-						&& (this->numfinished[this->curr_colour] == this->goti_per_user) );
+			&& !gameisFinished()
+			&& (this->numfinished[this->curr_colour] == this->goti_per_user) );
 
 		dieNumbers.clear();
 	};
@@ -934,51 +933,51 @@ void game::settingsMenu(){
 	} while( choice <= 11 );
 
 	switch( choice ){
-	case 1:
-	{
-		_BoardPrinter::titleBar(termDimen.second);
-		util::place_v_center(termDimen.first - 2 * (2 + 1)); //height of 2 taken by titleBar, 11 by Choices, and 4 by Input
+		case 1:
+		{
+			_BoardPrinter::titleBar(termDimen.second);
+			util::place_v_center(termDimen.first - 2 * (2 + 1)); //height of 2 taken by titleBar, 11 by Choices, and 4 by Input
 
-		cout << "Type playerNumbers in order (for eg. \"1432\") : ";
-		cin >> inputStr;
-		// util::strip(inputStr, ' ');
-		// inputNum = std::stoi(inputStr);
+			cout << "Type playerNumbers in order (for eg. \"1432\") : ";
+			cin >> inputStr;
+			// util::strip(inputStr, ' ');
+			// inputNum = std::stoi(inputStr);
 
-		//TODO
+			//TODO
 
-		break;
-	}
+			break;
+		}
 
-	case 2:
-		notYetImplementedScr();
-		break;
-	case 3:
-		notYetImplementedScr();
-		break;
-	case 4:
-		notYetImplementedScr();
-		break;
-	case 5:
-		notYetImplementedScr();
-		break;
-	case 6:
-		notYetImplementedScr();
-		break;
-	case 7:
-		notYetImplementedScr();
-		break;
-	case 8:
-		notYetImplementedScr();
-		break;
-	case 9:
-		notYetImplementedScr();
-		break;
-	case 10:
-		notYetImplementedScr();
-		break;
-	case 11:
-		notYetImplementedScr();
-		break;
+		case 2:
+			notYetImplementedScr();
+			break;
+		case 3:
+			notYetImplementedScr();
+			break;
+		case 4:
+			notYetImplementedScr();
+			break;
+		case 5:
+			notYetImplementedScr();
+			break;
+		case 6:
+			notYetImplementedScr();
+			break;
+		case 7:
+			notYetImplementedScr();
+			break;
+		case 8:
+			notYetImplementedScr();
+			break;
+		case 9:
+			notYetImplementedScr();
+			break;
+		case 10:
+			notYetImplementedScr();
+			break;
+		case 11:
+			notYetImplementedScr();
+			break;
 	}
 }
 

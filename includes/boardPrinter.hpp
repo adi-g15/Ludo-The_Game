@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ludo_box.hpp"
+#include "rang.hpp"
 #include "util/terminal.hpp"
 
 #include <iostream>
@@ -64,7 +65,7 @@ void _BoardPrinter::refresh_Dimensions(){
 
 //	DEFINITIONS	start//
 void _BoardPrinter::msgScreen(std::string_view msg){
-	return _BoardPrinter::msgScreen(1, msg);
+	return _BoardPrinter::msgScreen(1, msg.data());
 }
 
 void _BoardPrinter::msgScreen(va_list args, int n){
@@ -96,11 +97,15 @@ void _BoardPrinter::msgScreen(int n, ...){
 }
 
 void _BoardPrinter::errorScreen(std::string_view errMsg){
-	_BoardPrinter::msgScreen(errMsg);
+	_BoardPrinter::errorScreen(1, errMsg.data());
 }
 
 void _BoardPrinter::errorScreen(va_list args, int n){
-	return _BoardPrinter::msgScreen(args, n);
+	std::cout << rang::Fg::red << rang::Bg::magenta << rang::Style::bold ;
+
+	_BoardPrinter::msgScreen(args, n);
+
+	std::cout << rang::Bg::reset << rang::Fg::reset << rang::Style::reset ;
 }
 
 void _BoardPrinter::errorScreen(int n, ...){
@@ -123,9 +128,11 @@ void _BoardPrinter::titleBar(int width){	//Considering sufficient width, to be a
 #endif
 
 	std::cout << std::endl;
-	util::align_text_center(width, "NAMASTE from \"Ludo - The Game\" :D");
+	util::align_text_center(width, "NAMASTE from \"Ludo - The Game\" :D", std::cout << rang::Bg::green );
 	std::cout << '\n';
 	while( width-- ) std::cout << '=';
+
+	std::cout << rang::Bg::black;
 }
 
 void _BoardPrinter::titleBar(){
