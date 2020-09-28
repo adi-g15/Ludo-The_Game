@@ -33,7 +33,7 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 	if( dist == 0 )
 		return {};
 
-	_coord increment_coord({ 0, 0 });
+	_coord increment_coord(0, 0);
 	_coord updated_coords(the_goti->curr_coords);
 	Direction turnDirection, currDirection = the_goti->curr_direction;
 
