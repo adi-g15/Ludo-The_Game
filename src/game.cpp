@@ -689,10 +689,10 @@ bool game::InitGame(short playerConsent){ //! 1 for complete reset, 2 is with pr
 	} else{
 		goti_per_user = 4;
 
-		for( size_t r = 0; r < board.size(); ++r ){
-			for( size_t c = 0; c < board.at(r).size(); ++c ){
-				board[r][c].content.clear();
-				board[r][c].inBoxGotis.clear();
+		for (auto &ludoBoardRow : board) {
+			for (auto &ludoBoardSquare : ludoBoardRow) {
+				ludoBoardSquare.content.clear();
+				ludoBoardSquare.inBoxGotis.clear();
 			}
 		}
 
@@ -994,8 +994,10 @@ game::game() : colourOrder({ _colour::LAAL, _colour::NEELA, _colour::PEELA, _col
 	number_of_GameRuns = 0;
 	goti_per_user = 4;
 
+	board.reserve(15);
 	for( int i = 0; i < 15; ++i ){
 		board.emplace_back();
+		board.at(i).reserve(15);
 		for( int j = 0; j < 15; ++j ){
 			board.at(i).push_back(ludo_box({ i, j }));
 		}
