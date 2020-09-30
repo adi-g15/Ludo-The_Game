@@ -4,7 +4,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/adityagupta150/ludo-the_game/badge)](https://www.codefactor.io/repository/github/adityagupta150/ludo-the_game)
 [![Build Status](https://travis-ci.org/AdityaGupta150/Ludo-The_Game.svg?branch=master)](https://travis-ci.org/AdityaGupta150/Ludo-The_Game)
 
-The Code Quality has been improved a lot by @Melakki, and the repo is open for beginners to contribute during the Hacktoberfest :tada:
+The repo is open for beginners to contribute during the **Hacktoberfest** :tada:
 
 # Ludo - The Game v2.0
 
