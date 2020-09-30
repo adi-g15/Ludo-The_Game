@@ -655,10 +655,10 @@ bool game::InitGame(short playerConsent){ //! 1 for complete reset, 2 is with pr
 	} else{
 		goti_per_user = 4;
 
-		for( size_t r = 0; r < board.size(); ++r ){
-			for( size_t c = 0; c < board.at(r).size(); ++c ){
-				board[r][c].content.clear();
-				board[r][c].inBoxGotis.clear();
+		for (auto &ludoBoardRow : board) {
+			for (auto &ludoBoardSquare : ludoBoardRow) {
+				ludoBoardSquare.content.clear();
+				ludoBoardSquare.inBoxGotis.clear();
 			}
 		}
 
