@@ -8,7 +8,7 @@ struct _coord{
 	typedef long _type;
 	_type n_row, n_col;
 
-	void operator=(const _coord& c) { this->n_row = c.n_row; this->n_col = c.n_col; }
+	_coord& operator=(const _coord& c) { this->n_row = c.n_row; this->n_col = c.n_col; return *this; }
 	bool operator==(const _coord& c) const{ return this->n_row == c.n_row && this->n_col == c.n_col; }
 	bool operator<(const _coord& c) const{ if( this->n_row < c.n_row ) return true; else return this->n_col < c.n_col; }
 	_coord() : _coord(_type{}, _type{}){}
