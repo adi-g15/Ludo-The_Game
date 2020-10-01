@@ -1,3 +1,5 @@
+
+#pragma once
 #include "forward_decl.hpp"
 #include "keywords.hpp"
 #include "ludo_state.hpp"
