@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include "ludo_state.hpp"
 #include "thinker.hpp"
+#include <iostream>	//only for a single cerr statement
 
 using namespace std;
 
@@ -10,17 +11,17 @@ ludo_state::ludo_state(const game *original){
 }
 
 state_box& ludo_state::getBox(const _coord& coord){
-	return board.at(coord.first).at(coord.second);
+	return board.at(coord.n_row).at(coord.n_col);
 }
 
 const state_box& ludo_state::getBox(const _coord& coord) const{
-	return board.at(coord.first).at(coord.second);
+	return board.at(coord.n_row).at(coord.n_col);
 }
 
 size_t ludo_state::getNumLocks(){
 	size_t retVal = 0;
 	for( auto &coord : this->lockedPositions ){
-		if( board[coord.first][coord.second].type != BOX_TYPE::_boxLOCK ) continue;
+		if( board[coord.n_row][coord.n_col].type != Box::LOCK ) continue;
 		else if( ! this->getBox(coord).inBoxGotis.empty() ){
 				++retVal;
 				break;
@@ -29,12 +30,12 @@ size_t ludo_state::getNumLocks(){
 	return retVal;
 }
 
-#include <iostream>
+// #include <iostream>
 void ludo_state::update(const game* original){
-	for( size_t row=0; row < original->board.size(); ++row ){
-		for( size_t col=0; col < original->board[row].size(); ++col ){
+	for( auto row=0; row < original->board.size(); ++row ){
+		for( auto col=0; col < original->board[row].size(); ++col ){
 			this->board.at(row).at(col).type = original->board.at(row).at(col).box_type;
-			if( this->board[row][col].type == _boxUNUSABLE ) continue;
+			if( this->board[row][col].type == Box::UNUSABLE ) continue;
 			for( auto &i : original->board[row][col].inBoxGotis ){
 				this->board[row][col].appendGoti( new state_goti( i->get_gotiColour(), i->get_curr_direction(), i->getCoords()) );	//No need to attack here, since that was in the original game itself
 				this->movingColours.at(i->get_gotiColour()).push_back( {row, col} );
@@ -42,12 +43,12 @@ void ludo_state::update(const game* original){
 		}
 	}
 
-	this->currPlayer = original->currentPlayer;
-	this->currColour = original->currentGotiColour;
+	this->currPlayer = original->curr_player;
+	this->currColour = original->curr_colour;
 }
 
 void ludo_state::resetBoard(){
-	map<_colour, vector<state_goti*>> gotis ({{ColourLAAL, {}}, {ColourHARA, {}}, {ColourPEELA, {}}, {ColourNEELA, {}}});
+	map<_colour, vector<state_goti*>> gotis ({{_colour::LAAL, {}}, {_colour::HARA, {}}, {_colour::PEELA, {}}, {_colour::NEELA, {}}});
 	for ( int i=0; i < this->board.size(); ++i ){
 		for ( int j=0; j < this->board.at(i).size(); ++j ){
 			auto boxGotis = this->getBox({i,j}).inBoxGotis;
@@ -123,6 +124,6 @@ state_box::~state_box(){
 	inBoxGotis.clear();
 }
 
-state_goti::state_goti(_colour gotiColour, direction gotiDir, _coord coord) : gotiColour(gotiColour), currDir(gotiDir), coords(coord){}
+state_goti::state_goti(_colour gotiColour, Direction gotiDir, _coord coord) : gotiColour(gotiColour), currDir(gotiDir), coords(coord){}
 
 state_goti::~state_goti(){}

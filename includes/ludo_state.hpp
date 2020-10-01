@@ -20,12 +20,12 @@
 
 class state_goti{
 	const _colour gotiColour;
-	direction currDir;
+	Direction currDir;
 	_coord coords;
 	~state_goti();	//! state_box will take the ownership
 
 public:
-	state_goti(_colour, direction, _coord);
+	state_goti(_colour, Direction, _coord);
 
 	friend class state_box;
 	friend class ludo_state;
@@ -36,7 +36,7 @@ public:
 class state_box{
 	std::vector<state_goti*> inBoxGotis;
 public:
-	BOX_TYPE type;
+	Box type;
 	bool appendGoti(state_goti*);
 	state_goti* removeGoti(state_goti*);	//It doesn't delete the goti pointer, delete it yourself, from returned pointer or use this pointer to append somewhere else
 	bool areOpponentsPresent(_colour) const;
@@ -56,7 +56,7 @@ class ludo_state{
 	std::vector<_coord> lockedPositions;
 	std::map<_colour, std::vector<_coord>> movingColours;	//DONT UPDATE THIS, EVEN IF UPDATED THE BOARD, SINCE IT WILL LATER BE USED TO RESET THE BOARD
 
-	player currPlayer;
+	Player currPlayer;
 	_colour currColour;
 
 	void update(const game*);

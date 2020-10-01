@@ -10,10 +10,11 @@
             "request": "launch",
             "program": "${workspaceFolder}/ludo.exe",
             "args": [],
-            "stopAtEntry": true,
+            "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": true,
+            "requireExactSource": false,
             "preLaunchTask": "C/C++: cl.exe build active file",
         },
         // {

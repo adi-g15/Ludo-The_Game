@@ -31,7 +31,7 @@ bool thinker::unlock()
 	{
 		auto &box = state->getBox(coord);
 
-		if (goti != nullptr && state->board[coord.first][coord.second].type != BOX_TYPE::_boxLOCK)
+		if (goti != nullptr && state->board[coord.n_row][coord.n_col].type != Box::LOCK)
 			break;
 		else if (!box.inBoxGotis.empty())
 			continue;
@@ -51,37 +51,37 @@ bool thinker::unlock()
 	return true;
 }
 
-direction thinker::getDirOfMovement(const _coord &coord)
+Direction thinker::getDirOfMovement(const _coord &coord)
 {
-	direction retVal;
-	if (coord.first < (15 / 2 - 2) || coord.second > (15 / 2 - 2))
+	Direction retVal;
+	if (coord.n_row < (15 / 2 - 2) || coord.n_col > (15 / 2 - 2))
 	{
-		if (coord.first == 0)
-			retVal = direction::EAST;
-		else if (coord.first == (15 - 1))
-			retVal = direction::WEST;
-		else if (coord.second < 15 / 2)
-			retVal = direction::NORTH;
+		if (coord.n_row == 0)
+			retVal = Direction::EAST;
+		else if (coord.n_row == (15 - 1))
+			retVal = Direction::WEST;
+		else if (coord.n_col < 15 / 2)
+			retVal = Direction::NORTH;
 		else
-			retVal = direction::SOUTH;
+			retVal = Direction::SOUTH;
 	}
 	else
 	{
-		if (coord.second == 0)
-			retVal = direction::NORTH;
-		else if (coord.second == (15 - 1))
-			retVal = direction::SOUTH;
-		else if (coord.first > (15 / 2))
-			retVal = direction::EAST;
+		if (coord.n_col == 0)
+			retVal = Direction::NORTH;
+		else if (coord.n_col == (15 - 1))
+			retVal = Direction::SOUTH;
+		else if (coord.n_row > (15 / 2))
+			retVal = Direction::EAST;
 		else
-			retVal = direction::WEST;
+			retVal = Direction::WEST;
 	}
 	return retVal;
 }
 
 const std::optional<_smartMoveData> thinker::isMovePossible(const _coord &coord, int dist) const
 {
-	direction turnDir, currDir = this->getDirOfMovement(coord);
+	Direction turnDir, currDir = this->getDirOfMovement(coord);
 
 	if (dist == 0)
 		return {};
@@ -101,26 +101,24 @@ const std::optional<_smartMoveData> thinker::isMovePossible(const _coord &coord,
 	*/
 	while (dist--)
 	{
-
 		increment_coord = {0, 0};
 		turnDir = _ludo_coords.turnAtCorner(updated_coords, _ludo_coords.outer_corners); //! For Outer Corners
-		if (turnDir != NO_TURN)
+		if (turnDir != Direction::NO_TURN)
 		{ //! ie. a turn will happen to go to next box
-
 			currDir = turnDir;
-			if (currDir == NORTH)
+			if (currDir == Direction::NORTH)
 			{
 				increment_coord = {-1, 0};
 			}
-			else if (currDir == EAST)
+			else if (currDir == Direction::EAST)
 			{
 				increment_coord = {0, 1};
 			}
-			else if (currDir == WEST)
+			else if (currDir == Direction::WEST)
 			{
 				increment_coord = {0, -1};
 			}
-			else if (currDir == SOUTH)
+			else if (currDir == Direction::SOUTH)
 			{
 				increment_coord = {1, 0};
 			}
@@ -129,22 +127,22 @@ const std::optional<_smartMoveData> thinker::isMovePossible(const _coord &coord,
 		{
 			turnDir = _ludo_coords.turnAtCorner(updated_coords, _ludo_coords.inner_turns); //For Inner Turns
 
-			if (turnDir != NO_TURN)
+			if (turnDir != Direction::NO_TURN)
 			{
 				currDir = turnDir;
-				if (currDir == NORTH)
+				if (currDir == Direction::NORTH)
 				{
 					increment_coord = {-1, 1};
 				}
-				else if (currDir == EAST)
+				else if (currDir == Direction::EAST)
 				{
 					increment_coord = {1, 1};
 				}
-				else if (currDir == WEST)
+				else if (currDir == Direction::WEST)
 				{
 					increment_coord = {-1, -1};
 				}
-				else if (currDir == SOUTH)
+				else if (currDir == Direction::SOUTH)
 				{
 					increment_coord = {1, -1};
 				}
@@ -158,40 +156,40 @@ const std::optional<_smartMoveData> thinker::isMovePossible(const _coord &coord,
 				}
 
 				//! ie. needs to 'go straight' on its current path
-				if (currDir == NORTH)
+				if (currDir == Direction::NORTH)
 					increment_coord = {-1, 0};
-				else if (currDir == EAST)
+				else if (currDir == Direction::EAST)
 					increment_coord = {0, 1};
-				else if (currDir == WEST)
+				else if (currDir == Direction::WEST)
 					increment_coord = {0, -1};
-				else if (currDir == SOUTH)
+				else if (currDir == Direction::SOUTH)
 					increment_coord = {1, 0};
 			}
 		}
 
-		updated_coords.first += increment_coord.first;
-		updated_coords.second += increment_coord.second;
+		updated_coords.n_row += increment_coord.n_row;
+		updated_coords.n_col += increment_coord.n_col;
 		currBox = state->getBox(updated_coords);
 
 		//Judging the profit START
-		moveProfit += NORMAL_MOVE;
+		moveProfit += ProfitType::NORMAL_MOVE;
 
 		if (currBox.get().areOpponentsPresent(state->currColour) && dist != 0)
 		{
-			moveProfit += CROSSES_ENEMY;
+			moveProfit += ProfitType::ProfitType::CROSSES_ENEMY;
 		}
 		//Judging the profit START
 
-		if (currBox.get().type == _boxHOME_END && dist != 0)
+		if (currBox.get().type == Box::HOME_END && dist != 0)
 		{ //! Reached finished point, but move still incomplete
 			return {};
 		}
 	}
 
-	if (currBox.get().areOpponentsPresent(state->currColour) && currBox.get().type == _boxNORMAL)
-		moveProfit += ATTACK;
-	else if (currBox.get().type == _boxSTOP)
-		moveProfit += REACH_STOP;
+	if (currBox.get().areOpponentsPresent(state->currColour) && currBox.get().type == Box::NORMAL)
+		moveProfit += ProfitType::ATTACK;
+	else if (currBox.get().type == Box::STOP)
+		moveProfit += ProfitType::REACH_STOP;
 
 	return _smartMoveData({ updated_coords, currDir, moveProfit });
 }
@@ -270,9 +268,9 @@ bool thinker::setBestMove()
 	}
 
 	std::vector<_coord> movingPos, opponentsPos;
-	for (size_t i = 0; i < state->board.size(); ++i)
+	for (long i = 0; i < state->board.size(); ++i)
 	{
-		for (size_t j = 0; j < state->board.at(i).size(); ++j)
+		for (long j = 0; j < state->board.at(i).size(); ++j)
 		{
 			if (state->board[i][j].areOpponentsPresent(state->currColour))
 				opponentsPos.push_back({i, j});
@@ -321,10 +319,10 @@ bool thinker::mindlessMovers(_dieVal roll, std::vector<_dieVal> dieNumbers, unsi
 		{
 			if (isPossible)
 			{
-				if (smartData.moveProfit > UNLOCK)
+				if (smartData.moveProfit > ProfitType::UNLOCK)
 				{
-					auto box = state->getBox(smartData.finalCoords);
-					if ( (box.type == _boxHOME_END) || (box.areOpponentsPresent(state->currColour) && box.type == _boxNORMAL))
+					auto box = state->getBox(smartData.finalCoord);
+					if ( (box.type == Box::HOME_END) || (box.areOpponentsPresent(state->currColour) && box.type == Box::NORMAL))
 					{
 						Die::rolldie(dieNumbers);
 					}
@@ -333,21 +331,21 @@ bool thinker::mindlessMovers(_dieVal roll, std::vector<_dieVal> dieNumbers, unsi
 					prevMoves.second += smartData.moveProfit;
 				}
 				else if (state->getNumLocks() > 0)
-				{ //Maybe the move was not possible on the goti above, but if it was 6, and there are locked gotis available, lets UNLOCK
+				{ //Maybe the move was not possible on the goti above, but if it was 6, and there are locked gotis available, lets ProfitType::UNLOCK
 					prevMoves.first.push_back({gotiIndex, 0});
-					prevMoves.second += UNLOCK;
+					prevMoves.second += ProfitType::UNLOCK;
 				}
 			}
 			else if (state->getNumLocks() > 0)
-			{ //Maybe the move was not possible on the goti above, but if it was 6, and there are locked gotis available, lets UNLOCK
+			{ //Maybe the move was not possible on the goti above, but if it was 6, and there are locked gotis available, lets ProfitType::UNLOCK
 				prevMoves.first.push_back({gotiIndex, 0});
-				prevMoves.second += UNLOCK;
+				prevMoves.second += ProfitType::UNLOCK;
 			}
 		}
 		else if (isPossible)
 		{
-			auto box = state->getBox(smartData.finalCoords);
-			if ((box.type == _boxHOME_END) || (box.areOpponentsPresent(state->currColour) && box.type == BOX_TYPE::_boxNORMAL))
+			auto box = state->getBox(smartData.finalCoord);
+			if ((box.type == Box::HOME_END) || (box.areOpponentsPresent(state->currColour) && box.type == Box::NORMAL))
 			{
 				Die::rolldie(dieNumbers);
 			}
