@@ -88,12 +88,12 @@ const std::optional<_smartMoveData> thinker::isMovePossible(const _coord &coord,
 
 	int moveProfit(0);
 
-	_coord increment_coord({0, 0});
+	_coord increment_coord(0, 0);
 	_coord updated_coords(coord);
 	auto currBox = std::cref(state->getBox(updated_coords)); // using reference wrapper to allow it to be changed to refer something else
 
 	/*Move Profits ->
-	    Each block +1
+	    Move forward one box +1
 	    Home +2
 	    Stops +3
 	    Attack +4
@@ -225,9 +225,9 @@ bool thinker::implementBestMove()
 		if (!is_possible)
 			return false;
 
-		//add other conditions here
+		//more conditions maybe added here
 		original->moveGoti(original->movingGotis.at(state->currColour)[p.first], smart_data);
-		//Won't handle moveVal
+		//Won't handle_moveVal() here since it is an auto-move, so we don't need additional messages
 	}
 
 	this->bestMove_available = false;
