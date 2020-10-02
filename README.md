@@ -93,7 +93,7 @@ cmake --build . --config Release
     * board.cpp::Init_Game()
     * board.cpp::play()
 
-2. I think only seeing the names of functions calls in these, you would get the workflow of this(the functions have been named such)... then if you want to dive more, see the `includes` directory first, and then `src` to know how a particular function works.
+2. I think by only seeing the names of function calls in these, you would get the workflow of this(the functions have been named as such)... then if you want to learn more, see the `includes` directory first, and then `src` to know how a particular function works.
 
 3. `//!` or `/**/` -> This syntax for comments has been used for giving info of the code.
 
@@ -116,7 +116,7 @@ Do sugggest any other feature you would like, i do claim the codebase to be quit
 
 
 ## Future Plans -
-Currently, I am learning more of the 'web thing' ;D, and I have completed ALL i wanted in this initially, so lesser chance i will work much on it, but as i say, if you ask of something in it, I do consider.
+Currently, I am learning more of the 'web thing' ;D, and I have completed ALL I wanted in this initially, so lesser chance I will work much on it, but as I say, if you ask of something in it, I do consider.
 
 * Creating a _web version_ of this, probably using Angular
 * Have an API endpoint, that connects the web version, the cli version, and the GUI. (API basically done, will be customised, when i go for the web version)
