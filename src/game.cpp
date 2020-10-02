@@ -994,17 +994,14 @@ game::game() : colourOrder({ _colour::LAAL, _colour::NEELA, _colour::PEELA, _col
 	number_of_GameRuns = 0;
 	goti_per_user = 4;
 
-	board.reserve(15);
 	for( int i = 0; i < 15; ++i ){
 		board.emplace_back();
-		board.at(i).reserve(15);
 		for( int j = 0; j < 15; ++j ){
 			board.at(i).push_back(ludo_box({ i, j }));
 		}
 	}
 
 	// shortcutsMap.insert({
-
 	// 	// {":r", &game::updateDisplay},
 	// 	// {":refresh", &game::updateDisplay},
 	// 	// {":set", &game::settingsMenu },
@@ -1012,7 +1009,6 @@ game::game() : colourOrder({ _colour::LAAL, _colour::NEELA, _colour::PEELA, _col
 	// 	// {":q", &game::endGame },
 	// 	// {":quit", &game::endGame },
 	// 	// {":exit", &game::endGame }
-
 	// 	});
 
 	unsigned i, j;
@@ -1028,9 +1024,10 @@ game::game() : colourOrder({ _colour::LAAL, _colour::NEELA, _colour::PEELA, _col
 	}
 	board[0][7].box_type = board[14][7].box_type = Box::NORMAL;
 	board[7][0].box_type = board[7][14].box_type = Box::NORMAL;
-	for( i = 0; i < 6; i++ )
+	for( i = 0; i < 6; i++ ){
 		for( j = 9; j < 15; j++ )
 			board[i][j].box_type = Box::UNUSABLE;
+	}
 	for( i = 9; i < 15; i++ )
 		for( j = 0; j < 6; j++ )
 			board[i][j].box_type = Box::UNUSABLE;
