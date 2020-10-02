@@ -948,8 +948,10 @@ game::game() : colourOrder({ _colour::LAAL, _colour::NEELA, _colour::PEELA, _col
 	number_of_GameRuns = 0;
 	goti_per_user = 4;
 
+	board.reserve(15);
 	for( int i = 0; i < 15; ++i ){
 		board.emplace_back();
+		board.at(i).reserve(15);
 		for( int j = 0; j < 15; ++j ){
 			board.at(i).push_back(ludo_box({ i, j }));
 		}
