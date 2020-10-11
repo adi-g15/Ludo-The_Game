@@ -23,10 +23,10 @@ static std::map<_colour, std::string_view> colourNames{
 
 static std::map<Direction, std::string_view> dirNames{
 	{ Direction::NO_TURN, "No_Turn"},
-	{ Direction::NORTH, "UP" },
-	{ Direction::EAST, "RIGHT" },
-	{ Direction::WEST, "LEFT" },
-	{ Direction::SOUTH, "DOWN" }
+	{ Direction::UP, "UP" },
+	{ Direction::LEFT, "RIGHT" },
+	{ Direction::RIGHT, "LEFT" },
+	{ Direction::DOWN, "DOWN" }
 };
 
 static std::map<_colour, char> colourCodes{

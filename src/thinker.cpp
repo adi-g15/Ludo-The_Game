@@ -57,24 +57,24 @@ Direction thinker::getDirOfMovement(const _coord &coord)
 	if (coord.n_row < (15 / 2 - 2) || coord.n_col > (15 / 2 - 2))
 	{
 		if (coord.n_row == 0)
-			retVal = Direction::EAST;
+			retVal = Direction::LEFT;
 		else if (coord.n_row == (15 - 1))
-			retVal = Direction::WEST;
+			retVal = Direction::RIGHT;
 		else if (coord.n_col < 15 / 2)
-			retVal = Direction::NORTH;
+			retVal = Direction::UP;
 		else
-			retVal = Direction::SOUTH;
+			retVal = Direction::DOWN;
 	}
 	else
 	{
 		if (coord.n_col == 0)
-			retVal = Direction::NORTH;
+			retVal = Direction::UP;
 		else if (coord.n_col == (15 - 1))
-			retVal = Direction::SOUTH;
+			retVal = Direction::DOWN;
 		else if (coord.n_row > (15 / 2))
-			retVal = Direction::EAST;
+			retVal = Direction::LEFT;
 		else
-			retVal = Direction::WEST;
+			retVal = Direction::RIGHT;
 	}
 	return retVal;
 }
@@ -106,19 +106,19 @@ const std::optional<_smartMoveData> thinker::isMovePossible(const _coord &coord,
 		if (turnDir != Direction::NO_TURN)
 		{ //! ie. a turn will happen to go to next box
 			currDir = turnDir;
-			if (currDir == Direction::NORTH)
+			if (currDir == Direction::UP)
 			{
 				increment_coord = {-1, 0};
 			}
-			else if (currDir == Direction::EAST)
+			else if (currDir == Direction::LEFT)
 			{
 				increment_coord = {0, 1};
 			}
-			else if (currDir == Direction::WEST)
+			else if (currDir == Direction::RIGHT)
 			{
 				increment_coord = {0, -1};
 			}
-			else if (currDir == Direction::SOUTH)
+			else if (currDir == Direction::DOWN)
 			{
 				increment_coord = {1, 0};
 			}
@@ -130,19 +130,19 @@ const std::optional<_smartMoveData> thinker::isMovePossible(const _coord &coord,
 			if (turnDir != Direction::NO_TURN)
 			{
 				currDir = turnDir;
-				if (currDir == Direction::NORTH)
+				if (currDir == Direction::UP)
 				{
 					increment_coord = {-1, 1};
 				}
-				else if (currDir == Direction::EAST)
+				else if (currDir == Direction::LEFT)
 				{
 					increment_coord = {1, 1};
 				}
-				else if (currDir == Direction::WEST)
+				else if (currDir == Direction::RIGHT)
 				{
 					increment_coord = {-1, -1};
 				}
-				else if (currDir == Direction::SOUTH)
+				else if (currDir == Direction::DOWN)
 				{
 					increment_coord = {1, -1};
 				}
@@ -150,19 +150,19 @@ const std::optional<_smartMoveData> thinker::isMovePossible(const _coord &coord,
 			else
 			{
 				//Checking for Home_Turns
-				if (updated_coords == _ludo_coords.home_turns.at(state->currColour).first)
+				if (updated_coords == _ludo_coords.homePath_turns.at(state->currColour).first)
 				{
-					currDir = _ludo_coords.home_turns.at(state->currColour).second;
+					currDir = _ludo_coords.homePath_turns.at(state->currColour).second;
 				}
 
 				//! ie. needs to 'go straight' on its current path
-				if (currDir == Direction::NORTH)
+				if (currDir == Direction::UP)
 					increment_coord = {-1, 0};
-				else if (currDir == Direction::EAST)
+				else if (currDir == Direction::LEFT)
 					increment_coord = {0, 1};
-				else if (currDir == Direction::WEST)
+				else if (currDir == Direction::RIGHT)
 					increment_coord = {0, -1};
-				else if (currDir == Direction::SOUTH)
+				else if (currDir == Direction::DOWN)
 					increment_coord = {1, 0};
 			}
 		}

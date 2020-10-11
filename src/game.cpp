@@ -40,46 +40,52 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 	while( dist-- ){
 		increment_coord = { 0, 0 };
 		turnDirection = _ludo_coords.turnAtCorner(updated_coords, _ludo_coords.outer_corners); //! For Outer Corners
+
 		if( turnDirection != Direction::NO_TURN ){ //! ie. a turn will happen to go to next box
 			currDirection = turnDirection;
-			if( currDirection == Direction::NORTH ){
-				increment_coord = { -1, 0 };
-			} else if( currDirection == Direction::EAST ){
-				increment_coord = { 0, 1 };
-			} else if( currDirection == Direction::WEST ){
-				increment_coord = { 0, -1 };
-			} else if( currDirection == Direction::SOUTH ){
-				increment_coord = { 1, 0 };
+
+			switch( currDirection ){
+				case Direction::UP:
+					increment_coord = { -1, 0 };	break;
+				case Direction::LEFT:
+					increment_coord = { 0, 1 };	break;
+				case Direction::RIGHT:
+					increment_coord = { 0, -1 };	break;
+				case Direction::DOWN:
+					increment_coord = { 1, 0 };	break;
 			}
 		} else{
 			turnDirection = _ludo_coords.turnAtCorner(updated_coords, _ludo_coords.inner_turns); //For Inner Turns
 
 			if( turnDirection != Direction::NO_TURN ){
 				currDirection = turnDirection;
-				if( currDirection == Direction::NORTH ){
-					increment_coord = { -1, 1 };
-				} else if( currDirection == Direction::EAST ){
-					increment_coord = { 1, 1 };
-				} else if( currDirection == Direction::WEST ){
-					increment_coord = { -1, -1 };
-				} else if( currDirection == Direction::SOUTH ){
-					increment_coord = { 1, -1 };
+
+				switch( currDirection ){
+					case Direction::UP:
+						increment_coord = { -1, 1 };	break;
+					case Direction::LEFT:
+						increment_coord = { 1, 1 };	break;
+					case Direction::RIGHT:
+						increment_coord = { -1, -1 };	break;
+					case Direction::DOWN:
+						increment_coord = { 1, -1 };	break;
 				}
 			} else{
 				//Checking for Home_Turns
-				if( updated_coords == _ludo_coords.home_turns.at(the_goti->gotiColour).first ){
-					currDirection = _ludo_coords.home_turns.at(the_goti->gotiColour).second;
+				if( updated_coords == _ludo_coords.homePath_turns.at(the_goti->gotiColour).first ){
+					currDirection = _ludo_coords.homePath_turns.at(the_goti->gotiColour).second;
 				}
 
 				//! ie. needs to 'go straight' on its current path
-				if( currDirection == Direction::NORTH ){
-					increment_coord = { -1, 0 };
-				} else if( currDirection == Direction::EAST ){
-					increment_coord = { 0, 1 };
-				} else if( currDirection == Direction::WEST ){
-					increment_coord = { 0, -1 };
-				} else if( currDirection == Direction::SOUTH ){
-					increment_coord = { 1, 0 };
+				switch( currDirection ){
+					case Direction::UP:
+						increment_coord = { -1, 0 };	break;
+					case Direction::LEFT:
+						increment_coord = { 0, 1 };	break;
+					case Direction::RIGHT:
+						increment_coord = { 0, -1 };	break;
+					case Direction::DOWN:
+						increment_coord = { 1, 0 };	break;
 				}
 			}
 		}
@@ -117,16 +123,17 @@ short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, _smartMoveData moveDat
 
 	const auto [finalCoord, finalDir, moveProfit] = moveData;
 
-	if( (movingGotis[curr_colour].size() + numfinished[curr_colour] + getNumLockedGotis(curr_colour)) > 4 ){ //DEBUG
-		cout << "inBoxGotis -> " << getBoardBox(_ludo_coords.start_coords[curr_colour]).inBoxGotis.size() << endl
-			<< "Finished -> " << numfinished[curr_colour] << endl
-			<< "LockedGotis -> " << getNumLockedGotis(curr_colour) << endl
-			<< "movingGotis -> ";
-		for( auto& i : movingGotis[curr_colour] )
-			cout << i->curr_coords << ' ';
-		cout << endl;
-		throw endApplication("Multiple gotis at start");
-	}
+	// //DEBUG
+	// if( (movingGotis[curr_colour].size() + numfinished[curr_colour] + getNumLockedGotis(curr_colour)) > 4 ){
+	// 	cout << "inBoxGotis -> " << getBoardBox(_ludo_coords.start_coords[curr_colour]).inBoxGotis.size() << endl
+	// 		<< "Finished -> " << numfinished[curr_colour] << endl
+	// 		<< "LockedGotis -> " << getNumLockedGotis(curr_colour) << endl
+	// 		<< "movingGotis -> ";
+	// 	for( auto& i : movingGotis[curr_colour] )
+	// 		cout << i->curr_coords << ' ';
+	// 	cout << endl;
+	// 	throw endApplication("Multiple gotis at start");
+	// }
 
 	if( !isValid(the_goti) && !isValid(finalCoord) )
 		return -1;

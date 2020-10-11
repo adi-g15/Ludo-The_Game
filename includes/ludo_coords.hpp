@@ -11,7 +11,7 @@ class ludo_coords{
 public:
 	std::map<_coord, Direction> outer_corners;
 	std::map<_coord, Direction> inner_turns;
-	std::map<_colour, std::pair<_coord, Direction>> home_turns;
+	std::map<_colour, std::pair<_coord, Direction>> homePath_turns;
 	std::map<_colour,_coord> start_coords;
 	std::map<_colour, Direction> start_dir;
 	std::vector<_coord> stops;

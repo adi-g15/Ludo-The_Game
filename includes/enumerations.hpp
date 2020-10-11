@@ -34,10 +34,10 @@ enum class Player : short{	//don't tamper with the data type, static_cast<short>
 
 enum class Direction{
 	NO_TURN,
-	NORTH,
-	EAST,
-	WEST,
-	SOUTH
+	UP,
+	LEFT,
+	RIGHT,
+	DOWN
 };
 
 struct ProfitType{

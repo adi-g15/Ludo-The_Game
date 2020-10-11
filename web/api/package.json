@@ -1,0 +1,19 @@
+{
+  "name": "ludo_api",
+  "version": "1.0.0",
+  "description": "API to support web version of Ludo-The_Game",
+  "main": "app.js",
+  "author": "Aditya Gupta",
+  "license": "MIT",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "express": "^5.0.0-alpha.8",
+    "underscore": "^1.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
