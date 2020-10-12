@@ -1,5 +1,6 @@
 const { Router } = require('express');
 
+const { contains } = require('underscore');
 const router = Router();
 
 let corners = {}
@@ -28,8 +29,8 @@ const homeTurns = { // colour: [coord,direction]
 };
 
 function isHomeEnd(coords) {
-    home_ends = [ '8,7', '6,7', '7,6', '7,8' ];
-    if( home_ends.find( (end) => end == coords ) ) return true;
+    home_ends = ['8,7', '6,7', '7,6', '7,8'];
+    if (home_ends.find((end) => end == coords)) return true;
     else return false;
 }
 
@@ -38,30 +39,42 @@ function turnAtCorner(corners_vec, coord) {   // returns `null` to signify to di
 }
 
 function str_to_pair(str) {
-    if( !str || !str [0] || !str[1])  return null;
-    if(str[0] === '['){
-        str.pop();  str.shift();
+    if (!str || !str[0] || !str[1]) return null;
+    if (typeof (str[0]) === 'number' && typeof (str[1]) === 'number') return str;
+    if (str[0] === '[') {
+        str.pop(); str.shift();
     }
 
     let temp = str.split(',');
-    if(temp.length > 2) return null;
-    return [ Number(tmp[0]), Number(tmp[1]) ];
+    if (temp.length > 2) return null;
+    return [Number(temp[0]), Number(temp[1])];
 }
 
-function validData(reqData){
-    return reqData['dist'] && reqData['goti'] && reqData['goti']['col'] && reqData['goti'] && reqData['goti']['dir'];
+function validData(reqData) {
+    const allowed_colours = ['R', 'G', 'Y', 'B'];
+    const allowed_dirs = ['U', 'D', 'L', 'R'];
+    if (!!reqData['dist'] && !!reqData['goti'] && !!reqData['goti']['col'] && !!reqData['goti']['dir'] && !!reqData['goti']['coords']) {
+        if (!contains(allowed_colours, reqData['goti']['col'])
+            || !contains(allowed_dirs, reqData['goti']['col'])) {
+            return false;
+        }
+        else return true;
+    } else return false;
 }
 
-router.get('/goti', (req, res) => {
+router.post('/goti', (req, res) => {
     let reqData = {
         'goti': {
-            'col': req.body.col,   //colour
-            'dir': req.body.dir,   //direction
-            'coords': str_to_pair(req.body.coords), //current coords
+            'col': req.body.goti.col,   //colour
+            'dir': req.body.goti.dir,   //direction
+            'coords': str_to_pair(req.body.goti.coords), //current coords
         },
         'dist': Number(req.body.dist),
     }
-    if( ! validData(reqData) )  return res.status(304).send({ error: 'Input Not Valid' })
+
+    if (!validData(reqData)) {
+        return res.status(400).send({ error: 'Input Not Valid', inputReceived: reqData });
+    }
 
     let dist = reqData['dist'];
 
@@ -75,7 +88,7 @@ router.get('/goti', (req, res) => {
     while (--dist >= 0) {
         increment_coords = [0, 0];
 
-        turnDirection = turnAtCorner(corners['oc'], coord);
+        turnDirection = turnAtCorner(corners['oc'], updated_coords);
         if (turnDirection) {
             currDirection = turnDirection;
             switch (currDirection) {
@@ -85,7 +98,7 @@ router.get('/goti', (req, res) => {
                 case 'D': increment_coords = [1, 0]; break;
             }
         } else {
-            turnDirection = turnAtCorner(corners['it'], coord);
+            turnDirection = turnAtCorner(corners['it'], updated_coords);
 
             if (turnDirection) {
                 currDirection = turnDirection;
@@ -96,7 +109,7 @@ router.get('/goti', (req, res) => {
                     case 'D': increment_coords = [1, -1]; break;
                 }
             } else {
-                if (coord == homeTurns[reqData['goti']['col']][0])
+                if (updated_coords == homeTurns[reqData['goti']['col']][0])
                     currDirection = homeTurns[reqData['goti']['col']][1];
 
                 switch (currDirection) {
@@ -108,10 +121,10 @@ router.get('/goti', (req, res) => {
             }
         }
 
-        coord[0] += increment_coords[0];
-        coord[1] += increment_coords[1];
+        updated_coords[0] += increment_coords[0];
+        updated_coords[1] += increment_coords[1];
 
-        if (isHomeEnd(coord)) return console.log({ 'bool': false });
+        if (isHomeEnd(updated_coords)) return console.log({ 'bool': false });
 
     }
     res.send({
