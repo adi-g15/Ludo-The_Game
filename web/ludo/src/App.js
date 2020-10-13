@@ -24,23 +24,23 @@ function App() {
 			"9-8": [], "10-8": [], "11-8": [], "12-8": [], "13-8": [], "14-8": [],
 		})
 	}, [])
-	// const move = (x, y) => {
-	// 	fetch('https://adig15.herokuapp.com/ludo/move/goti', {
-	// 		method: 'post',
-	// 		body: JSON.stringify({
-	// 			"goti": {
-	// 				"col": ["G", "Y", "B", "R"][turn],
-	// 				"dir": "U",
-	// 				"coords": [6,9]
-	// 			},
-	// 			"dist": 3
-	// 		})
-	// 	})
-	// 	.then(res =>  res.json(value))
-	// 	.then(response => {
+	const move = (x, y) => {
+		// fetch('https://adig15.herokuapp.com/ludo/move/goti', {
+		// 	method: 'post',
+		// 	body: JSON.stringify({
+		// 		"goti": {
+		// 			"col": ["G", "Y", "B", "R"][turn],
+		// 			"dir": "U",
+		// 			"coords": [6,9]
+		// 		},
+		// 		"dist": 3
+		// 	})
+		// })
+		// .then(res =>  res.json(value))
+		// .then(response => {
 
-	// 	})
-	// }
+		// })
+	}
 	const rollDice = () => {
 		const dice = [...document.querySelectorAll(".die-list")]
 		dice.forEach(die => {
@@ -73,7 +73,7 @@ function App() {
 					}
 				}
 				else {
-					setChoice(false)
+					// setChoice(false)
 					setTurn(turn => (turn+1)%4)
 				}
 			})
@@ -346,11 +346,17 @@ function App() {
 }
 
 function Goti(props) {
-	const coords = props.place.split("-")
+	if(props.place) {
+		const coords = props.place.split("-")
+		return <figure 
+			className={"circle " + (props.glow ? "glow" : null)}
+			style={{ background: "radial-gradient(circle at 33% 33%, " + props.color + ", #000)" }}
+			onClick={props.glow ? props.move(coords[0], coords[1]) : null}
+		/>
+	}
 	return <figure 
 		className={"circle " + (props.glow ? "glow" : null)}
 		style={{ background: "radial-gradient(circle at 33% 33%, " + props.color + ", #000)" }}
-		onClick={props.glow ? props.move(coords[0], coords[1]) : null}
 	/>
 }
 
