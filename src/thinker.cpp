@@ -81,15 +81,15 @@ Direction thinker::getDirOfMovement(const _coord &coord)
 
 const std::optional<_smartMoveData> thinker::isMovePossible(const _coord &coord, int dist) const
 {
-	Direction turnDir, currDir = this->getDirOfMovement(coord);
-
-	if (dist == 0)
+	if( dist == 0 )
 		return {};
-
-	int moveProfit(0);
 
 	_coord increment_coord(0, 0);
 	_coord updated_coords(coord);
+
+	Direction turnDir, currDir = this->getDirOfMovement(coord);
+	int moveProfit(0);
+
 	auto currBox = std::cref(state->getBox(updated_coords)); // using reference wrapper to allow it to be changed to refer something else
 
 	/*Move Profits ->

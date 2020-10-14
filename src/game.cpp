@@ -35,16 +35,16 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 
 	_coord increment_coord(0, 0);
 	_coord updated_coords(the_goti->curr_coords);
-	Direction turnDirection, currDirection = the_goti->curr_direction;
+	Direction turnDir, currDir = the_goti->curr_direction;
 
 	while( dist-- ){
 		increment_coord = { 0, 0 };
-		turnDirection = _ludo_coords.turnAtCorner(updated_coords, _ludo_coords.outer_corners); //! For Outer Corners
+		turnDir = _ludo_coords.turnAtCorner(updated_coords, _ludo_coords.outer_corners); //! For Outer Corners
 
-		if( turnDirection != Direction::NO_TURN ){ //! ie. a turn will happen to go to next box
-			currDirection = turnDirection;
+		if( turnDir != Direction::NO_TURN ){ //! ie. a turn will happen to go to next box
+			currDir = turnDir;
 
-			switch( currDirection ){
+			switch( currDir ){
 				case Direction::UP:
 					increment_coord = { -1, 0 };	break;
 				case Direction::LEFT:
@@ -55,12 +55,12 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 					increment_coord = { 1, 0 };	break;
 			}
 		} else{
-			turnDirection = _ludo_coords.turnAtCorner(updated_coords, _ludo_coords.inner_turns); //For Inner Turns
+			turnDir = _ludo_coords.turnAtCorner(updated_coords, _ludo_coords.inner_turns); //For Inner Turns
 
-			if( turnDirection != Direction::NO_TURN ){
-				currDirection = turnDirection;
+			if( turnDir != Direction::NO_TURN ){
+				currDir = turnDir;
 
-				switch( currDirection ){
+				switch( currDir ){
 					case Direction::UP:
 						increment_coord = { -1, 1 };	break;
 					case Direction::LEFT:
@@ -73,11 +73,11 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 			} else{
 				//Checking for Home_Turns
 				if( updated_coords == _ludo_coords.homePath_turns.at(the_goti->gotiColour).first ){
-					currDirection = _ludo_coords.homePath_turns.at(the_goti->gotiColour).second;
+					currDir = _ludo_coords.homePath_turns.at(the_goti->gotiColour).second;
 				}
 
 				//! ie. needs to 'go straight' on its current path
-				switch( currDirection ){
+				switch( currDir ){
 					case Direction::UP:
 						increment_coord = { -1, 0 };	break;
 					case Direction::LEFT:
@@ -99,7 +99,7 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 		}
 	}
 
-	return _smartMoveData({ updated_coords, currDirection });
+	return _smartMoveData({ updated_coords, currDir });
 }
 
 /*Return values - -1 : Can't Move, or FAILURE
