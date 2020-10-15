@@ -325,20 +325,16 @@ tbody tr:nth-of-type(3) {
 tbody tr:nth-of-type(4) {
 	color: #e53935;
 }
-
-.panel {
-  text-align: center;
-}
-
-.info {
-  padding: 5rem 0;
+.panel-top, .panel-bottom {
+	text-align: center;
+	padding: 5rem 0;
 }
 
 th, td {
-  font-size: 30px;
-  border-collapse: collapse;
-  border: 2px solid white;
-  padding: 1rem;
+	font-size: 30px;
+	border-collapse: collapse;
+	border: 2px solid white;
+	padding: 1rem;
 }
 
 .glow {

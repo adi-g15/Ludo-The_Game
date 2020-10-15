@@ -7,8 +7,7 @@ export default function Goti(props) {
 			className={"circle " + (props.glow ? "glow" : null)}
 			style={{ background: "radial-gradient(circle at 33% 33%, " + props.color + ", #000)" }}
 			onClick={() => {
-				if(props.glow) {
-					props.move(parseInt(coords[0]), parseInt(coords[1]))
+				if(props.glow && props.move(parseInt(coords[0]), parseInt(coords[1]))) {
 					props.setChoice(true)
 				}
 			}}
