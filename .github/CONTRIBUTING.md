@@ -8,13 +8,13 @@ Also, if you want to go bug-hunting, you may try out the `dev` branch, with the 
 
 1. [Reporting bugs](#reporting-bugs)
 2. [Requesting new features](#requesting-new-features)
-6. [Tests](#tests)
-7. [Questions?](#questions)
+3. [Tests](#tests)
+4. [Questions?](#questions)
 
 ## Reporting bugs
 
 In short,
-    * Try the most recent `master` release
+    *Try the most recent `master` release
     * Search for existing issue
     * Include steps for reproduction
 
@@ -28,6 +28,6 @@ Provide a clear and detailed explanation of the feature.
 
 Currently the repo doesn't have tests, but you may contribute tests too, need not be for whole codebase (which is rather big), but tests for basic functions are welcome too.
 
-## Questions?
+## Questions
 
 If you have any questions, please feel free to open an issue, labeling it a question.
