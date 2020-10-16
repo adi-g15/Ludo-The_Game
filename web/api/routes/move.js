@@ -93,9 +93,7 @@ router.post('/goti', (req, res) => {
 
 	const colour = reqData.col;
 	const dist = reqData.dist;
-	let isSingleCoord = false;
 	if (reqData.coords.length === 2 && all(reqData.coords, iter => typeof (iter) === 'number')) {	// ie. is a single pair
-		isSingleCoord = true;
 		reqData.coords = [reqData.coords];	// convert to an array
 	}
 
@@ -109,13 +107,6 @@ router.post('/goti', (req, res) => {
 		bools.push(possibility);
 		finalCoords.push(finalCoord);
 	});
-
-	if (isSingleCoord) {
-		return res.send({
-			bool: bools[0],
-			move: finalCoords[0]
-		});
-	}
 
 	res.send({
 		bool: bools,
