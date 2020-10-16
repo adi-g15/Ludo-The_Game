@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 const { random } = require('underscore');
 
 const app = express();
@@ -10,6 +11,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(morgan('dev'));
 
 app.get('/roll', (req, res) => {
 	let n = random(1, 6);

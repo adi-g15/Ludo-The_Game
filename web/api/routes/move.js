@@ -1,25 +1,26 @@
 /* eslint-disable camelcase */
 const { Router } = require('express');
 
-const { contains } = require('underscore');
+const { contains, all } = require('underscore');
 const router = Router();
 
-const corners = {};
-corners.oc = { // outer_corners
-	'0,6': 'R',
-	'0,8': 'D',
-	'6,0': 'R',
-	'6,14': 'D',
-	'8,0': 'U',
-	'8,14': 'L',
-	'14,6': 'U',
-	'14,8': 'L'
-};
-corners.it = { // outer_corners
-	'9,6': 'L',
-	'6,5': 'U',
-	'8,9': 'D',
-	'5,8': 'R'
+const corners = {
+	oc: { // outer_corners
+		'0,6': 'R',
+		'0,8': 'D',
+		'6,0': 'R',
+		'6,14': 'D',
+		'8,0': 'U',
+		'8,14': 'L',
+		'14,6': 'U',
+		'14,8': 'L'
+	},
+	it: { // inner_turns
+		'9,6': 'L',
+		'6,5': 'U',
+		'8,9': 'D',
+		'5,8': 'R'
+	}
 };
 
 const homeTurns = { // colour: [coord,direction]
@@ -71,14 +72,9 @@ function getDirection (coords) {
 
 function validData (reqData) {
 	const allowed_colours = ['R', 'G', 'Y', 'B'];
-	const allowed_dirs = ['U', 'D', 'L', 'R'];
-	if (!reqData.goti.dir) {
-		reqData.goti.dir = getDirection(reqData.goti.coords);
-	}
 
-	if (!!reqData.dist && !!reqData.goti && !!reqData.goti.col && !!reqData.goti.dir && !!reqData.goti.coords) {
-		if (!contains(allowed_colours, reqData.goti.col) ||
-			!contains(allowed_dirs, reqData.goti.dir)) {
+	if (!!reqData && !!reqData.dist && !!reqData.col && !!reqData.coords) {
+		if (!contains(allowed_colours, reqData.col)) {
 			return false;
 		} else return true;
 	} else return false;
@@ -86,26 +82,55 @@ function validData (reqData) {
 
 router.post('/goti', (req, res) => {
 	const reqData = {
-		goti: {
-			col: req.body.goti.col, // colour
-			dir: req.body.goti.dir, // direction
-			coords: req.body.goti.coords // current coords
-		},
-		dist: Number(req.body.dist)
+		col: req.body.col, // colour
+		coords: req.body.coords, // current coords
+		dist: Number(req.body.dist)	// dist=0 will give Input Not Valid
 	};
 
 	if (!validData(reqData)) {
-		return res.status(400).send({ error: 'Input Not Valid', inputReceived: reqData });
+		return res.status(400).send({ error: 'Input Not Valid', inputReceived: req.body });
 	}
 
-	let dist = reqData.dist;
+	const colour = reqData.col;
+	const dist = reqData.dist;
+	let isSingleCoord = false;
+	if (reqData.coords.length === 2 && all(reqData.coords, iter => typeof (iter) === 'number')) {	// ie. is a single pair
+		isSingleCoord = true;
+		reqData.coords = [reqData.coords];	// convert to an array
+	}
+
+	const bools = [];	// an array of bools
+	const finalCoords = [];	// an array of bools
 
 	if (dist === 0) { return res.send({ bool: false }); }
+	let possibility, finalCoord;
+	reqData.coords.forEach(coord => {
+		[possibility, finalCoord] = moveGoti(colour, coord, dist);
+		bools.push(possibility);
+		finalCoords.push(finalCoord);
+	});
 
+	if (isSingleCoord) {
+		return res.send({
+			bool: bools[0],
+			move: finalCoords[0]
+		});
+	}
+
+	res.send({
+		bool: bools,
+		move: finalCoords
+	});
+});
+
+function moveGoti (colour, coord, dist) {
 	let increment_coords = [0, 0];
-	const updated_coords = reqData.goti.coords;
-	let turnDirection = 'NO_TURN';
-	let currDirection = reqData.goti.dir;
+	let turnDirection = null;
+	const updated_coords = coord;
+	let currDirection = getDirection(updated_coords);
+	if (!currDirection) return [false];
+
+	if (dist === 0) return [false];
 	while (dist-- > 0) {
 		increment_coords = [0, 0];
 
@@ -131,7 +156,7 @@ router.post('/goti', (req, res) => {
 				}
 			} else {
 				// eslint-disable-next-line eqeqeq
-				if (updated_coords == homeTurns[reqData.goti.col][0]) { currDirection = homeTurns[reqData.goti.col][1]; }
+				if (updated_coords == homeTurns[colour][0]) { currDirection = homeTurns[colour][1]; }
 
 				switch (currDirection) {
 				case 'U': increment_coords = [-1, 0]; break;
@@ -145,16 +170,13 @@ router.post('/goti', (req, res) => {
 		updated_coords[0] += increment_coords[0];
 		updated_coords[1] += increment_coords[1];
 
-		if (isHomeEnd(updated_coords) && dist > 0) return res.send({ bool: false });
+		if (isHomeEnd(updated_coords) && dist > 0) return [false];
 	}
 
-	res.send({
-		bool: true,
-		move: {
-			coord: updated_coords,
-			dir: currDirection
-		}
-	});
-});
+	return [
+		true,	// possibility
+		updated_coords	// final coords
+	];
+}
 
 module.exports = router;
