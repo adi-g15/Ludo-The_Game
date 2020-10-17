@@ -123,10 +123,8 @@
 
 .circle {
 	display: block;
-	background: black;
 	border-radius: 100%;
-	height: 100%;
-	width: 100%;
+	float: left;
 	margin: 0;
 }
 
