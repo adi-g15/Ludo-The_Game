@@ -69,6 +69,7 @@ function validData (reqData) {
 
 router.post('/goti', (req, res) => {
 	const reqData = {
+		// eslint-disable-next-line no-prototype-builtins
 		col: req.body.hasOwnProperty('col') ? req.body.col : null, // colour
 		// eslint-disable-next-line no-prototype-builtins
 		coords: req.body.hasOwnProperty('coords') ? req.body.coords : null, // current coords,		additional if to solve `Prototype Pollution vulnerability` pointed by deepcode
