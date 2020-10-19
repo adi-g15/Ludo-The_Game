@@ -14,7 +14,7 @@ struct _coord{
 	_coord() : _coord(_type{}, _type{}){}
 	_coord(_type x, _type y) : n_row(x), n_col(y){}
 	_coord(const _coord& c) : _coord(c.n_row, c.n_col){}
-	_coord(const std::pair<_type, _type>& p): _coord(p.first, p.second){}
+	explicit _coord(const std::pair<_type, _type>& p): _coord(p.first, p.second){}
 };
 
 enum class _colour{
@@ -45,7 +45,9 @@ struct ProfitType{
 	static constexpr int REACH_HOME = +2;
 	static constexpr int REACH_STOP = +3;
 	static constexpr int ATTACK = +4;
-	static constexpr int UNLOCK = +5;	/*TODO - Can't it cause cases where,
+	static constexpr int UNLOCK = +5;
+			/* @note for thinker_robo class - Can't it cause cases where,
+					Update- It will cause these cases, though, as of now it is stalled, since thinker_robo is actually disabled most times
 					1.Moving '6' will be seen better than unlocking(which is only +5)
 					2. Moving '6' would have been better for 'following opponent', which can lead to an attack in few steps, instead of UNLOCK?
 						*Those two, can be stopping each other, because 1 may sometimes solve 2, but for solving 1, i increased the value of UNLOCK to be +5 (only slightly less than +6), so that +6 isn't wasted in moving everytime, but this is a problem for 2*/

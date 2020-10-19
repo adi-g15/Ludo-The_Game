@@ -13,7 +13,7 @@ Ludo, our popular Indian board game, completely implemented in C++
 <img src=./extras/ludoScreen.png
 raw=true alt=“ScreenShot”>
 
-_Please do put your suggestions, ideas, and any problem (even if why g++ main.cpp doesn't work). I will be thankful to you for trying it out :D_
+_Do put your suggestions, ideas, and any problem (even if why g++ main.cpp doesn't work). I will be thankful to you for trying it out :D_
 
 ## Features
 
@@ -40,6 +40,7 @@ cmake --build .
 ```
 
 ### For Windows -
+
 ```sh
 mkdir build -p
 cd build
@@ -108,14 +109,15 @@ cmake --build . --config Release
 5. Many more if when you search (yaar please consider point 1, if that's the case :-)
 
 ## Contribution -
+
 Start an issue for whatever feature you believe should be good here.
 
 And, in case you want to be a contributer here, and work on it together, do ask.
 
 Do sugggest any other feature you would like, i do claim the codebase to be quite modular, and easily customisable.
 
-
 ## Future Plans -
+
 Currently, I am learning more of the 'web thing' ;D, and I have completed ALL i wanted in this initially, so lesser chance i will work much on it, but as i say, if you ask of something in it, I do consider.
 
 * Creating a _web version_ of this, probably using Angular

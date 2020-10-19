@@ -1,42 +1,15 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        {   //difference between workspaceRoot and workspaceFolder
+        {
             "name": "cl.exe - Build and debug active file",
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceFolder}/ludo.exe",
             "args": [],
-            "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": true,
-            "requireExactSource": false,
-            "preLaunchTask": "C/C++: cl.exe build active file",
-        },
-        // {
-        //     "name": "g++-7 - Build and debug active file",
-        //     "type": "cppdbg",
-        //     "request": "launch",
-        //     "program": "${fileDirname}/${fileBasenameNoExtension}",
-        //     "args": [],
-        //     "stopAtEntry": true,
-        //     "cwd": "${workspaceFolder}",
-        //     "environment": [],
-        //     "externalConsole": false,
-        //     "MIMode": "gdb",
-        //     "setupCommands": [
-        //         {
-        //             "description": "Enable pretty-printing for gdb",
-        //             "text": "-enable-pretty-printing",
-        //             "ignoreFailures": true
-        //         }
-        //     ],
-        //     "preLaunchTask": "C/C++: g++-7 build active file",
-        //     "miDebuggerPath": "/usr/bin/gdb"
-        // }
+            "console": "externalTerminal",
+            "preLaunchTask": "C/C++: cl.exe build active file"
+        }
     ]
 }

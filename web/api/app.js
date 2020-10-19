@@ -1,8 +1,9 @@
 const express = require('express');
 const morgan = require('morgan');
-const helmet = require('helmet')
+const helmet = require('helmet');
 const { random } = require('underscore');
 
+//  deepcode ignore UseCsurfForExpress: This won't be the actual API in deployment, so not needed to increase the dependency
 const app = express();
 
 // routes

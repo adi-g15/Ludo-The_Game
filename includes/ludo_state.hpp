@@ -64,7 +64,7 @@ class ludo_state{
 	const state_box& getBox(const _coord&) const;
 
 public:
-	ludo_state(const game*);
+	explicit ludo_state(const game*);
 	bool isInSync(const game*);
 	void resetBoard();	//Uses 'org_movingColours' to reset the board
 	size_t getNumLocks();

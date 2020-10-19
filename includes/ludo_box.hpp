@@ -27,7 +27,7 @@ public:
 
 	bool areOpponentsPresent(_colour) const;
 
-	ludo_box(const _coord&, Box = Box::NORMAL);
+	explicit ludo_box(const _coord&, Box = Box::NORMAL);
 
 	friend class game;
 	friend class _BoardPrinter;
