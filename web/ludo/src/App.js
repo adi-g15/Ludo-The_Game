@@ -30,21 +30,6 @@ function App() {
 		})
 		setPositions(position => position.map(value => value = Array(4).fill(false)))
 	}, [])
-	const checkKill = (position, newboard, updated_place) => {
-		newboard[updated_place] = newboard[updated_place].reduce((result, current) => {
-			if(current === turn) {
-				result.push(current)
-			}
-			else {
-				for(let i=0;i<4;++i) {
-					if(position[current][i] && position[current][i] === updated_place) {
-						position[current][i] = false
-					}
-				}
-			}
-			return result
-		}, [])
-	}
 	const move = (current_place) => {
 		setInfo("")
 		const coords = current_place.split('-')
@@ -75,7 +60,21 @@ function App() {
 				}
 				else {
 					position[turn][position[turn].indexOf(current_place)] = updated_place
-					checkKill(position, newboard, updated_place)
+					if(![ '8-2', '2-6', '6-12', '12-8' ].includes(updated_place)) {
+						newboard[updated_place] = newboard[updated_place].reduce((result, current) => {
+							if(current === turn) {
+								result.push(current)
+							}
+							else {
+								for(let i=0;i<4;++i) {
+									if(position[current][i] && position[current][i] === updated_place) {
+										position[current][i] = false
+									}
+								}
+							}
+							return result
+						}, [])
+					}
 					newboard[updated_place].push(turn)
 				}
 				setPositions(position)
@@ -163,7 +162,6 @@ function App() {
 									let i = 0
 									while(position[turn][i++] !== false);
 									position[turn][--i] = newplace[turn]
-									checkKill(position, newboard, newplace[turn])
 									newboard[newplace[turn]].push(turn)
 									setBoard(newboard)
 								}
