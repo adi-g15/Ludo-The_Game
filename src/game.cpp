@@ -92,7 +92,7 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 
 		updated_coords.n_row += increment_coord.n_row;
 		updated_coords.n_col += increment_coord.n_col;
-		reference_wrapper<const ludo_box> currBox { getBoardBox(updated_coords) };
+		reference_wrapper<const ludo_box> currBox{ getBoardBox(updated_coords) };
 
 		if( currBox.get().box_type == Box::HOME_END && dist != 0 ){ //! Reached finished point, but move still incomplete
 			return {};
@@ -142,7 +142,7 @@ short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, _smartMoveData moveDat
 	if( getBoardBox(finalCoord).box_type == Box::HOME_END ){
 		auto& lockBox = getBoardBox(getEmptyLocks(curr_colour));
 
-		if( lockBox.coords == _coord(0,0) ){ //debug
+		if( lockBox.coords == _coord(0, 0) ){ //debug
 			cout << "movingGotis[curr].size() = " << movingGotis[curr_colour].size() << endl;
 			cout << "inBoxGotis in the box of the goti " << getBoardBox(the_goti->curr_coords).inBoxGotis.size() << endl;
 			endGame("Invalid lockbox");
@@ -223,9 +223,9 @@ bool game::autoMove(){ //! Return values same as the moveGoti_function
 
 			updateDisplay();
 			cout << "Roll Output : ";
-			for( auto& i : dieNumbers )
+			for( auto& i : dieNumbers ){
 				cout << i << ' ';
-
+			}
 		} else{
 			clog << "Can't Move, due to absence of gotis" << endl;
 			return false;
@@ -281,10 +281,10 @@ bool game::autoMove(){ //! Return values same as the moveGoti_function
 	return wasSuccess;
 }
 
-	/* @brief Simply removes the 1st goti, if attack request found valid
-	   **IMPORTANT_NOTE - For simplicity, an empty vector passed for coloursToRemove will be considered as 'Remove all except this gotiColour'
-	   FUTURE - If have used a vector of _colour, in favor of future scope of support of FRIEND GOTIS
-	*/
+/* @brief Simply removes the 1st goti, if attack request found valid
+   **IMPORTANT_NOTE - For simplicity, an empty vector passed for coloursToRemove will be considered as 'Remove all except this gotiColour'
+   FUTURE - If have used a vector of _colour, in favor of future scope of support of FRIEND GOTIS
+*/
 void game::attack(std::vector<_colour> coloursToRemove, std::shared_ptr<ludo_goti> attacker){
 	if( coloursToRemove.empty() ){ //Will consider all other _colour as opponents
 		coloursToRemove.insert(coloursToRemove.begin(), { _colour::NEELA, _colour::HARA, _colour::PEELA, _colour::LAAL });
@@ -471,18 +471,18 @@ void game::takeIntro(){
 			} else if( util::icompare(playerName, robot_keyword) ){
 				++numRobots;
 				activePlayerMap.insert(
-					{p, {string("ROBOT ").append(to_string(numRobots)), colour}}
+					{ p, {string("ROBOT ").append(to_string(numRobots)), colour} }
 				);
 				robotPlayers.insert({ p, RobotKind::randomRobo });
 			} else if( util::icompare(playerName, thinker_keyword) ){
 				++numThinkers;
 				activePlayerMap.insert(
-					{p, {string("Thinker").append(to_string(numThinkers)), colour}}
+					{ p, {string("Thinker").append(to_string(numThinkers)), colour} }
 				);
 				robotPlayers.insert({ p, RobotKind::thinkerRobo });
 			} else{
 				activePlayerMap.insert(
-					{p, {playerName, colour}}
+					{ p, {playerName, colour} }
 				);
 			}
 		}
@@ -571,7 +571,6 @@ void game::updateDisplay(){
 		tmpDimen = util::getTerminalDimen();
 		boxlen = (2 * min(tmpDimen.n_row, tmpDimen.n_col) - 32) / 15;
 		isScreenSmall = !isScreenSmall;	//nevertheless, it won't reach again if the loop only runs once
-
 	} while( min(tmpDimen.n_row, tmpDimen.n_col) < 32 );
 
 	_BoardPrinter::titleBar(tmpDimen.n_col);
@@ -643,8 +642,6 @@ void game::updateDisplay(){
 	for( unsigned i = 0; i < tmpDimen.n_col; ++i )
 		cout << '-';
 	cout << '\n';
-
-
 }
 
 _coord game::getEmptyLocks(_colour gotiColour) const{
@@ -662,8 +659,8 @@ bool game::InitGame(short playerConsent){ //! 1 for complete reset, 2 is with pr
 	} else{
 		goti_per_user = 4;
 
-		for (auto &ludoBoardRow : board) {
-			for (auto &ludoBoardSquare : ludoBoardRow) {
+		for( auto& ludoBoardRow : board ){
+			for( auto& ludoBoardSquare : ludoBoardRow ){
 				ludoBoardSquare.content.clear();
 				ludoBoardSquare.inBoxGotis.clear();
 			}
@@ -699,9 +696,9 @@ void game::play(bool boolVal){
 		do{
 			util_lamdas::nextPlayer(this->curr_player);
 			util_lamdas::nextColour(this->curr_colour, this->colourOrder);
-		} while( (! gameisFinished() && (this->numfinished[this->curr_colour] == this->goti_per_user))
-					|| this->coloursMap.find(curr_colour) == this->coloursMap.end()	//ie. curr_colour is not playing, then keep looping, until a playing colour is chosen
-					);
+		} while( (!gameisFinished() && (this->numfinished[this->curr_colour] == this->goti_per_user))
+			|| this->coloursMap.find(curr_colour) == this->coloursMap.end()	//ie. curr_colour is not playing, then keep looping, until a playing colour is chosen
+			);
 
 		dieNumbers.clear();
 	};
@@ -712,7 +709,6 @@ void game::play(bool boolVal){
 		bool isRobot = robotPlayers.find(curr_player) != robotPlayers.end();
 		string inputStr; //! Note - To use shortcuts like ":settings", ":rules, and to have 'variable number of inputs'
 		if( isRobot ){ //ie. It is a Robot Player
-
 			// auto robo = thinker(this);
 
 			// if( robotPlayers[curr_player] == RobotKind::thinkerRobo )
@@ -945,7 +941,6 @@ void game::settingsMenu(){
 }
 
 void game::notYetImplementedScr() const{
-
 	_BoardPrinter::titleBar();
 	util::place_v_center();
 	util::align_text_center("This feature has not yet been implemented !");

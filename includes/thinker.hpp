@@ -41,6 +41,6 @@ public:
 	bool implementBestMove();
 
 	bool updateState(game *);
-	thinker(game *);
+	explicit thinker(game *);
 	~thinker();
 };

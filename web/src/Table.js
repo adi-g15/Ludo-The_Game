@@ -1,8 +1,8 @@
-import React from 'react'
+import React from 'react';
 
 export default function Table(props) {
-    return (
-        <table style={{ margin: "auto"}}>
+	return (
+		<table style={{ margin: 'auto' }}>
 			<thead>
 				<tr>
 					<th>Player</th>
@@ -28,5 +28,5 @@ export default function Table(props) {
 				</tr>
 			</tbody>
 		</table>
-    )
+	);
 }
