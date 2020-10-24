@@ -642,7 +642,6 @@ void game::updateDisplay(){
 	for( unsigned i = 0; i < tmpDimen.n_col; ++i )
 		cout << '-';
 	cout << '\n';
-
 }
 
 _coord game::getEmptyLocks(_colour gotiColour) const{
