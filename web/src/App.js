@@ -184,8 +184,8 @@ function App() {
 								}
 							}
 							else
-								if (roll < 6)
-									setTurn(turn => (turn + 1) % 4);
+							if (roll < 6)
+								setTurn(turn => (turn + 1) % 4);
 						});
 					});
 			});
