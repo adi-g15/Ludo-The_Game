@@ -82,6 +82,7 @@ router.post('/goti', (req, res) => {
 
 	const colour = reqData.col;
 	const dist = reqData.dist;
+	// file deepcode ignore HTTPSourceWithUncheckedType: Ignore deepcode warning (deleberate)
 	// eslint-disable-next-line no-prototype-builtins
 	if (!reqData.coords.hasOwnProperty('length'))	return res.sendStatus(400);	// fixing deepcode warning
 	if (reqData.coords.length === 2 && all(reqData.coords, iter => typeof (iter) === 'number')) {	// ie. is a single pair
