@@ -2,7 +2,7 @@ import React from 'react';
 import Turn from './Turn';
 
 export default function Dice(props) {
-	return(
+	return (
 		<div className="dice">
 			<Turn turn={props.turns} color={props.color} choice={props.choice} />
 			<ol className="die-list even-roll" data-roll="1" style={{ cursor: props.choice && props.die ? 'pointer' : null }} onClick={() => { props.rollDice(props.turn); }}>
