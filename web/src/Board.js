@@ -1,9 +1,9 @@
-import React from 'react'
-import Goti from './Goti'
+import React from 'react';
+import Goti from './Goti';
 
 export default function Board(props) {
-    return (
-        <div className="game">
+	return (
+		<div className="game">
 			<div className="house green">
 				<div className="box">
 					<div className="square square-one green">
@@ -294,5 +294,5 @@ export default function Board(props) {
 				{ props.board['7-0'] && props.board['7-0'].length ? <Goti block={props.board['7-0']} move={props.move} setChoice={props.setChoice} place="7-0" turn={props.turn} choice={props.choice} colors={props.colors} /> : null }
 			</div>
 		</div>
-    )
+	);
 }
