@@ -223,9 +223,9 @@ bool game::autoMove(){ //! Return values same as the moveGoti_function
 
 			updateDisplay();
 			cout << "Roll Output : ";
-			for( auto& i : dieNumbers )
+			for( auto& i : dieNumbers ){
 				cout << i << ' ';
-
+			}
 		} else{
 			clog << "Can't Move, due to absence of gotis" << endl;
 			return false;
@@ -571,7 +571,6 @@ void game::updateDisplay(){
 		tmpDimen = util::getTerminalDimen();
 		boxlen = (2 * min(tmpDimen.n_row, tmpDimen.n_col) - 32) / 15;
 		isScreenSmall = !isScreenSmall;	//nevertheless, it won't reach again if the loop only runs once
-
 	} while( min(tmpDimen.n_row, tmpDimen.n_col) < 32 );
 
 	_BoardPrinter::titleBar(tmpDimen.n_col);
@@ -644,7 +643,6 @@ void game::updateDisplay(){
 		cout << '-';
 	cout << '\n';
 
-
 }
 
 _coord game::getEmptyLocks(_colour gotiColour) const{
@@ -712,7 +710,6 @@ void game::play(bool boolVal){
 		bool isRobot = robotPlayers.find(curr_player) != robotPlayers.end();
 		string inputStr; //! Note - To use shortcuts like ":settings", ":rules, and to have 'variable number of inputs'
 		if( isRobot ){ //ie. It is a Robot Player
-
 			// auto robo = thinker(this);
 
 			// if( robotPlayers[curr_player] == RobotKind::thinkerRobo )

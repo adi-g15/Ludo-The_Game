@@ -28,8 +28,9 @@ function App() {
 			'0-8': [], '1-8': [], '2-8': [], '3-8': [], '4-8': [], '5-8': [],			// at those places.
 			'9-8': [], '10-8': [], '11-8': [], '12-8': [], '13-8': [], '14-8': [],
 		});
-			// @bug - At next line -> 'value' is assigned a value but never used
-		setPositions(position => position.map(_value => value = Array(4).fill(false)));	// Initialize all as false (false = gotis at home)
+		// @bug - At next line -> 'value' is assigned a value but never used
+		// eslint-disable-next-line no-unused-vars
+		setPositions(position => position.map(value => value = Array(4).fill(false)));	// Initialize all as false (false = gotis at home)
 	}, []);
 	const move = (current_place) => {
 		setInfo('');

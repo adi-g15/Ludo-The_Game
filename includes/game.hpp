@@ -18,15 +18,15 @@ struct _smartMoveData
 
 	int moveProfit; //only to be utilised by thinkers
 	_smartMoveData() : _smartMoveData({}, Direction::NO_TURN){}
-	_smartMoveData(const _coord &c, Direction dir, int profit=0) : finalCoord(c), finalDir(dir), moveProfit(profit) {}
+	_smartMoveData(const _coord& c, Direction dir, int profit = 0) : finalCoord(c), finalDir(dir), moveProfit(profit){}
 };
 
 class ludo_state;
 
 class game
 {
-private:
-	typedef void (game::*functionPointer)();
+	private:
+	typedef void (game::* functionPointer)();
 
 	std::vector<std::vector<ludo_box>> board;
 	std::map<_colour, std::vector<std::reference_wrapper<ludo_box>>> lockedPositions;
@@ -53,7 +53,7 @@ private:
 	void endGame(std::string_view cause) const;
 	void endGame(int n, ...) const;
 
-public:
+	public:
 	const std::map<std::string_view, functionPointer> shortcutsMap;
 	// functionPointer arr[10]; //Learnt - Array of 10 function pointers to functions taking nothing, and returning void
 
@@ -64,9 +64,9 @@ public:
 
 	short moveGoti(std::shared_ptr<ludo_goti>, unsigned int dist);
 	short moveGoti(std::shared_ptr<ludo_goti>, _smartMoveData moveData);			  //Moves goti to ENDPOINT 'DIRECTLY' (basic checks only)
-	bool handleMoveVal(short, std::vector<_dieVal> &dieNumbers, bool isRobot = true); //Handles value returned by moveGoti() calls
+	bool handleMoveVal(short, std::vector<_dieVal>& dieNumbers, bool isRobot = true); //Handles value returned by moveGoti() calls
 
-	const std::optional<_smartMoveData> isMovePossible(std::shared_ptr<ludo_goti> &, int dist) const; //! Can use std::variant too
+	const std::optional<_smartMoveData> isMovePossible(std::shared_ptr<ludo_goti>&, int dist) const; //! Can use std::variant too
 																								//The first is goti_index, and 2nd is tried roll
 	bool autoMove();																			//! The 'simple' function that will 'simply' call the private recursive overload
 
@@ -80,12 +80,12 @@ public:
 	void play(bool = true);
 	void settingsMenu();
 	void notYetImplementedScr() const;
-	ludo_box &getBoardBox(const _coord &coords);
-	const ludo_box &getBoardBox(const _coord &coords) const;
+	ludo_box& getBoardBox(const _coord& coords);
+	const ludo_box& getBoardBox(const _coord& coords) const;
 
 	//Current State Validation Methods
-	bool isValid(const _coord &coords) const;
-	bool isValid(const std::shared_ptr<ludo_goti> &) const;
+	bool isValid(const _coord& coords) const;
+	bool isValid(const std::shared_ptr<ludo_goti>&) const;
 
 	game();
 	~game();
@@ -94,5 +94,4 @@ public:
 	friend class ludo_state;
 	friend class ludo_state;
 	friend class thinker;
-
 };
