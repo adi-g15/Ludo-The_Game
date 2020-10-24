@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(Ludo-The_Game VERSION 2.1.0)
+project(Ludo-The_Game VERSION 2.3.0)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -16,4 +16,3 @@ target_link_libraries(ludo PRIVATE Threads::Threads)
 target_include_directories(ludo PRIVATE includes)
 target_include_directories(ludo PRIVATE .)
 
-include(CPack)
