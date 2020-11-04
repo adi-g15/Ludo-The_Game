@@ -18,7 +18,7 @@
 
 using namespace std;
 
-//@todo - Remove it after successfully solving problem with util/stream_util.hpp
+// @todo - Remove it after successfully solving problem with util/stream_util.hpp
 template <typename T1, typename T2> //Utility function
 static std::ostream& operator<<(std::ostream& out, const std::pair<T1, T2>& p){
 	return out << '(' << p.first << ", " << p.second << ')';
@@ -681,7 +681,7 @@ bool game::InitGame(short playerConsent){ //! 1 for complete reset, 2 is with pr
 	return true;
 }
 
-/*TODO - [For functionality for directly entering dieNumber if only 1 'movable' goti available] Also inside when loop for checking if choice_num is correct, add another condition, to check if there is only one goti available to move(not matters whether 6inRoll or not), if thats true, and the choice_num is in dieNumbers, considering enteredRoll=choice_num and choice_num=1*/
+// @todo - [For functionality for directly entering dieNumber if only 1 'movable' goti available] Also inside when loop for checking if choice_num is correct, add another condition, to check if there is only one goti available to move(not matters whether 6inRoll or not), if thats true, and the choice_num is in dieNumbers, considering enteredRoll=choice_num and choice_num=1*/
 void game::play(bool boolVal){
 	if( !boolVal )
 		return;
@@ -852,7 +852,7 @@ void game::endGame(int n, ...) const{
 }
 
 //! Source is the name of function from which it was called
-//TODO - Complete Logic for the options (Will implement after i have made a gui, or web version)
+// @todo - Complete Logic for the options (Will implement after i have made a gui, or web version)
 void game::settingsMenu(){
 	_coord termDimen = util::getTerminalDimen();
 	unsigned choice = 11;
@@ -902,7 +902,7 @@ void game::settingsMenu(){
 			// util::strip(inputStr, ' ');
 			// inputNum = std::stoi(inputStr);
 
-			//TODO
+			// @todo
 
 			break;
 		}
