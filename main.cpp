@@ -8,6 +8,7 @@ using std::clog;
 
 int main(int argc, char const *argv[])
 {
+#if 1
 	game newGame;
 
 	//GamePlay starts
@@ -40,6 +41,7 @@ int main(int argc, char const *argv[])
 		return 0;
 	}
 
+#endif
 	return 0;
 }
 

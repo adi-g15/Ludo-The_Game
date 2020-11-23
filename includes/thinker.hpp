@@ -31,13 +31,13 @@ public:
 	bool move();
 	bool operator()(); //Both, move(), and the () operator will call 'getBestMove'
 
-	static Direction getDirOfMovement(const _coord &);
-	const std::optional<_smartMoveData> isMovePossible(const _coord &, int dist) const; //! This will use 'currColour from state only'
+	static Direction getDirOfMovement(const coord &);
+	const std::optional<_smartMoveData> isMovePossible(const coord &, int dist) const; //! This will use 'currColour from state only'
 
 	//NOTE - A consideration that has been used is, that when any move is made by any colour, then its goti CANT BE REMOVED, so the indexes of gotis that will be in combination will be valid for the whole move, since neither their order will change being in a set*/
 	bool setBestMove(); //Uses 'lots' of midlessMovers to gather moveProfit from each, then pick out the best ones
 	std::vector<combination> getBestMove();
-	bool mindlessMovers(_dieVal roll, std::vector<_dieVal> dieNumbers, unsigned gotiIndex, std::vector<_coord> movingColoursPos, std::vector<_coord> opponentsPos, std::pair<std::vector<combination>, int> prevMoves);
+	bool mindlessMovers(_dieVal roll, std::vector<_dieVal> dieNumbers, unsigned gotiIndex, std::vector<coord> movingColoursPos, std::vector<coord> opponentsPos, std::pair<std::vector<combination>, int> prevMoves);
 	bool implementBestMove();
 
 	bool updateState(game *);

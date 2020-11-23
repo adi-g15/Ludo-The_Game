@@ -35,6 +35,7 @@ namespace util{
 
     //DEFINITIONS
 void util::trim(std::string& s){
+    if (s.empty())   return;
     auto i = s.end() - 1;
     for( ; i != s.begin(); --i ){
         if( !isspace(static_cast<unsigned char>(*i)) ){

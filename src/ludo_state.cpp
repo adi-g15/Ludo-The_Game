@@ -10,18 +10,18 @@ ludo_state::ludo_state(const game *original){
 	this->update(original);
 }
 
-state_box& ludo_state::getBox(const _coord& coord){
-	return board.at(coord.n_row).at(coord.n_col);
+state_box& ludo_state::getBox(const coord& coord){
+	return board.at(coord.y).at(coord.x);
 }
 
-const state_box& ludo_state::getBox(const _coord& coord) const{
-	return board.at(coord.n_row).at(coord.n_col);
+const state_box& ludo_state::getBox(const coord& coord) const{
+	return board.at(coord.y).at(coord.x);
 }
 
 size_t ludo_state::getNumLocks(){
 	size_t retVal = 0;
 	for( auto &coord : this->lockedPositions ){
-		if( board[coord.n_row][coord.n_col].type != Box::LOCK ) continue;
+		if( board[coord.y][coord.x].type != Box::LOCK ) continue;
 		else if( ! this->getBox(coord).inBoxGotis.empty() ){
 				++retVal;
 				break;
@@ -124,6 +124,6 @@ state_box::~state_box(){
 	inBoxGotis.clear();
 }
 
-state_goti::state_goti(_colour gotiColour, Direction gotiDir, _coord coord) : gotiColour(gotiColour), currDir(gotiDir), coords(coord){}
+state_goti::state_goti(_colour gotiColour, Direction gotiDir, coord coord) : gotiColour(gotiColour), currDir(gotiDir), coords(coord){}
 
 state_goti::~state_goti(){}

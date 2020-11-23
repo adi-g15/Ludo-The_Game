@@ -7,10 +7,10 @@
 #include <string>
 #include <string_view>
 
-namespace util{
-    typedef std::pair<long, long> _coord;
+#include "util/coord.hpp"
 
-    _coord getTerminalDimen();
+namespace util{
+    util::_coord<int> getTerminalDimen();
 
     /*
         TIP - align* functions, and place_center() can be used for file streams too
@@ -41,23 +41,25 @@ namespace util{
 #endif
 
 //returns row*column dimension
-util::_coord util::getTerminalDimen(){
-    _coord outTuple(0, 0);
+util::_coord<int> util::getTerminalDimen(){
+    util::_coord<int> outTuple(0, 0);
 #ifdef OS_WIN
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-    outTuple = { csbi.srWindow.Bottom - csbi.srWindow.Top + 1, csbi.srWindow.Right - csbi.srWindow.Left + 1 };
+    outTuple.y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+    outTuple.x = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 #else
     winsize windowsSize;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowsSize);
-    outTuple = { windowsSize.ws_row, windowsSize.ws_col };
+    outTuple.y = windowsSize.ws_row;
+    outTuple.x = windowsSize.ws_col;
 #endif
 
     return outTuple;
 }
 
 bool util::align_text_center(std::string_view str, std::ostream& stream){ //@returns bool indicating, if max_len is enough or not
-    return align_text_center(getTerminalDimen().second, str, stream);
+    return align_text_center(getTerminalDimen().x, str, stream);
 }
 
 bool util::align_text_center(unsigned int max_length, std::string_view str, std::ostream& stream){ //@returns bool indicating, if max_len is enough or not
@@ -81,7 +83,7 @@ bool util::place_center(unsigned int max_length, std::string_view str, std::ostr
 }
 
 bool util::place_v_center(std::string_view str){
-    return place_v_center(getTerminalDimen().first, str);
+    return place_v_center(getTerminalDimen().y, str);
 }
 
 bool util::place_v_center(unsigned int vert_length, std::string_view str){

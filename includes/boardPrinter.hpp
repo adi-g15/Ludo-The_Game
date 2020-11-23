@@ -17,7 +17,7 @@ class _BoardPrinter{ //! @info Only for use by updateDisplay() & takeIntro()
 	const std::vector<std::vector<ludo_box>>& board;	//board that this printer links to
 
 	static void titleBar(int width);
-	static void titleBar(); /*@brief Simply just calls titleBar with (terminalDimen().n_row)*/
+	static void titleBar(); /*@brief Simply just calls titleBar with (terminalDimen().y)*/
 
 	static void msgScreen(std::string_view msg);
 	static void msgScreen(int n, ...);	//NOTE - The later arguments must be char*
@@ -55,11 +55,11 @@ class _BoardPrinter{ //! @info Only for use by updateDisplay() & takeIntro()
 //Defintions Start
 _BoardPrinter::_BoardPrinter(const std::vector<std::vector<ludo_box>>& boardToLink) : board(boardToLink){
 	this->boxlen = 0;
-	this->termWidth = util::getTerminalDimen().second;
+	this->termWidth = util::getTerminalDimen().x;
 }
 
 void _BoardPrinter::refresh_Dimensions(){
-	this->termWidth = util::getTerminalDimen().second;
+	this->termWidth = util::getTerminalDimen().x;
 }
 
 //	DEFINITIONS	start//
@@ -80,12 +80,12 @@ void _BoardPrinter::msgScreen(va_list args, int n){
 	va_end(args);
 
 	titleBar();
-	_coord termDimen = util::getTerminalDimen();
+	coord termDimen = util::getTerminalDimen();
 	std::cout << '\n';
 
-	for( auto i = 0; i < (termDimen.n_row - 3) / 2; ++i )	std::cout << '\n';
-	util::align_text_center(termDimen.n_col, msg);
-	for( auto i = 0; i < termDimen.n_row - (termDimen.n_row - 3) / 2; ++i )	std::cout << '\n';
+	for( auto i = 0; i < (termDimen.y - 3) / 2; ++i )	std::cout << '\n';
+	util::align_text_center(termDimen.x, msg);
+	for( auto i = 0; i < termDimen.y - (termDimen.y - 3) / 2; ++i )	std::cout << '\n';
 }
 
 void _BoardPrinter::msgScreen(int n, ...){
@@ -135,24 +135,24 @@ void _BoardPrinter::titleBar(int width){	//Considering sufficient width, to be a
 }
 
 void _BoardPrinter::titleBar(){
-	return titleBar(util::getTerminalDimen().second);
+	return titleBar(util::getTerminalDimen().x);
 }
 
 void _BoardPrinter::row_type1(int nrow){
 	//Actual-Row Start
 	std::cout << '|';
 
-	for( size_t i = 0; i < (boxlen + 1) * 6 - 1; i++ )
+	for( auto i = 0; i < (boxlen + 1) * 6 - 1; i++ )
 		std::cout << '\\';
 
 	std::cout << '|';
 
-	for( size_t i = 0; i < 3; i++ ){
+	for(auto i = 0; i < 3; i++ ){
 		util::align_text_center(boxlen, board[nrow][6 + i].content);
 		std::cout << '|';
 	}
 
-	for( size_t i = 0; i < (boxlen + 1) * 6 - 1; i++ )	std::cout << '\\';
+	for(auto i = 0; i < (boxlen + 1) * 6 - 1; i++ )	std::cout << '\\';
 	std::cout << "|\n";
 	//Actual-Row End
 }
@@ -161,23 +161,23 @@ void _BoardPrinter::row_type2(int nrow){
 	//!Explanatory comments in _BoardPrinter::row_type1
 	std::cout << '|';
 
-	for( size_t i = 0; i < boxlen; i++ )	std::cout << '\\';
+	for(auto i = 0; i < boxlen; i++ )	std::cout << '\\';
 	util::align_text_center(boxlen + 2, board[nrow][1].content);
-	for( size_t i = 0; i < (boxlen) * 2 + 1; i++ )	std::cout << '\\';
+	for(auto i = 0; i < (boxlen) * 2 + 1; i++ )	std::cout << '\\';
 	util::align_text_center(boxlen + 2, board[nrow][4].content);
-	for( size_t i = 0; i < boxlen; i++ ) std::cout << '\\';
+	for(auto i = 0; i < boxlen; i++ ) std::cout << '\\';
 	std::cout << '|';
 
-	for( size_t i = 0; i < 3; i++ ){
+	for(auto i = 0; i < 3; i++ ){
 		util::align_text_center(boxlen, board[nrow][6 + i].get_box_content());
 		std::cout << '|';
 	}
 
-	for( size_t i = 0; i < boxlen; i++ )	std::cout << '\\';
+	for(auto i = 0; i < boxlen; i++ )	std::cout << '\\';
 	util::align_text_center(boxlen + 2, board[nrow][10].get_box_content());
-	for( size_t i = 0; i < (boxlen) * 2 + 1; i++ )	std::cout << '\\';
+	for(auto i = 0; i < (boxlen) * 2 + 1; i++ )	std::cout << '\\';
 	util::align_text_center(boxlen + 2, board[nrow][13].get_box_content());
-	for( size_t i = 0; i < boxlen; i++ ) std::cout << '\\';
+	for(auto i = 0; i < boxlen; i++ ) std::cout << '\\';
 	std::cout << "|\n";
 }
 

@@ -69,7 +69,14 @@
         "xstring": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "bit": "cpp",
+        "compare": "cpp",
+        "ranges": "cpp",
+        "stop_token": "cpp",
+        "cinttypes": "cpp",
+        "valarray": "cpp",
+        "variant": "cpp"
     },
     "editor.formatOnPaste": true,
     // "editor.formatOnSave": true, //problematic... removes whitespaces between comments and code

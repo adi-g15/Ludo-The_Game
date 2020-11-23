@@ -8,7 +8,7 @@
 #include <string>
 
 class ludo_box{
-	const _coord coords;
+	const coord coords;
 	std::vector<std::shared_ptr<ludo_goti>> inBoxGotis;	//! Can make it a map too, but might be inefficient for such less data
 	std::string content;
 
@@ -27,7 +27,7 @@ public:
 
 	bool areOpponentsPresent(_colour) const;
 
-	explicit ludo_box(const _coord&, Box = Box::NORMAL);
+	explicit ludo_box(const coord&, Box = Box::NORMAL);
 
 	friend class game;
 	friend class _BoardPrinter;

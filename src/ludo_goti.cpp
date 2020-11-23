@@ -3,8 +3,8 @@
 
 #include <iostream>
 
-_coord ludo_goti::getCoords() const{
-    if(curr_coords.n_row == 0 && curr_coords.n_col == 0){
+coord ludo_goti::getCoords() const{
+    if(curr_coords.y == 0 && curr_coords.x == 0){
         std::cerr<<"Coordinates of Goti are corrupt (0,0)\n"<<std::endl;
     }
     return curr_coords;
@@ -22,7 +22,7 @@ bool ludo_goti::operator==(const ludo_goti& goti){
     return (this->curr_coords == goti.curr_coords) && (this->gotiColour == goti.gotiColour);
 }
 
-ludo_goti::ludo_goti(_colour gotiColour,const _coord& coords, Direction dir) : gotiColour(gotiColour), curr_coords(coords) {
+ludo_goti::ludo_goti(_colour gotiColour,const coord& coords, Direction dir) : gotiColour(gotiColour), curr_coords(coords) {
     this->curr_direction = Direction::NO_TURN;
     this->curr_direction = dir;
 }

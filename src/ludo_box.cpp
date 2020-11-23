@@ -9,7 +9,7 @@
 
 using namespace std;
 
-ludo_box::ludo_box(const _coord& coord, Box type) : coords(coord), box_type(type){}
+ludo_box::ludo_box(const coord& coord, Box type) : coords(coord), box_type(type){}
 
 bool ludo_box::areOpponentsPresent(_colour colour) const{
 	auto colour_char = colourCodes.at(colour);
@@ -60,7 +60,7 @@ short ludo_box::appendGoti(std::shared_ptr<ludo_goti> goti_to_add){
 	_colour gotiColour = goti_to_add->get_gotiColour();
 	auto colour_char = colourCodes.at(goti_to_add->gotiColour);
 
-	if( goti_to_add->getCoords() == _coord(0, 0) ) return -1;
+	if( goti_to_add->getCoords() == coord(0, 0) ) return -1;
 
 	if( box_type == Box::STOP && isEmpty() )	content = colour_char;
 	else content.push_back(colour_char);

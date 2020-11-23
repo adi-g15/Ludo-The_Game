@@ -13,12 +13,12 @@
 
 struct _smartMoveData
 {
-	_coord finalCoord;
+	coord finalCoord;
 	Direction finalDir;
 
 	int moveProfit; //only to be utilised by thinkers
 	_smartMoveData() : _smartMoveData({}, Direction::NO_TURN){}
-	_smartMoveData(const _coord& c, Direction dir, int profit = 0) : finalCoord(c), finalDir(dir), moveProfit(profit){}
+	_smartMoveData(const coord& c, Direction dir, int profit = 0) : finalCoord(c), finalDir(dir), moveProfit(profit){}
 };
 
 class ludo_state;
@@ -74,17 +74,17 @@ class game
 
 	void updateDisplay();
 	/*NOTE - getEmptyLocks(...) == {0,0} is a good test for 'ZERO LOCKED POSITIONS'*/
-	_coord getEmptyLocks(_colour) const;
+	coord getEmptyLocks(_colour) const;
 
 	bool InitGame(short = 1); //! Starts/Resets the game
 	void play(bool = true);
 	void settingsMenu();
 	void notYetImplementedScr() const;
-	ludo_box& getBoardBox(const _coord& coords);
-	const ludo_box& getBoardBox(const _coord& coords) const;
+	ludo_box& getBoardBox(const coord& coords);
+	const ludo_box& getBoardBox(const coord& coords) const;
 
 	//Current State Validation Methods
-	bool isValid(const _coord& coords) const;
+	bool isValid(const coord& coords) const;
 	bool isValid(const std::shared_ptr<ludo_goti>&) const;
 
 	game();

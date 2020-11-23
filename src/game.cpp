@@ -24,8 +24,8 @@ static std::ostream& operator<<(std::ostream& out, const std::pair<T1, T2>& p){
 	return out << '(' << p.first << ", " << p.second << ')';
 }
 
-static std::ostream& operator<<(std::ostream& out, const _coord& p){
-	return out << '(' << p.n_row << ", " << p.n_col << ')';
+static std::ostream& operator<<(std::ostream& out, const coord& p){
+	return out << '(' << p.y << ", " << p.x << ')';
 }
 
 //GAME_CLASS_DEFINTIONS START
@@ -33,8 +33,8 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 	if( dist == 0 )
 		return {};
 
-	_coord increment_coord(0, 0);
-	_coord updated_coords(the_goti->curr_coords);
+	coord increment_coord(0, 0);
+	coord updated_coords(the_goti->curr_coords);
 	Direction turnDir, currDir = the_goti->curr_direction;
 
 	while( dist-- ){
@@ -90,8 +90,8 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 			}
 		}
 
-		updated_coords.n_row += increment_coord.n_row;
-		updated_coords.n_col += increment_coord.n_col;
+		updated_coords.y += increment_coord.y;
+		updated_coords.x += increment_coord.x;
 		reference_wrapper<const ludo_box> currBox{ getBoardBox(updated_coords) };
 
 		if( currBox.get().box_type == Box::HOME_END && dist != 0 ){ //! Reached finished point, but move still incomplete
@@ -142,7 +142,7 @@ short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, _smartMoveData moveDat
 	if( getBoardBox(finalCoord).box_type == Box::HOME_END ){
 		auto& lockBox = getBoardBox(getEmptyLocks(curr_colour));
 
-		if( lockBox.coords == _coord(0, 0) ){ //debug
+		if( lockBox.coords == coord(0, 0) ){ //debug
 			cout << "movingGotis[curr].size() = " << movingGotis[curr_colour].size() << endl;
 			cout << "inBoxGotis in the box of the goti " << getBoardBox(the_goti->curr_coords).inBoxGotis.size() << endl;
 			endGame("Invalid lockbox");
@@ -301,8 +301,8 @@ void game::attack(std::vector<_colour> coloursToRemove, std::shared_ptr<ludo_got
 	}
 }
 
-bool game::isValid(const _coord& coords) const{
-	if( coords.n_row >= 0 && coords.n_row < 15 && coords.n_col >= 0 && coords.n_col < 15 ){
+bool game::isValid(const coord& coords) const{
+	if( coords.y >= 0 && coords.y < 15 && coords.x >= 0 && coords.x < 15 ){
 		return true;
 	}
 
@@ -319,16 +319,16 @@ bool game::isValid(const shared_ptr<ludo_goti>& goti) const{
 	return false;
 }
 
-ludo_box& game::getBoardBox(const _coord& coords){
+ludo_box& game::getBoardBox(const coord& coords){
 	if( isValid(coords) )
-		return board[coords.n_row][coords.n_col];
+		return board[coords.y][coords.x];
 	else
 		throw std::out_of_range("OUT_OF_RANGE: Board indices, passed to getBoardBox, are out of bounds");
 }
 
-const ludo_box& game::getBoardBox(const _coord& coords) const{
+const ludo_box& game::getBoardBox(const coord& coords) const{
 	if( isValid(coords) )
-		return board[coords.n_row][coords.n_col];
+		return board[coords.y][coords.x];
 	else
 		throw std::out_of_range("OUT_OF_RANGE: Board indices, passed to getBoardBox, are out of bounds");
 }
@@ -435,7 +435,7 @@ bool game::lockGoti(std::shared_ptr<ludo_goti> goti_to_lock){ //wrong gotiColour
 }
 
 void game::takeIntro(){
-	_coord tmpDimen(0, 0);
+	coord tmpDimen(0, 0);
 	tmpDimen = util::getTerminalDimen();
 
 	_BoardPrinter::errorScreen("Please ensure window size is at least 31*31");
@@ -445,12 +445,12 @@ void game::takeIntro(){
 
 	do{
 		tmpDimen = util::getTerminalDimen();
-	} while( tmpDimen.n_row < 31 || tmpDimen.n_col < 62 ); //tmpDimen -> row*column
+	} while( tmpDimen.y < 31 || tmpDimen.x < 62 ); //tmpDimen -> row*column
 
-	_BoardPrinter::titleBar(tmpDimen.n_col);
+	_BoardPrinter::titleBar(tmpDimen.x);
 
-	util::place_v_center(tmpDimen.n_row - 7, "");
-	util::align_text_center(tmpDimen.n_col, "Enter names of the Players (Leave empty if not playing, or type \"ROBOT\") : ");
+	util::place_v_center(tmpDimen.y - 7, "");
+	util::align_text_center(tmpDimen.x, "Enter names of the Players (Leave empty if not playing, or type \"ROBOT\") : ");
 
 	string playerName;
 	_colour colour;
@@ -460,7 +460,7 @@ void game::takeIntro(){
 	colour = colourOrder.front();
 
 	for( auto i = 0;i < 4;++i ){	//Loop it 4 times (not mandatory to give details of all players though)
-		util::place_center(tmpDimen.n_col, string("Player").append(playerId[p]).append(" - "));
+		util::place_center(tmpDimen.x, string("Player").append(playerId[p]).append(" - "));
 
 		getline(cin, playerName);
 		util::trim(playerName);
@@ -528,10 +528,14 @@ vector<_dieVal> Die::rolldie(){
 	return v;
 }
 
+int Die::random() {
+	// @todo - Return random num from 1 to 6
+}
+
 void Die::rolldie(vector<_dieVal>& Vec){
 	std::vector<_dieVal> tmpVec;
 
-	_dieVal dieNum = Die::dist[rand() % 4](Die::mt[rand() % 4]);
+	_dieVal dieNum = Die::random();
 	if( dieNum != 6 ){ //To prevent cases like, dieNumbers = {4, 6} (Think! It IS possible in the do-while)
 		Vec.push_back(dieNum);
 		return;
@@ -542,7 +546,7 @@ void Die::rolldie(vector<_dieVal>& Vec){
 	} while( dieNum == 6 );
 	tmpVec.push_back(dieNum); //To insert the last left non-6
 
-	//! Main logic is above only, below are some cleansing and optimisations
+		//! Main logic is above only, below are some cleansing and optimisations
 	std::vector<size_t> sixPos; //Temporary set, used in 'Cleaning cases of 3 sixes'
 	for( size_t i = 0; i < tmpVec.size(); ++i ){
 		if( tmpVec[i] == 6 )
@@ -559,23 +563,23 @@ void Die::rolldie(vector<_dieVal>& Vec){
 }
 
 void game::updateDisplay(){
-	unsigned int boxlen = 0;
-	_coord tmpDimen(0, 0);
+	uint16_t boxlen = 0;
+	coord tmpDimen(0, 0);
 
 	util::pause(0.5f);
 
-	bool isScreenSmall = false;
+	bool flag = false;	// this flag is set when the screen is small, and the while loop runs atleast 2 times
 	do{
-		if( isScreenSmall )
+		if( flag )	// if reaching here for the second time
 			_BoardPrinter::errorScreen("Please ensure window size is at least 31*31");
 		tmpDimen = util::getTerminalDimen();
-		boxlen = (2 * min(tmpDimen.n_row, tmpDimen.n_col) - 32) / 15;
-		isScreenSmall = !isScreenSmall;	//nevertheless, it won't reach again if the loop only runs once
-	} while( min(tmpDimen.n_row, tmpDimen.n_col) < 32 );
+		boxlen = (2 * min(tmpDimen.y, tmpDimen.x) - 32) / 15;
+		flag = true;	//nevertheless, it won't reach again if the loop only runs once
+	} while( min(tmpDimen.y, tmpDimen.x) < 32 );
 
-	_BoardPrinter::titleBar(tmpDimen.n_col);
+	_BoardPrinter::titleBar(tmpDimen.x);
 
-	util::place_center(tmpDimen.n_col - 15 * (boxlen + 1) + 3 - 4);
+	util::place_center(tmpDimen.x - 15 * (boxlen + 1) + 3 - 4);
 	cout << "  ";
 	for( size_t i = 0; i < 10; i++ ){
 		for( auto j = boxlen; j-- > 0;) //NOTE - '-->' is a combination of the 2 operators '--' and '>' ;D
@@ -588,13 +592,13 @@ void game::updateDisplay(){
 		cout << i;
 	}
 	cout << "\n  ";
-	util::place_center(tmpDimen.n_col - 15 * (boxlen + 1) + 3 - 4);
+	util::place_center(tmpDimen.x - 15 * (boxlen + 1) + 3 - 4);
 
-	for( size_t i = 0; i < (boxlen + 1) * 15 + 1; i++ )
+	for(auto i = 0; i < (boxlen + 1) * 15 + 1; i++ )
 		cout << '-';
 	cout << "\n";
 
-#define BOARD_CENTER util::place_center(tmpDimen.n_col - 15 * (boxlen + 1) + 3 - 4);
+#define BOARD_CENTER util::place_center(tmpDimen.x - 15 * (boxlen + 1) + 3 - 4);
 
 	_BoardPrinter _board_printer(board);
 	_board_printer.boxlen = boxlen;
@@ -632,19 +636,19 @@ void game::updateDisplay(){
 	BOARD_CENTER cout << 14;		_board_printer.row_type1(14);
 
 	cout << "  ";
-	BOARD_CENTER for( size_t i = 0; i < (boxlen + 1) * 15 + 1; i++ ) cout << '-';
+	BOARD_CENTER for(auto i = 0; i < (boxlen + 1) * 15 + 1; i++ ) cout << '-';
 
 #undef BOARD_CENTER
 
 	cout << "\n\n";
 	util::align_text_center(activePlayerMap[curr_player].first);
 	cout << "\n";
-	for( unsigned i = 0; i < tmpDimen.n_col; ++i )
+	for( int i = 0; i < tmpDimen.x; ++i )
 		cout << '-';
 	cout << '\n';
 }
 
-_coord game::getEmptyLocks(_colour gotiColour) const{
+coord game::getEmptyLocks(_colour gotiColour) const{
 	for( auto const& lockedBox : lockedPositions.find(gotiColour)->second ){
 		if( lockedBox.get().isEmpty() && lockedBox.get().box_type == Box::LOCK ){
 			return lockedBox.get().coords;
@@ -753,7 +757,7 @@ void game::play(bool boolVal){
 			if( util::contains<_dieVal>(dieNumbers, 6) )
 				cout << "\n0. Unlock New Goti (just type 0)\n\n";
 			for( auto&& goti_ptr : movingGotis[curr_colour] ){
-				cout << counter << ". [" << goti_ptr->curr_coords.n_row << "][" << goti_ptr->curr_coords.n_col << "]\n";
+				cout << counter << ". [" << goti_ptr->curr_coords.y << "][" << goti_ptr->curr_coords.x << "]\n";
 				++counter;
 			}
 			cout << "\nRoll Output - ";
@@ -854,48 +858,48 @@ void game::endGame(int n, ...) const{
 //! Source is the name of function from which it was called
 // @todo - Complete Logic for the options (Will implement after i have made a gui, or web version)
 void game::settingsMenu(){
-	_coord termDimen = util::getTerminalDimen();
+	coord termDimen = util::getTerminalDimen();
 	unsigned choice = 11;
 	std::string inputStr;
 
 	do{
-		_BoardPrinter::titleBar(termDimen.n_col);
+		_BoardPrinter::titleBar(termDimen.x);
 
-		util::place_v_center(termDimen.n_row - 2 * (2 + 11 + 4)); //height of 2 taken by titleBar, 11 by Choices, and 4 by Input
+		util::place_v_center(termDimen.y - 2 * (2 + 11 + 4)); //height of 2 taken by titleBar, 11 by Choices, and 4 by Input
 
-		util::align_text_center(termDimen.n_col, "1. Change 'GamePlay' Order (PlayerWise)");
+		util::align_text_center(termDimen.x, "1. Change 'GamePlay' Order (PlayerWise)");
 		cout << '\n';
-		util::align_text_center(termDimen.n_col, "2. Change 'Number of gotis_per_user'");
+		util::align_text_center(termDimen.x, "2. Change 'Number of gotis_per_user'");
 		cout << '\n';
-		util::align_text_center(termDimen.n_col, "3. Which goti should 'Start' First?");
+		util::align_text_center(termDimen.x, "3. Which goti should 'Start' First?");
 		cout << '\n';
-		util::align_text_center(termDimen.n_col, "4. Assign Colours to Players");
+		util::align_text_center(termDimen.x, "4. Assign Colours to Players");
 		cout << '\n';
-		util::align_text_center(termDimen.n_col, "5. Remove 'stops'");
+		util::align_text_center(termDimen.x, "5. Remove 'stops'");
 		cout << '\n';
-		util::align_text_center(termDimen.n_col, "6. Change Title shown at Top");
+		util::align_text_center(termDimen.x, "6. Change Title shown at Top");
 		cout << '\n';
-		util::align_text_center(termDimen.n_col, "7. Change Player Names");
+		util::align_text_center(termDimen.x, "7. Change Player Names");
 		cout << '\n';
-		util::align_text_center(termDimen.n_col, "8. Reset to Original Positions");
+		util::align_text_center(termDimen.x, "8. Reset to Original Positions");
 		cout << '\n';
-		util::align_text_center(termDimen.n_col, "9. Use different Random_Sequence for each (y/n)");
+		util::align_text_center(termDimen.x, "9. Use different Random_Sequence for each (y/n)");
 		cout << '\n';
-		util::align_text_center(termDimen.n_col, "10. Let's Cheat... ;D (Can remove opponents gotis)");
+		util::align_text_center(termDimen.x, "10. Let's Cheat... ;D (Can remove opponents gotis)");
 		cout << '\n';
-		util::align_text_center(termDimen.n_col, "[ 11. Alwida... ]");
+		util::align_text_center(termDimen.x, "[ 11. Alwida... ]");
 		cout << "\n\n";
 
-		util::align_text_center(termDimen.n_col, "----------------------------");
-		util::align_text_center(termDimen.n_col - 2, "Enter Choice : ");
+		util::align_text_center(termDimen.x, "----------------------------");
+		util::align_text_center(termDimen.x - 2, "Enter Choice : ");
 		cin >> choice;
 	} while( choice <= 11 );
 
 	switch( choice ){
 		case 1:
 		{
-			_BoardPrinter::titleBar(termDimen.n_col);
-			util::place_v_center(termDimen.n_row - 2 * (2 + 1)); //height of 2 taken by titleBar, 11 by Choices, and 4 by Input
+			_BoardPrinter::titleBar(termDimen.x);
+			util::place_v_center(termDimen.y - 2 * (2 + 1)); //height of 2 taken by titleBar, 11 by Choices, and 4 by Input
 
 			cout << "Type playerNumbers in order (for eg. \"1432\") : ";
 			cin >> inputStr;
@@ -946,16 +950,15 @@ void game::notYetImplementedScr() const{
 	util::align_text_center("This feature has not yet been implemented !");
 }
 
-game::game() : colourOrder({ _colour::LAAL, _colour::NEELA, _colour::PEELA, _colour::HARA }){
+game::game(): colourOrder({ _colour::LAAL, _colour::NEELA, _colour::PEELA, _colour::HARA }){
 	number_of_GameRuns = 0;
 	goti_per_user = 4;
 
-	board.reserve(15);
+	board.resize(15);
 	for( int i = 0; i < 15; ++i ){
-		board.emplace_back();
-		board.at(i).reserve(15);
+		board[i].reserve(15);
 		for( int j = 0; j < 15; ++j ){
-			board.at(i).push_back(ludo_box({ i, j }));
+			board[i].push_back(ludo_box({ i, j }));
 		}
 	}
 

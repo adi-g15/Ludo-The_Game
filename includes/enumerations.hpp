@@ -4,17 +4,15 @@
 #include <vector>
 #include <ostream>
 
-struct _coord{
-	typedef long _type;
-	_type n_row, n_col;
+#include "util/coord.hpp"
 
-	_coord& operator=(const _coord& c) { this->n_row = c.n_row; this->n_col = c.n_col; return *this; }
-	bool operator==(const _coord& c) const{ return this->n_row == c.n_row && this->n_col == c.n_col; }
-	bool operator<(const _coord& c) const{ if( this->n_row < c.n_row ) return true; else return this->n_col < c.n_col; }
-	_coord() : _coord(_type{}, _type{}){}
-	_coord(_type x, _type y) : n_row(x), n_col(y){}
-	_coord(const _coord& c) : _coord(c.n_row, c.n_col){}
-	_coord(const std::pair<_type, _type>& p): _coord(p.first, p.second){}
+struct coord: util::_coord<int>{
+	typedef util::_coord<int> coord_base;
+	typedef int dimen_t;
+
+	coord() : coord_base(-1, -1){}	// a default constructor is required for use of coord in std::map (since it constructs a coord, when a new index is used)
+	coord(dimen_t x, dimen_t y) : coord_base(x,y){}
+	coord(const coord_base& c): coord_base(c){}
 };
 
 enum class _colour{
@@ -70,13 +68,13 @@ enum class RobotKind{
 
 
 namespace util_lamdas{	//the bool return values here, can simply be ignored
-	auto nextColour = [](_colour &c, std::vector<_colour>& order) -> void{
+	static auto nextColour = [](_colour &c, std::vector<_colour>& order) -> void{
 		auto iter = std::find(order.begin(), order.end(), c);
 
 		if( iter != order.end() && ++iter != order.end() )	c = *iter;
 		else c = order.front();
 	};
-	auto nextPlayer = [](Player &p) -> bool{
+	static auto nextPlayer = [](Player& p) -> bool{
 		bool repeated{ false };	//returns true if, player_1 returned, since player_4 was passed
 		repeated = p == Player::_4;
 

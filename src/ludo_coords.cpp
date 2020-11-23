@@ -48,7 +48,7 @@ void ludo_coords::InitCoords(){
 		};
 }
 
-Direction ludo_coords::turnAtCorner(const _coord& curr_coords, const std::map<_coord, Direction>& corners_vec) const{
+Direction ludo_coords::turnAtCorner(const coord& curr_coords, const std::map<coord, Direction>& corners_vec) const{
 	for ( auto corner : corners_vec ){
 		if(curr_coords == corner.first){
 			return corner.second;
