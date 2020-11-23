@@ -18,16 +18,6 @@
 
 using namespace std;
 
-// @todo - Remove it after successfully solving problem with util/stream_util.hpp
-template <typename T1, typename T2> //Utility function
-static std::ostream& operator<<(std::ostream& out, const std::pair<T1, T2>& p){
-	return out << '(' << p.first << ", " << p.second << ')';
-}
-
-static std::ostream& operator<<(std::ostream& out, const coord& p){
-	return out << '(' << p.y << ", " << p.x << ')';
-}
-
 //GAME_CLASS_DEFINTIONS START
 const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_goti>& the_goti, int dist) const{
 	if( dist == 0 )

@@ -8,7 +8,6 @@ using std::clog;
 
 int main(int argc, char const *argv[])
 {
-#if 1
 	game newGame;
 
 	//GamePlay starts
@@ -41,15 +40,5 @@ int main(int argc, char const *argv[])
 		return 0;
 	}
 
-#endif
 	return 0;
 }
-
-/*[LEARNT] - In C++ if an object is const, then it is totally CONSTANT, not like Java, where we can change contents of object, even with const reference -
-* In C++, 'const' is like a promise to be kept, but can be broken using pointers sometimes, as needed
-    const Class* n;   //Can't change the 'content' of what the pointer points to (ie. members 'shouldn't' be modified), but can make it point to a different location
-    Class const* n; //Same as above, just the astericks is at different position
-
-    Class* const n; //Java like, Can modfify the content, but can't make it point to something else
-    const Class* const n;   //TOTALLY Constant by every mean
-*/

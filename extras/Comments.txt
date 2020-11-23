@@ -294,9 +294,16 @@ int main(int argc, char const *argv[])
 //TODO - Can enter enteredRoll as a sum of the elements in dieNumbers
 //TODO - Remove 'if else break' or 'if break' conditions by a while loop, and if need be, then replace the for range to iterators declaration, then while
 //TO KnOW -> Overloading std::cout to print std::pair
-///////////////////////////////////////////////////////
-Including a namespace twice, gives 'Multiple Defintions' linker error, to solve this the methods may be made 'static'
 
+
+/*[LEARNT] - 
+* In C++, 'const' is like a promise to be kept, but can be broken using pointers sometimes, as needed
+    const Class* n;   //Can't change the 'content' of what the pointer points to (ie. members 'shouldn't' be modified), but can make it point to a different location
+    Class const* n; //Same as above, just the astericks is at different position
+
+    Class* const n; //Java like, Can modfify the content, but can't make it point to something else
+    const Class* const n;   //TOTALLY Constant by every mean
+*/
 
 ///////////////////////////////////////////////////////
 Including a namespace twice, gives 'Multiple Defintions' linker error, to solve this the methods may be made 'static'

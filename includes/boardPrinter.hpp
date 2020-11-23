@@ -142,7 +142,7 @@ void _BoardPrinter::row_type1(int nrow){
 	//Actual-Row Start
 	std::cout << '|';
 
-	for( auto i = 0; i < (boxlen + 1) * 6 - 1; i++ )
+	for( uint32_t i = 0; i < (boxlen + 1) * 6 - 1; i++ )
 		std::cout << '\\';
 
 	std::cout << '|';
@@ -152,7 +152,7 @@ void _BoardPrinter::row_type1(int nrow){
 		std::cout << '|';
 	}
 
-	for(auto i = 0; i < (boxlen + 1) * 6 - 1; i++ )	std::cout << '\\';
+	for(uint32_t i = 0; i < (boxlen + 1) * 6 - 1; i++ )	std::cout << '\\';
 	std::cout << "|\n";
 	//Actual-Row End
 }
@@ -161,11 +161,11 @@ void _BoardPrinter::row_type2(int nrow){
 	//!Explanatory comments in _BoardPrinter::row_type1
 	std::cout << '|';
 
-	for(auto i = 0; i < boxlen; i++ )	std::cout << '\\';
+	for(uint32_t i = 0; i < boxlen; i++ )	std::cout << '\\';
 	util::align_text_center(boxlen + 2, board[nrow][1].content);
-	for(auto i = 0; i < (boxlen) * 2 + 1; i++ )	std::cout << '\\';
+	for(uint32_t i = 0; i < (boxlen) * 2 + 1; i++ )	std::cout << '\\';
 	util::align_text_center(boxlen + 2, board[nrow][4].content);
-	for(auto i = 0; i < boxlen; i++ ) std::cout << '\\';
+	for(uint32_t i = 0; i < boxlen; i++ ) std::cout << '\\';
 	std::cout << '|';
 
 	for(auto i = 0; i < 3; i++ ){
@@ -173,11 +173,11 @@ void _BoardPrinter::row_type2(int nrow){
 		std::cout << '|';
 	}
 
-	for(auto i = 0; i < boxlen; i++ )	std::cout << '\\';
+	for(uint32_t i = 0; i < boxlen; i++ )	std::cout << '\\';
 	util::align_text_center(boxlen + 2, board[nrow][10].get_box_content());
-	for(auto i = 0; i < (boxlen) * 2 + 1; i++ )	std::cout << '\\';
+	for(uint32_t i = 0; i < (boxlen) * 2 + 1; i++ )	std::cout << '\\';
 	util::align_text_center(boxlen + 2, board[nrow][13].get_box_content());
-	for(auto i = 0; i < boxlen; i++ ) std::cout << '\\';
+	for(uint32_t i = 0; i < boxlen; i++ ) std::cout << '\\';
 	std::cout << "|\n";
 }
 

@@ -10,24 +10,24 @@
 
 namespace util{
 
-    void trim(std::string&);                                   //@returns trimmed std::string, but doesnt modify original string
-    std::string trim_copy(const std::string&);                 //@returns trimmed std::string, but doesnt modify original string
-    void trimChar(std::string& s, char ch); //Trims out `ch` from both ends
-    bool replace_all(std::string& str, const std::string& _old, const std::string& _new); //can use boost::algorithm::replace_all also
-    void strip(std::string&, char toRemove);                   /*Returns a string without the passed character*/
-    std::string strip_copy(const std::string&, char toRemove); /*Returns a string without the passed character*/
+    static void trim(std::string&);                                   //@returns trimmed std::string, but doesnt modify original string
+    static std::string&& trim_copy(const std::string&);                 //@returns trimmed std::string, but doesnt modify original string
+    static void trimChar(std::string& s, char ch); //Trims out `ch` from both ends
+    static bool replace_all(std::string& str, const std::string& _old, const std::string& _new); //can use boost::algorithm::replace_all also
+    static void strip(std::string&, char toRemove);                   /*Returns a string without the passed character*/
+    static std::string&& strip_copy(const std::string&, char toRemove); /*Returns a string without the passed character*/
 
-    std::vector< std::string > tokenizeIt(const std::string& dir, char sep);
-    std::vector<std::string> split(const std::string& s, char delim = ','); //similar to tokenizeIt(), but this is meant to consider double quotes too
+    static std::vector< std::string > tokenizeIt(const std::string& dir, char sep);
+    static std::vector<std::string> split(const std::string& s, char delim = ','); //similar to tokenizeIt(), but this is meant to consider double quotes too
 
     inline namespace view_util
     {
-        std::string trim_copy(std::string_view);
-        std::string strip_copy(std::string_view, char toRemove);
-        bool icompare(std::string_view s1, std::string_view s2) noexcept;
+        static std::string&& trim_copy(std::string_view);
+        static std::string&& strip_copy(std::string_view, char toRemove);
+        static bool icompare(std::string_view s1, std::string_view s2) noexcept;
 
-        std::vector< std::string > tokenizeIt(std::string_view dir, char sep);
-        std::vector<std::string> split(std::string_view s, char delim = ',');
+        static std::vector< std::string > tokenizeIt(std::string_view dir, char sep);
+        static std::vector<std::string> split(std::string_view s, char delim = ',');
     } // namespace view_util
 
 
@@ -36,30 +36,22 @@ namespace util{
     //DEFINITIONS
 void util::trim(std::string& s){
     if (s.empty())   return;
-    auto i = s.end() - 1;
-    for( ; i != s.begin(); --i ){
-        if( !isspace(static_cast<unsigned char>(*i)) ){
-            ++i;
-            break;
-        }
-    }
-    s.erase(i, s.end());
 
-    i = s.begin();
-    for( ; i != s.end(); ++i ){
-        if( !isspace(static_cast<unsigned char>(*i)) ){
-            break;
-        }
-    }
-    s.erase(s.begin(), i);
+    s.erase(
+        s.begin(),
+        std::find_if_not(s.begin(), s.end(), isspace)
+    );
 
-    //earlier one, but has bug
-// s.erase(std::find_if(s.begin(), s.end(), isspace), s.rend().base());
-// s.erase(std::find_if(s.rbegin(), s.rend(), isspace).base(), s.end());
+    auto end_iter = std::find_if_not(s.rbegin(), s.rend(), isspace);
+    if ( end_iter == s.rend() )   return;
+    s.erase(
+        end_iter.base(),    /*s.erase() doesn't erase the first one ??*/
+        s.end()
+    );
 }
 
-std::string util::trim_copy(const std::string& s){
-    return view_util::trim_copy(s.c_str());
+std::string&& util::trim_copy(const std::string& s){
+    return std::move(view_util::trim_copy(s.c_str()));
 }
 
 void util::trimChar(std::string& s, char ch){
@@ -93,8 +85,8 @@ void util::strip(std::string& s, char toRemove){
         s.end());
 }
 
-std::string util::strip_copy(const std::string& s, char toRemove){
-    return view_util::strip_copy(s.c_str(), toRemove);
+std::string&& util::strip_copy(const std::string& s, char toRemove){
+    return std::move(view_util::strip_copy(s.c_str(), toRemove));
 }
 
 std::vector< std::string > util::tokenizeIt(const std::string& dir, char sep){
@@ -104,17 +96,17 @@ std::vector< std::string > util::tokenizeIt(const std::string& dir, char sep){
 
 namespace util::view_util
 {
-    std::string trim_copy(std::string_view s){
+    std::string&& trim_copy(std::string_view s){
         std::string str_out(s);
         util::trim(str_out);
-        return str_out;
+        return std::move(str_out);
     }
 
-    std::string strip_copy(std::string_view s, char toRemove){
+    std::string&& strip_copy(std::string_view s, char toRemove){
         std::string str_out(s);
         util::strip(str_out, toRemove);
 
-        return str_out;
+        return std::move(str_out);
     }
 
     bool icompare(std::string_view s1, std::string_view s2) noexcept{
