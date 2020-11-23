@@ -195,7 +195,7 @@ bool game::handleMoveVal(short moveVal, vector<_dieVal>& dieNumbers, bool isRobo
 				cout << "\nPress enter to roll the die once more...";
 				cin.get();
 			}
-			Die::rolldie(dieNumbers);
+			Die::getDieResult(dieNumbers);
 		}
 		return true;
 	} catch( ... ){
@@ -205,7 +205,7 @@ bool game::handleMoveVal(short moveVal, vector<_dieVal>& dieNumbers, bool isRobo
 
 /*BUG - For example for a random_goti_index the goti isn't movable, then that diceNumber is being discarded. [For eg. in 6,1 only 1 is moved and 6 not] */
 bool game::autoMove(){ //! Return values same as the moveGoti_function
-	std::vector<_dieVal> dieNumbers{ Die::rolldie() };
+	std::vector<_dieVal> dieNumbers{ Die::getDieResult() };
 	std::set<unsigned> triedGotis_indices; //! Stores the gotis that have been tried to move, FOR A SINGLE DIE_NUMBER
 	std::optional< _smartMoveData > moveObj;
 	bool wasSuccess = false;
@@ -522,44 +522,48 @@ bool game::isPlayerPlaying(Player p){
 	return activePlayerMap.find(p) != activePlayerMap.end();
 }
 
-vector<_dieVal> Die::rolldie(){
+vector<_dieVal>&& Die::getDieResult(){
 	std::vector<_dieVal> v;
-	Die::rolldie(v);
-	return v;
+	Die::getDieResult(v);
+	return std::move(v);
 }
 
-int Die::random() {
-	// @todo - Return random num from 1 to 6
+int Die::rollDie() {
+#if USE_UNIFORM_DISTRIB
+	return distrib(dev_engine);
+#else
+	return mt_gen()%6 + 1;
+#endif
+
 }
 
-void Die::rolldie(vector<_dieVal>& Vec){
-	std::vector<_dieVal> tmpVec;
-
-	_dieVal dieNum = Die::random();
+void Die::getDieResult(vector<_dieVal>& currDieRolls){
+	_dieVal dieNum = Die::rollDie();
 	if( dieNum != 6 ){ //To prevent cases like, dieNumbers = {4, 6} (Think! It IS possible in the do-while)
-		Vec.push_back(dieNum);
+		currDieRolls.push_back(dieNum);
 		return;
 	}
-	do{
-		tmpVec.push_back(dieNum);
-		dieNum = Die::dist[rand() % 4](Die::mt[rand() % 4]);
-	} while( dieNum == 6 );
-	tmpVec.push_back(dieNum); //To insert the last left non-6
 
-		//! Main logic is above only, below are some cleansing and optimisations
-	std::vector<size_t> sixPos; //Temporary set, used in 'Cleaning cases of 3 sixes'
-	for( size_t i = 0; i < tmpVec.size(); ++i ){
-		if( tmpVec[i] == 6 )
+	do{
+		currDieRolls.push_back(dieNum);
+		dieNum = Die::rollDie();
+	} while( dieNum == 6 );
+	currDieRolls.push_back(dieNum); //To insert the last left non-6
+
+		//! Main logic is above only, below is removing cases of 3 sixes (since not allowed in ludo)
+	std::vector<size_t> sixPos; //Temporary vector, used in 'Cleaning cases of 3 sixes'
+	for( size_t i = 0; i < currDieRolls.size(); ++i ){
+		if(currDieRolls[i] == 6 )
 			sixPos.push_back(i);
 	}
-	while( sixPos.size() > 3 ){															  //ie. more than 3 sixes existing
-		tmpVec.erase(tmpVec.begin() + sixPos[sixPos.size() - 1]); //Removing from end positions
-		tmpVec.erase(tmpVec.begin() + sixPos[sixPos.size() - 2]);
-		tmpVec.erase(tmpVec.begin() + sixPos[sixPos.size() - 3]);
-		sixPos.erase(sixPos.begin() + sixPos.size() - 3, sixPos.end());
+	while( sixPos.size() > 3 ){		  //ie. more than 3 sixes existing
+		currDieRolls.erase(currDieRolls.begin() + sixPos[sixPos.size() - 1]); // Removing last 3 positions which all had 6
+		currDieRolls.erase(currDieRolls.begin() + sixPos[sixPos.size() - 2]);
+		currDieRolls.erase(currDieRolls.begin() + sixPos[sixPos.size() - 3]);
+
+		sixPos.resize( sixPos.size() - 3 );	// remove the last 3 positions that had 6
 	}
 
-	Vec.insert(Vec.end(), tmpVec.begin(), tmpVec.end());
 }
 
 void game::updateDisplay(){
@@ -726,7 +730,7 @@ void game::play(bool boolVal){
 		updateDisplay();
 		cout << "\nPress Enter to roll the die...";
 		cin.get();
-		Die::rolldie(dieNumbers);
+		Die::getDieResult(dieNumbers);
 		cout << "\nRoll Output - ";
 		for( auto&& outNum : dieNumbers ){
 			cout << outNum << ' ';

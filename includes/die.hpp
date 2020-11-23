@@ -1,5 +1,9 @@
 #pragma once
 
+#define USE_UNIFORM_DISTRIB true
+	// @note - By using a uniform distribution, the user can be assured that aall die outputs from 1 to 6 will be almost EQUAL PROBABILITY
+	//		   Change this to FALSE, to be TRULY RANDOM
+
 #include <random>
 #include <array>
 #include <vector>
@@ -7,13 +11,12 @@
 typedef unsigned short _dieVal;
 
 namespace Die{
-	//! Using 4 different generators as well as sequences, randomly for each Player
 	static std::random_device dev_engine;
-	static std::array<std::mt19937, 4> mt = { std::mt19937(dev_engine()),std::mt19937(dev_engine()),std::mt19937(dev_engine()),std::mt19937(dev_engine()) };
-	static std::array<std::uniform_int_distribution<int>, 4> dist = { std::uniform_int_distribution<int>(1,6), std::uniform_int_distribution<int>(1,6), std::uniform_int_distribution<int>(1,6), std::uniform_int_distribution<int>(1,6) };	//uniform distribution from [1,6]
+	static std::mt19937 mt_gen{ dev_engine() };	// used when -> USE_UNIFORM_DISTRIB == false
+	static std::uniform_int_distribution distrib{ 1, 6 };	// used when USE_UNIFORM_DISTRIB == true
 
-	int random();	// returns a random number of 1-6
-	std::vector<_dieVal> rolldie();	//! Undelete, if YOU like that version of rollDie
-	void rolldie(std::vector<_dieVal>&);
+	int rollDie();	// returns a random number of 1-6
+	std::vector<_dieVal>&& getDieResult();	//! Undelete, if YOU like that version of rollDie
+	void getDieResult(std::vector<_dieVal>&);
 
 }

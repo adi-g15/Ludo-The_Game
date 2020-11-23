@@ -3,6 +3,8 @@
 #include "thinker.hpp"
 #include "game.hpp"
 
+using std::find;
+
 thinker::thinker(game *original)
 {
 	this->state = new ludo_state(original);
@@ -13,15 +15,6 @@ thinker::~thinker()
 {
 	delete state;
 }
-
-// namespace Die{
-// 	void rolldie(std::vector<_dieVal>& dieNumbers){
-// 		dieNumbers.push_back(6);
-// 		dieNumbers.push_back(1);
-// 	}
-// }
-
-using std::find;
 
 bool thinker::unlock()
 {
@@ -249,7 +242,7 @@ bool thinker::setBestMove()
 
 	int maxProfit = 0;
 
-	Die::rolldie(dieNumbers);
+	Die::getDieResult(dieNumbers);
 
 	std::set<_dieVal> usedRolls;
 
@@ -324,7 +317,7 @@ bool thinker::mindlessMovers(_dieVal roll, std::vector<_dieVal> dieNumbers, unsi
 					auto box = state->getBox(smartData.finalCoord);
 					if ( (box.type == Box::HOME_END) || (box.areOpponentsPresent(state->currColour) && box.type == Box::NORMAL))
 					{
-						Die::rolldie(dieNumbers);
+						Die::getDieResult(dieNumbers);
 					}
 
 					prevMoves.first.push_back({gotiIndex, roll});
@@ -347,7 +340,7 @@ bool thinker::mindlessMovers(_dieVal roll, std::vector<_dieVal> dieNumbers, unsi
 			auto box = state->getBox(smartData.finalCoord);
 			if ((box.type == Box::HOME_END) || (box.areOpponentsPresent(state->currColour) && box.type == Box::NORMAL))
 			{
-				Die::rolldie(dieNumbers);
+				Die::getDieResult(dieNumbers);
 			}
 
 			prevMoves.first.push_back({gotiIndex, roll});
