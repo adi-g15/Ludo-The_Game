@@ -6,10 +6,10 @@ Also, if you want to go bug-hunting, you may try out the `dev` branch, with the 
 
 **Table of Contents:**
 
-1. [Reporting bugs](#reporting-bugs)
-2. [Requesting new features](#requesting-new-features)
-3. [Tests](#tests)
-4. [Questions?](#questions)
+  1. [Reporting bugs](#reporting-bugs)
+  2. [Requesting new features](#requesting-new-features)
+  3. [Tests](#tests)
+  4. [Questions?](#questions)
 
 ## Reporting bugs
 
