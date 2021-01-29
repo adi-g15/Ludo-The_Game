@@ -142,7 +142,6 @@ export function moveGoti(colour, coords, dist) {
 	const finalCoords = [];	// array of final coordinates
 
 	let isPossible, finalCoord;
-	if (!coords.hasOwnProperty('length'))	return res.sendStatus(400);	// fix to deepcode warning
 	coords.forEach(coord => {
 		[isPossible, finalCoord] = mover(colour, coord, dist);
 		bools.push(isPossible);
@@ -150,8 +149,8 @@ export function moveGoti(colour, coords, dist) {
 	});
 
 	return {
-		bools: bools,
-		coords: finalCoords
+		isPossible: bools,
+		finalCoords: finalCoords
 	};
 }
 
