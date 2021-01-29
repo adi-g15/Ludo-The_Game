@@ -3,6 +3,11 @@
 
 name: Deploy to Firebase Hosting on PR
 'on': pull_request
+
+defaults:
+  run:
+    working-directory: ./web
+
 jobs:
   build_and_preview:
     runs-on: ubuntu-latest
@@ -15,5 +20,4 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_LUDO_THE_GAME_A10A0 }}'
           projectId: ludo-the-game-a10a0
         env:
-          PROJECT_PATH: ./web
           FIREBASE_CLI_PREVIEWS: hostingchannels
