@@ -66,9 +66,8 @@ class game
 	short moveGoti(std::shared_ptr<ludo_goti>, _smartMoveData moveData);			  //Moves goti to ENDPOINT 'DIRECTLY' (basic checks only)
 	bool handleMoveVal(short, std::vector<_dieVal>& dieNumbers, bool isRobot = true); //Handles value returned by moveGoti() calls
 
-	const std::optional<_smartMoveData> isMovePossible(std::shared_ptr<ludo_goti>&, int dist) const; //! Can use std::variant too
-																								//The first is goti_index, and 2nd is tried roll
-	bool autoMove();																			//! The 'simple' function that will 'simply' call the private recursive overload
+	const std::optional<_smartMoveData> isMovePossible(std::shared_ptr<ludo_goti>&, int dist) const;
+	bool autoMove();
 
 	void attack(std::vector<_colour> coloursToRemove, std::shared_ptr<ludo_goti> attacker);
 

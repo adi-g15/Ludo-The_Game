@@ -26,7 +26,7 @@ _Do put your suggestions, ideas, and any problem (even if why g++ main.cpp doesn
 * Display **adaptive** to width of screen
 * Memory-safe (using smart_pointers, and uncounted for 'new' statements)
 * **Multi-threaded** (for ThinkerRobo execution)
-* **0 dependencies** outside stdc++
+* **0 dependencies** outside stdc++  (for coloured output support, agauniyal.github.io/rang/ is utilised and included as a header rang.hpp)
 * Plus all basic ludo game features, and my own *custom* keywords _(you can create yours too :D )_
 
 ## Building
@@ -55,11 +55,10 @@ cmake --build . --config Release
 ```
 .
 ├── extras
-│   ├── CommentFetcher.cpp
-│   ├── Comments.md
-│   └── debugFlagsChecker.py
+├── util    //my utility library
 ├── includes
 │   ├── boardPrinter.hpp
+│   ├── rang.hpp
 │   ├── die.hpp
 │   ├── enumerations.hpp
 |   ├── exceptions.hpp
@@ -69,18 +68,15 @@ cmake --build . --config Release
 |   ├── ludo_coords.hpp
 |   ├── ludo_goti.hpp
 |   ├── ludo_state.hpp
-│   ├── simpleTuple.hpp
 │   └── thinker.hpp
 ├── src
-|   ├── exceptions.cpp
 |   ├── game.cpp
 |   ├── ludo_box.cpp
 |   ├── ludo_coords.cpp
 |   ├── ludo_goti.cpp
 |   ├── ludo_state.cpp
 |   ├── thinker.cpp
-|   └── main.cpp
-├── util    //my utility library
+├── main.cpp
 ├── CMakeLists.txt
 ├── LICENSE.md
 └── README.md
@@ -114,14 +110,6 @@ Start an issue for whatever feature you believe should be good here.
 
 And, in case you want to be a contributer here, and work on it together, do ask.
 
-Do sugggest any other feature you would like, i do claim the codebase to be quite modular, and easily customisable.
-
-## Future Plans -
-
-Currently, I am learning more of the 'web thing' ;D, and I have completed ALL i wanted in this initially, so lesser chance i will work much on it, but as i say, if you ask of something in it, I do consider.
-
-* Creating a _web version_ of this, probably using Angular
-* Have an API endpoint, that connects the web version, the cli version, and the GUI. (API basically done, will be customised, when i go for the web version)
-* Add more sensible cheatCodes
+Do sugggest any other feature you would like, i do claim the codebase to be quite modular, and easily customisable (It was what i used to think earlier, it IS modular enough to understand, i am not modifying it now, so as to keep it more original when i made it).
 
 > Thanks ! :D

@@ -1,3 +1,10 @@
+/*
+ Header for coloured output to console, original repo - https://github.com/agauniyal/rang
+
+ A Minimal, Header only Modern c++ library for terminal goodies 💄✨
+ agauniyal.github.io/rang/
+*/
+
 #ifndef RANG_DOT_HPP
 #define RANG_DOT_HPP
 

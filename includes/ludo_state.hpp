@@ -22,7 +22,7 @@ class state_goti{
 	const _colour gotiColour;
 	Direction currDir;
 	coord coords;
-	~state_goti();	//! state_box will take the ownership
+	~state_goti();
 
 public:
 	state_goti(_colour, Direction, coord);

@@ -1,8 +1,7 @@
 {
   "name": "ludo",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "dependencies": {
-    "dotenv": "^8.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.1"

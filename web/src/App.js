@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import Dice from './Dice';
-import Table from './Table';
-import Board from './Board';
+import Dice from './components/Dice';
+import Table from './components/Table';
+import Board from './components/Board';
+// import { roll, moveGoti } from "./services/ludo"
 
 function App() {
 	const turns = ['Green', 'Yellow', 'Blue', 'Red'];
@@ -28,7 +29,6 @@ function App() {
 			'0-8': [], '1-8': [], '2-8': [], '3-8': [], '4-8': [], '5-8': [],			// at those places.
 			'9-8': [], '10-8': [], '11-8': [], '12-8': [], '13-8': [], '14-8': [],
 		});
-		// @bug - At next line -> 'value' is assigned a value but never used
 		// eslint-disable-next-line no-unused-vars
 		setPositions(position => position.map(value => value = Array(4).fill(false)));	// Initialize all as false (false = gotis at home)
 	}, []);
@@ -88,6 +88,10 @@ function App() {
 				else {
 					setInfo('Invalid move, select another Goti');								// If server responds 'false' for move, give error
 				}
+			})
+			.catch(err => {
+				alert("Can't connect to the Backend");
+				console.error(err);
 			});
 	};
 	async function checkPossible(roll) {
