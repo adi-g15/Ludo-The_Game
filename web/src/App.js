@@ -3,7 +3,7 @@ import './App.css';
 import Dice from './components/Dice';
 import Table from './components/Table';
 import Board from './components/Board';
-import { roll as getRoll, moveGoti } from "./services/ludo"
+import { rollDice, moveGoti } from "./services/ludo"
 
 function App() {
 	const turns = ['Green', 'Yellow', 'Blue', 'Red'];
@@ -149,8 +149,7 @@ function App() {
 		dice.forEach(die => {
 			toggleClasses(die);
 
-			const response = getRoll();
-			const roll = response.roll[0];
+			const roll = rollDice();
 			// const roll = 6
 			setInfo('');
 			setDie(roll);

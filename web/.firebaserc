@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "default": "ludo-the-game-a10a0"
+  },
+  "hosting": {
+    "site": "ludo-game",
+    "public": "public",
+  }
+}

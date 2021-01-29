@@ -1,6 +1,7 @@
 {
   "name": "ludo",
   "version": "0.2.0",
+  "license": "MIT",
   "dependencies": {
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

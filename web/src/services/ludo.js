@@ -33,9 +33,11 @@ const homeTurns = { // colour: [coord,direction]
 	B: ["7,14", "L"]
 };
 
-function isHomeEnd (coords) {
+function isHomeEnd (coord) {
+	if(Array.isArray(coord))	coord = coord.join();
+
 	const home_ends = ['8,7', '6,7', '7,6', '7,8'];
-	if (home_ends.find((end) => end == coords)) return true;
+	if (home_ends.includes(coord)) return true;
 	else return false;
 }
 
@@ -62,17 +64,19 @@ function getDirection(coords) {
 function validData(colour, coords, dist) {
 	const allowed_colours = ["R", "G", "Y", "B"];
 
-	if ( !!dist && !!col && !!coords) {
+	// also verifies if coords is a 2 dimensional array (expected 2D array) or not
+	if ( !!colour && Array.isArray(coords) && Array.isArray(coords[0]) && !!dist ) {
 		return allowed_colours.includes(colour);
 	} else return false;
 }
 
+// 6,1, 1, G
 function mover(colour, coord, dist) {
 	let increment_coords = [0, 0];
 	let turnDirection = null;
 	const updated_coords = coord;
 	let currDirection = getDirection(updated_coords);
-	dist = Number(dist);	// if it's string, convert to number
+	dist = parseInt(dist);	// if it's string, convert to number
 
 	if (!currDirection || !dist || typeof (colour) !== "string") return [false];
 
@@ -125,28 +129,29 @@ function mover(colour, coord, dist) {
 }
 
 export function moveGoti(colour, coords, dist) {
-	const reqData = {
-		colour,
-		coords,
-		dist: Number(dist) // dist=0 will give Input Not Valid
-	};
-
-	if( ! Array.isArray(reqData.coords) ){
-		reqData.coords = [ coords ];
+	if( Array.isArray(coords) && !Array.isArray(coords[0]) ){	// ie. is a 1D array (ie. a pair, array of length 2)
+		coords = [coords];
 	}
-	if (!validData(reqData)) {
-		return new Error("Input Not Valid");
+
+	if (!validData(colour, coords, dist)) {
+		// return new Error("Input Not Valid");
+		console.error("Input not valid: ", colour, coords, dist);
+		return [false];
 	}
 
 	const bools = [];	// an array of bools
 	const finalCoords = [];	// array of final coordinates
 
-	let isPossible, finalCoord;
+	let possibility, finalCoord;
 	coords.forEach(coord => {
-		[isPossible, finalCoord] = mover(colour, coord, dist);
-		bools.push(isPossible);
+		if(!Array.isArray(coords)){ console.error(coords, "was the input array, not a array of pairs !");	return new Error("Invalid Move");	}
+
+		[possibility, finalCoord] = mover(colour, coord, dist);
+		bools.push(possibility);
 		finalCoords.push(finalCoord);
 	});
+
+	console.debug(`Input: ${coords}, moved ${dist} units, final result: `, {isPossible: bools, finalCoords});
 
 	return {
 		isPossible: bools,
@@ -154,15 +159,33 @@ export function moveGoti(colour, coords, dist) {
 	};
 }
 
-export function roll() {
+export function rollDice() {
+	return random(1,6);
+}
+
+export function multipleRoll() {
 	let n = random(1, 6);
 	const arr = [];
 	arr.push(n);
+
+	let six_count = 0;
 	while (n === 6) {
 		n = random(1, 6);
+
+		six_count++;	// to remove three consecutive sixes
+		if(six_count === 3) {
+			arr.pop();
+			arr.pop();	// previous two were 6, and this turn 6 won't be pushed so only two 6 in array
+
+			six_count = 0;
+			continue;
+		}
+
 		arr.push(n);
 	}
-	// @todo - Remove 3 consecutive sixes if any
 
 	return arr;
 }
+
+moveGoti('G', [6,1], 1);
+moveGoti('R', [13,6], 5);
