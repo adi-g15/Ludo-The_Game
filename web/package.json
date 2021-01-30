@@ -8,8 +8,8 @@
     "react-scripts": "4.0.1"
   },
   "devDependencies": {
-    "eslint": "^7.14.0",
-    "eslint-plugin-react": "^7.21.5"
+    "eslint": "^7.18.0",
+    "eslint-plugin-react": "^7.22.0"
   },
   "scripts": {
     "start": "react-scripts start",
