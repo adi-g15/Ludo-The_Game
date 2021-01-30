@@ -512,10 +512,10 @@ bool game::isPlayerPlaying(Player p){
 	return activePlayerMap.find(p) != activePlayerMap.end();
 }
 
-vector<_dieVal>&& Die::getDieResult(){
+vector<_dieVal> Die::getDieResult(){
 	std::vector<_dieVal> v;
 	Die::getDieResult(v);
-	return std::move(v);
+	return v;
 }
 
 int Die::rollDie() {
@@ -764,9 +764,10 @@ void game::play(bool boolVal){
 			while( movingGotis[curr_colour].size() == 1 && dieNumbers[0] != 6 && dieNumbers.size() == 1 ){
 				auto moveData = isMovePossible(movingGotis[curr_colour][0], dieNumbers[0]);
 				if( !moveData.has_value() ){
-					cout << "Move not possible" << endl;
+					cout << "\nMove not possible" << endl;
 				} else{ //goti has been moved
 					auto moveVal = moveGoti(movingGotis[curr_colour][0], moveData.value());
+					cout << "\nAutomatically Moving..." << endl;
 					handleMoveVal(moveVal, dieNumbers, false);
 				}
 				dieNumbers.erase(dieNumbers.begin()); //! Removing the used goti number (which is actually dieNumbers[0])
@@ -785,7 +786,7 @@ void game::play(bool boolVal){
 			//! This is just a simple block, for separating the process, of Fetching choice_num and enteredRoll
 			{
 				if( shortcutsMap.find(inputStr) != shortcutsMap.end() ){
-					shortcutsMap.find(inputStr)->second; //Calling using the function pointer
+					// shortcutsMap.find(inputStr)->second; //Calling using the function pointer
 					return;
 				} else{
 					istringstream stream(inputStr);
@@ -799,7 +800,12 @@ void game::play(bool boolVal){
 							continue; //Wrong Input
 						}
 					} else{ //! Usual Case - No unlock, nor any cheat/shortcut used
-						stream >> enteredRoll;
+
+						// if user doesn't enter the move value, then automatically consider the first die move
+						if(stream.eof() && (dieNumbers.size() == 1)) {
+							enteredRoll = dieNumbers[0];
+						} else
+							stream >> enteredRoll;
 
 						if(
 							util::isSum(enteredRoll, dieNumbers) //If output is 6,5 then entering 11 is valid
