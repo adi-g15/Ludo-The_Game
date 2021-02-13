@@ -76,7 +76,8 @@
         "stop_token": "cpp",
         "cinttypes": "cpp",
         "valarray": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "iomanip": "cpp"
     },
     "editor.formatOnPaste": true,
     // "editor.formatOnSave": true, //problematic... removes whitespaces between comments and code

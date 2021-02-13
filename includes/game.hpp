@@ -11,6 +11,7 @@
 #include <functional>
 #include <optional>
 
+	// only to be used by move & thinker functions
 struct _smartMoveData
 {
 	coord finalCoord;
@@ -25,18 +26,21 @@ class ludo_state;
 
 class game
 {
+	using goti_pointer = std::shared_ptr<ludo_goti>;
+	using ludo_box_reference = std::reference_wrapper<ludo_box>;
 	private:
-	typedef void (game::* functionPointer)();
+	// typedef void (game::* functionPointer)();	// both are same ways, `using` declarations is more clear i believe
+	using functionPointer = void(game::*)();
 
 	std::vector<std::vector<ludo_box>> board;
-	std::map<_colour, std::vector<std::reference_wrapper<ludo_box>>> lockedPositions;
-	std::map<_colour, std::vector<std::shared_ptr<ludo_goti>>> movingGotis;
-	std::map<_colour, unsigned> numfinished;
+	std::map<Colour, std::vector<ludo_box_reference>> lockedPositions;
+	std::map<Colour, std::vector<std::shared_ptr<ludo_goti>>> movingGotis;
+	std::map<Colour, unsigned> numfinished;
 
-	std::vector<_colour> colourOrder;
+	std::vector<Colour> colourOrder;
 
 	Player curr_player;
-	_colour curr_colour;
+	Colour curr_colour;
 	unsigned int number_of_GameRuns;
 	unsigned int goti_per_user;
 
@@ -44,7 +48,7 @@ class game
 
 	bool gameisFinished();
 	bool isPlayerPlaying(Player);
-	unsigned getNumLockedGotis(_colour);
+	unsigned getNumLockedGotis(Colour);
 	bool unlockGoti();
 	bool lockGoti(std::shared_ptr<ludo_goti>);
 	void takeIntro(); //! Initializes the PlayerMap
@@ -57,9 +61,9 @@ class game
 	const std::map<std::string_view, functionPointer> shortcutsMap;
 	// functionPointer arr[10]; //Learnt - Array of 10 function pointers to functions taking nothing, and returning void
 
-	std::map<_colour, Player> coloursMap;
+	std::map<Colour, Player> coloursMap;
 
-	std::map<Player, std::pair<std::string, _colour>> activePlayerMap;
+	std::map<Player, std::pair<std::string, Colour>> activePlayerMap;
 	std::map<Player, RobotKind> robotPlayers;
 
 	short moveGoti(std::shared_ptr<ludo_goti>, unsigned int dist);
@@ -69,11 +73,11 @@ class game
 	const std::optional<_smartMoveData> isMovePossible(std::shared_ptr<ludo_goti>&, int dist) const;
 	bool autoMove();
 
-	void attack(std::vector<_colour> coloursToRemove, std::shared_ptr<ludo_goti> attacker);
+	void attack(std::vector<Colour> coloursToRemove, std::shared_ptr<ludo_goti> attacker);
 
 	void updateDisplay();
-	/*NOTE - getEmptyLocks(...) == {0,0} is a good test for 'ZERO LOCKED POSITIONS'*/
-	coord getEmptyLocks(_colour) const;
+	/*NOTE - getEmptyLock(...) == {0,0} is a good test for 'ZERO LOCKED POSITIONS'*/
+	coord getEmptyLock(Colour) const;
 
 	bool InitGame(short = 1); //! Starts/Resets the game
 	void play(bool = true);
@@ -89,7 +93,7 @@ class game
 	game();
 	~game();
 
-	friend class _BoardPrinter;
+	friend class BoardPrinter;
 	friend class ludo_state;
 	friend class ludo_state;
 	friend class thinker;

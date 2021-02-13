@@ -24,7 +24,7 @@ bool thinker::unlock()
 	{
 		auto &box = state->getBox(coord);
 
-		if (goti != nullptr && state->board[coord.y][coord.x].type != Box::LOCK)
+		if (goti != nullptr && state->board[coord.y][coord.x].type != BoxType::LOCK)
 			break;
 		else if (!box.inBoxGotis.empty())
 			continue;
@@ -169,19 +169,19 @@ const std::optional<_smartMoveData> thinker::isMovePossible(const coord &coords,
 
 		if (currBox.get().areOpponentsPresent(state->currColour) && dist != 0)
 		{
-			moveProfit += ProfitType::ProfitType::CROSSES_ENEMY;
+			moveProfit += ProfitType::CROSSES_ENEMY;
 		}
 		//Judging the profit START
 
-		if (currBox.get().type == Box::HOME_END && dist != 0)
+		if (currBox.get().type == BoxType::HOME_END && dist != 0)
 		{ //! Reached finished point, but move still incomplete
 			return {};
 		}
 	}
 
-	if (currBox.get().areOpponentsPresent(state->currColour) && currBox.get().type == Box::NORMAL)
+	if (currBox.get().areOpponentsPresent(state->currColour) && currBox.get().type == BoxType::NORMAL)
 		moveProfit += ProfitType::ATTACK;
-	else if (currBox.get().type == Box::STOP)
+	else if (currBox.get().type == BoxType::STOP)
 		moveProfit += ProfitType::REACH_STOP;
 
 	return _smartMoveData({ updated_coords, currDir, moveProfit });
@@ -261,9 +261,9 @@ bool thinker::setBestMove()
 	}
 
 	std::vector<coord> movingPos, opponentsPos;
-	for (long i = 0; i < state->board.size(); ++i)
+	for (int i = 0; i < state->board.size(); ++i)
 	{
-		for (long j = 0; j < state->board.at(i).size(); ++j)
+		for( int j = 0; j < state->board.at(i).size(); ++j )
 		{
 			if (state->board[i][j].areOpponentsPresent(state->currColour))
 				opponentsPos.push_back({i, j});
@@ -315,7 +315,7 @@ bool thinker::mindlessMovers(_dieVal roll, std::vector<_dieVal> dieNumbers, unsi
 				if (smartData.moveProfit > ProfitType::UNLOCK)
 				{
 					auto box = state->getBox(smartData.finalCoord);
-					if ( (box.type == Box::HOME_END) || (box.areOpponentsPresent(state->currColour) && box.type == Box::NORMAL))
+					if ( (box.type == BoxType::HOME_END) || (box.areOpponentsPresent(state->currColour) && box.type == BoxType::NORMAL))
 					{
 						Die::getDieResult(dieNumbers);
 					}
@@ -338,7 +338,7 @@ bool thinker::mindlessMovers(_dieVal roll, std::vector<_dieVal> dieNumbers, unsi
 		else if (isPossible)
 		{
 			auto box = state->getBox(smartData.finalCoord);
-			if ((box.type == Box::HOME_END) || (box.areOpponentsPresent(state->currColour) && box.type == Box::NORMAL))
+			if ((box.type == BoxType::HOME_END) || (box.areOpponentsPresent(state->currColour) && box.type == BoxType::NORMAL))
 			{
 				Die::getDieResult(dieNumbers);
 			}

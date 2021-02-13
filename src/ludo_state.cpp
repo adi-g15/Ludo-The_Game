@@ -21,7 +21,7 @@ const state_box& ludo_state::getBox(const coord& coord) const{
 size_t ludo_state::getNumLocks(){
 	size_t retVal = 0;
 	for( auto &coord : this->lockedPositions ){
-		if( board[coord.y][coord.x].type != Box::LOCK ) continue;
+		if( board[coord.y][coord.x].type != BoxType::LOCK ) continue;
 		else if( ! this->getBox(coord).inBoxGotis.empty() ){
 				++retVal;
 				break;
@@ -35,10 +35,10 @@ void ludo_state::update(const game* original){
 	for( auto row=0; row < original->board.size(); ++row ){
 		for( auto col=0; col < original->board[row].size(); ++col ){
 			this->board.at(row).at(col).type = original->board.at(row).at(col).box_type;
-			if( this->board[row][col].type == Box::UNUSABLE ) continue;
+			if( this->board[row][col].type == BoxType::UNUSABLE ) continue;
 			for( auto &i : original->board[row][col].inBoxGotis ){
-				this->board[row][col].appendGoti( new state_goti( i->get_gotiColour(), i->get_curr_direction(), i->getCoords()) );	//No need to attack here, since that was in the original game itself
-				this->movingColours.at(i->get_gotiColour()).push_back( {row, col} );
+				this->board[row][col].appendGoti( new state_goti( i->get_goti_colour(), i->get_curr_direction(), i->get_coords()) );	//No need to attack here, since that was in the original game itself
+				this->movingColours.at(i->get_goti_colour()).push_back( {row, col} );
 			}
 		}
 	}
@@ -48,7 +48,7 @@ void ludo_state::update(const game* original){
 }
 
 void ludo_state::resetBoard(){
-	map<_colour, vector<state_goti*>> gotis ({{_colour::LAAL, {}}, {_colour::HARA, {}}, {_colour::PEELA, {}}, {_colour::NEELA, {}}});
+	map<Colour, vector<state_goti*>> gotis ({{Colour::LAAL, {}}, {Colour::HARA, {}}, {Colour::PEELA, {}}, {Colour::NEELA, {}}});
 	for ( int i=0; i < this->board.size(); ++i ){
 		for ( int j=0; j < this->board.at(i).size(); ++j ){
 			auto boxGotis = this->getBox({i,j}).inBoxGotis;
@@ -78,8 +78,8 @@ bool ludo_state::isInSync(const game* original){
 			vector<bool> found(pair.second.size(), false);
 			for( int j=0; j < pair.second.size(); ++j ){
 				auto goti = pair.second[j];
-				for ( auto &coord : this->movingColours.at(goti->get_gotiColour()) ){
-					if ( goti->getCoords() == coord ){
+				for ( auto &coord : this->movingColours.at(goti->get_goti_colour()) ){
+					if ( goti->get_coords() == coord ){
 						found[j] = true;
 						break;
 					}
@@ -112,7 +112,7 @@ state_goti* state_box::removeGoti(state_goti* goti){
 	throw std::exception();	//will return NULL otherwise
 }
 
-bool state_box::areOpponentsPresent(_colour colour) const{
+bool state_box::areOpponentsPresent(Colour colour) const{
 	for( auto &i : this->inBoxGotis ) if( i->gotiColour != colour ) return true;
 	return false;
 }
@@ -124,6 +124,6 @@ state_box::~state_box(){
 	inBoxGotis.clear();
 }
 
-state_goti::state_goti(_colour gotiColour, Direction gotiDir, coord coord) : gotiColour(gotiColour), currDir(gotiDir), coords(coord){}
+state_goti::state_goti(Colour gotiColour, Direction gotiDir, coord coord) : gotiColour(gotiColour), currDir(gotiDir), coords(coord){}
 
 state_goti::~state_goti(){}

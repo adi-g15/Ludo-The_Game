@@ -14,11 +14,11 @@ static const char* robot_keyword = "ROBOT";
 
 static const char* thinker_keyword = "Jai Hind";
 
-static std::map<_colour, std::string_view> colourNames{
-	{_colour::LAAL, "RED"},
-	{_colour::HARA, "HARA"},
-	{_colour::PEELA, "PEELA"},
-	{_colour::NEELA, "BLUE"}
+static std::map<Colour, std::string_view> colourNames{
+	{Colour::LAAL, "RED"},
+	{Colour::HARA, "HARA"},
+	{Colour::PEELA, "PEELA"},
+	{Colour::NEELA, "BLUE"}
 };
 
 static std::map<Direction, std::string_view> dirNames{
@@ -29,11 +29,11 @@ static std::map<Direction, std::string_view> dirNames{
 	{ Direction::DOWN, "DOWN" }
 };
 
-static std::map<_colour, char> colourCodes{
-	{_colour::LAAL, 'R'},
-	{_colour::HARA, 'G'},
-	{_colour::PEELA, 'Y'},
-	{_colour::NEELA, 'B'}
+static std::map<Colour, char> colourCodes{
+	{Colour::LAAL, 'R'},
+	{Colour::HARA, 'G'},
+	{Colour::PEELA, 'Y'},
+	{Colour::NEELA, 'B'}
 };
 
 static std::map<Player, std::string_view> playerId{
@@ -44,7 +44,7 @@ static std::map<Player, std::string_view> playerId{
 	{ Player::_4, "4" },
 };
 
-static std::ostream& operator<<(std::ostream& stream, const _colour c){
+static std::ostream& operator<<(std::ostream& stream, const Colour c){
 	stream << colourNames[c];
 	return stream;
 }

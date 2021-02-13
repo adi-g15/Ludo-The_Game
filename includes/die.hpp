@@ -16,7 +16,7 @@ namespace Die{
 	static std::uniform_int_distribution distrib{ 1, 6 };	// used when USE_UNIFORM_DISTRIB == true
 
 	int rollDie();	// returns a random number of 1-6
-	std::vector<_dieVal> getDieResult();	//! Undelete, if YOU like that version of rollDie
+	std::vector<_dieVal> getDieResult();
 	void getDieResult(std::vector<_dieVal>&);
 
 }

@@ -4,7 +4,7 @@
 #include <map>
 
 /*xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/
-/* Colour any output, due to the code, just use COLOUR_THIS*/
+/* _colour any output, due to the code, just use COLOUR_THIS*/
 #define COLOUR_THIS(colour, code)  \
     util::_colouredOutput(colour); \
     code                           \

@@ -10,7 +10,7 @@
 #include "util/coord.hpp"
 
 namespace util{
-    util::_coord<int> getTerminalDimen();
+    util::_coord2D<int> getTerminalDimen();
 
     /*
         TIP - align* functions, and place_center() can be used for file streams too
@@ -41,8 +41,8 @@ namespace util{
 #endif
 
 //returns row*column dimension
-util::_coord<int> util::getTerminalDimen(){
-    util::_coord<int> outTuple(0, 0);
+util::_coord2D<int> util::getTerminalDimen(){
+    util::_coord2D<int> outTuple(0, 0);
 #ifdef OS_WIN
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);

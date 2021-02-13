@@ -6,20 +6,19 @@
 
 class ludo_goti{
 private:
-	const _colour gotiColour;
+	const Colour gotiColour;
 	Direction curr_direction;
 	coord curr_coords;
 
 public:
-	coord getCoords() const;
+	coord get_coords() const;
     Direction get_curr_direction() const;
-    _colour get_gotiColour() const;
+    Colour get_goti_colour() const;
 
 	friend class game;
 	friend class ludo_box;
 
 	bool operator==(const ludo_goti& goti);
 
-	ludo_goti() = delete;
-	ludo_goti(_colour, const coord&, Direction = Direction::NO_TURN);
+	ludo_goti(Colour, const coord&, Direction = Direction::NO_TURN);
 };

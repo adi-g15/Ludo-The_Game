@@ -84,7 +84,7 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 		updated_coords.x += increment_coord.x;
 		reference_wrapper<const ludo_box> currBox{ getBoardBox(updated_coords) };
 
-		if( currBox.get().box_type == Box::HOME_END && dist != 0 ){ //! Reached finished point, but move still incomplete
+		if( currBox.get().box_type == BoxType::HOME_END && dist != 0 ){ //! Reached finished point, but move still incomplete
 			return {};
 		}
 	}
@@ -105,7 +105,7 @@ short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, unsigned int dist){
 
 //For this function, the move will initially be considered 'possible', since it is meant to be called through the overloads
 short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, _smartMoveData moveData){
-	if( !isValid(moveData.finalCoord) || getBoardBox(moveData.finalCoord).box_type == Box::UNUSABLE ){
+	if( !isValid(moveData.finalCoord) || getBoardBox(moveData.finalCoord).box_type == BoxType::UNUSABLE ){
 		cout << "Passed coords " << moveData.finalCoord << " to moveGoti is invalid !";
 		endGame("Inalid goti to moveGoti");
 		return -1;
@@ -129,8 +129,8 @@ short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, _smartMoveData moveDat
 		return -1;
 
 	getBoardBox(the_goti->curr_coords).removeGoti(the_goti); //Reaches here only if move possible
-	if( getBoardBox(finalCoord).box_type == Box::HOME_END ){
-		auto& lockBox = getBoardBox(getEmptyLocks(curr_colour));
+	if( getBoardBox(finalCoord).box_type == BoxType::HOME_END ){
+		auto& lockBox = getBoardBox(getEmptyLock(curr_colour));
 
 		if( lockBox.coords == coord(0, 0) ){ //debug
 			cout << "movingGotis[curr].size() = " << movingGotis[curr_colour].size() << endl;
@@ -147,7 +147,7 @@ short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, _smartMoveData moveDat
 			cout << "Goti not found";
 
 		lockBox.content = ":D";
-		lockBox.box_type = Box::UNUSABLE;
+		lockBox.box_type = BoxType::UNUSABLE;
 
 		if( (movingGotis[curr_colour].size() + numfinished[curr_colour] + getNumLockedGotis(curr_colour)) > 4 ){	//debug
 			clog << "inBoxGotis -> ";
@@ -273,11 +273,11 @@ bool game::autoMove(){ //! Return values same as the moveGoti_function
 
 /* @brief Simply removes the 1st goti, if attack request found valid
    **IMPORTANT_NOTE - For simplicity, an empty vector passed for coloursToRemove will be considered as 'Remove all except this gotiColour'
-   FUTURE - If have used a vector of _colour, in favor of future scope of support of FRIEND GOTIS
+   FUTURE - If have used a vector of Colour, in favor of future scope of support of FRIEND GOTIS
 */
-void game::attack(std::vector<_colour> coloursToRemove, std::shared_ptr<ludo_goti> attacker){
-	if( coloursToRemove.empty() ){ //Will consider all other _colour as opponents
-		coloursToRemove.insert(coloursToRemove.begin(), { _colour::NEELA, _colour::HARA, _colour::PEELA, _colour::LAAL });
+void game::attack(std::vector<Colour> coloursToRemove, std::shared_ptr<ludo_goti> attacker){
+	if( coloursToRemove.empty() ){ //Will consider all other Colour as opponents
+		coloursToRemove.insert(coloursToRemove.begin(), { Colour::NEELA, Colour::HARA, Colour::PEELA, Colour::LAAL });
 		coloursToRemove.erase(find(coloursToRemove.begin(), coloursToRemove.end(), curr_colour)); //Using currentGotiPlayer and not attacker's colour, since only the curr_player should be able to attack
 	}
 
@@ -375,10 +375,10 @@ bool game::unlockGoti(){
 	return true;
 }
 
-unsigned game::getNumLockedGotis(_colour gotiColour){
+unsigned game::getNumLockedGotis(Colour gotiColour){
 	auto num = 0;
 	for( auto const& lockedBox : lockedPositions.find(gotiColour)->second ){
-		if( !lockedBox.get().isEmpty() && lockedBox.get().box_type == Box::LOCK ){
+		if( !lockedBox.get().isEmpty() && lockedBox.get().box_type == BoxType::LOCK ){
 			++num;
 		}
 	}
@@ -428,7 +428,7 @@ void game::takeIntro(){
 	coord tmpDimen(0, 0);
 	tmpDimen = util::getTerminalDimen();
 
-	_BoardPrinter::errorScreen("Please ensure window size is at least 31*31");
+	BoardPrinter::errorScreen("Please ensure window size is at least 31*31");
 	cout << endl;
 
 	//QUESTION - How to call the function pointer through an iterator ?
@@ -437,13 +437,13 @@ void game::takeIntro(){
 		tmpDimen = util::getTerminalDimen();
 	} while( tmpDimen.y < 31 || tmpDimen.x < 62 ); //tmpDimen -> row*column
 
-	_BoardPrinter::titleBar(tmpDimen.x);
+	BoardPrinter::titleBar(tmpDimen.x);
 
 	util::place_v_center(tmpDimen.y - 7, "");
 	util::align_text_center(tmpDimen.x, "Enter names of the Players (Leave empty if not playing, or type \"ROBOT\") : ");
 
 	string playerName;
-	_colour colour;
+	Colour colour;
 	auto p = Player::_1;
 	auto numRobots = 0, numThinkers = 0;
 
@@ -485,8 +485,8 @@ void game::takeIntro(){
 	for( auto&& player : activePlayerMap ){
 		auto gotiColour = player.second.second;
 		for( auto&& lockedBox : lockedPositions[gotiColour] ){
-			lockedBox.get().appendGoti(std::shared_ptr<ludo_goti>(new ludo_goti(gotiColour, getEmptyLocks(gotiColour))));
-			lockedBox.get().box_type = Box::LOCK;
+			lockedBox.get().appendGoti(std::shared_ptr<ludo_goti>(new ludo_goti(gotiColour, getEmptyLock(gotiColour))));
+			lockedBox.get().box_type = BoxType::LOCK;
 		}
 		coloursMap.insert({ player.second.second, player.first });
 		numfinished.insert({ player.second.second, 0 });
@@ -565,13 +565,13 @@ void game::updateDisplay(){
 	bool flag = false;	// this flag is set when the screen is small, and the while loop runs atleast 2 times
 	do{
 		if( flag )	// if reaching here for the second time
-			_BoardPrinter::errorScreen("Please ensure window size is at least 31*31");
+			BoardPrinter::errorScreen("Please ensure window size is at least 31*31");
 		tmpDimen = util::getTerminalDimen();
 		boxlen = (2 * min(tmpDimen.y, tmpDimen.x) - 32) / 15;
 		flag = true;	//nevertheless, it won't reach again if the loop only runs once
 	} while( min(tmpDimen.y, tmpDimen.x) < 32 );
 
-	_BoardPrinter::titleBar(tmpDimen.x);
+	BoardPrinter::titleBar(tmpDimen.x);
 
 	util::place_center(tmpDimen.x - 15 * (boxlen + 1) + 3 - 4);
 	cout << "  ";
@@ -594,7 +594,7 @@ void game::updateDisplay(){
 
 #define BOARD_CENTER util::place_center(tmpDimen.x - 15 * (boxlen + 1) + 3 - 4);
 
-	_BoardPrinter _board_printer(board);
+	BoardPrinter _board_printer(board);
 	_board_printer.boxlen = boxlen;
 
 	BOARD_CENTER cout << 0 << ' ';	_board_printer.row_type1(0);
@@ -642,9 +642,9 @@ void game::updateDisplay(){
 	cout << '\n';
 }
 
-coord game::getEmptyLocks(_colour gotiColour) const{
-	for( auto const& lockedBox : lockedPositions.find(gotiColour)->second ){
-		if( lockedBox.get().isEmpty() && lockedBox.get().box_type == Box::LOCK ){
+coord game::getEmptyLock(Colour gotiColour) const{
+	for( auto const& lockedBox : lockedPositions.at(gotiColour) ){
+		if( lockedBox.get().isEmpty() && lockedBox.get().box_type == BoxType::LOCK ){
 			return lockedBox.get().coords;
 		}
 	}
@@ -831,17 +831,17 @@ void game::play(bool boolVal){
 		lambda_next();
 	}
 	if( gameisFinished() )
-		_BoardPrinter::finishedScreen();
+		BoardPrinter::finishedScreen();
 }
 
 void game::endGame() const{
-	_BoardPrinter::finishedScreen();
+	BoardPrinter::finishedScreen();
 	// this->~game();	//Causes segFault
 	throw endApplication("A shortcut");
 }
 
 void game::endGame(string_view msg1) const{
-	_BoardPrinter::errorScreen(msg1);
+	BoardPrinter::errorScreen(msg1);
 
 	throw endApplication("EndGame Called");
 }
@@ -849,7 +849,7 @@ void game::endGame(string_view msg1) const{
 void game::endGame(int n, ...) const{
 	va_list	args;
 	va_start(args, n);
-	_BoardPrinter::errorScreen(args, n);
+	BoardPrinter::errorScreen(args, n);
 	va_end(args);
 
 	throw endApplication("EndGame called, with multiple reasons");
@@ -863,7 +863,7 @@ void game::settingsMenu(){
 	std::string inputStr;
 
 	do{
-		_BoardPrinter::titleBar(termDimen.x);
+		BoardPrinter::titleBar(termDimen.x);
 
 		util::place_v_center(termDimen.y - 2 * (2 + 11 + 4)); //height of 2 taken by titleBar, 11 by Choices, and 4 by Input
 
@@ -898,7 +898,7 @@ void game::settingsMenu(){
 	switch( choice ){
 		case 1:
 		{
-			_BoardPrinter::titleBar(termDimen.x);
+			BoardPrinter::titleBar(termDimen.x);
 			util::place_v_center(termDimen.y - 2 * (2 + 1)); //height of 2 taken by titleBar, 11 by Choices, and 4 by Input
 
 			cout << "Type playerNumbers in order (for eg. \"1432\") : ";
@@ -945,12 +945,12 @@ void game::settingsMenu(){
 }
 
 void game::notYetImplementedScr() const{
-	_BoardPrinter::titleBar();
+	BoardPrinter::titleBar();
 	util::place_v_center();
 	util::align_text_center("This feature has not yet been implemented !");
 }
 
-game::game(): colourOrder({ _colour::LAAL, _colour::NEELA, _colour::PEELA, _colour::HARA }){
+game::game(): colourOrder({ Colour::LAAL, Colour::NEELA, Colour::PEELA, Colour::HARA }){
 	number_of_GameRuns = 0;
 	goti_per_user = 4;
 
@@ -976,57 +976,57 @@ game::game(): colourOrder({ _colour::LAAL, _colour::NEELA, _colour::PEELA, _colo
 	//! Marking the LockRooms and the HomePath
 	for( i = 0; i < 6; i++ ){
 		for( j = 0; j < 6; j++ ){
-			board[i][j].box_type = Box::UNUSABLE;
-			board[7][j].box_type = Box::HOMEPATH;
-			board[7][14 - j].box_type = Box::HOMEPATH;
+			board[i][j].box_type = BoxType::UNUSABLE;
+			board[7][j].box_type = BoxType::HOMEPATH;
+			board[7][14 - j].box_type = BoxType::HOMEPATH;
 		}
-		board[i][7].box_type = Box::HOMEPATH;
-		board[14 - i][7].box_type = Box::HOMEPATH;
+		board[i][7].box_type = BoxType::HOMEPATH;
+		board[14 - i][7].box_type = BoxType::HOMEPATH;
 	}
-	board[0][7].box_type = board[14][7].box_type = Box::NORMAL;
-	board[7][0].box_type = board[7][14].box_type = Box::NORMAL;
+	board[0][7].box_type = board[14][7].box_type = BoxType::NORMAL;
+	board[7][0].box_type = board[7][14].box_type = BoxType::NORMAL;
 	for( i = 0; i < 6; i++ ){
 		for( j = 9; j < 15; j++ )
-			board[i][j].box_type = Box::UNUSABLE;
+			board[i][j].box_type = BoxType::UNUSABLE;
 	}
 	for( i = 9; i < 15; i++ )
 		for( j = 0; j < 6; j++ )
-			board[i][j].box_type = Box::UNUSABLE;
+			board[i][j].box_type = BoxType::UNUSABLE;
 	for( i = 9; i < 15; i++ )
 		for( j = 9; j < 15; j++ )
-			board[i][j].box_type = Box::UNUSABLE;
+			board[i][j].box_type = BoxType::UNUSABLE;
 	//! Marking the HomeArea
 	for( i = 6; i < 9; i++ )
 		for( j = 6; j < 9; j++ )
-			board[i][j].box_type = Box::UNUSABLE;
+			board[i][j].box_type = BoxType::UNUSABLE;
 	//! Marking the Stops
 	for( auto& i : _ludo_coords.stops ){
-		getBoardBox(i).box_type = Box::STOP;
+		getBoardBox(i).box_type = BoxType::STOP;
 	}
-	board[6][7].box_type = board[8][7].box_type = board[7][6].box_type = board[7][8].box_type = Box::HOME_END;
+	board[6][7].box_type = board[8][7].box_type = board[7][6].box_type = board[7][8].box_type = BoxType::HOME_END;
 
-	colourOrder = { _colour::LAAL, _colour::HARA, _colour::PEELA, _colour::NEELA };
+	colourOrder = { Colour::LAAL, Colour::HARA, Colour::PEELA, Colour::NEELA };
 
 	//! Storing references in order, starting from the starting positon of that colour, then anti-clockwise
 	lockedPositions = {
-		{_colour::LAAL, {ref(board[13][4]), ref(board[13][1]), ref(board[10][1]), ref(board[10][4])}},
-		{_colour::HARA, {ref(board[4][1]), ref(board[1][1]), ref(board[1][4]), ref(board[4][4])}},
-		{_colour::PEELA, {ref(board[1][10]), ref(board[1][13]), ref(board[4][13]), ref(board[4][10])}},
-		{_colour::NEELA, {ref(board[10][13]), ref(board[13][13]), ref(board[13][10]), ref(board[10][10])}} };
+		{Colour::LAAL, {ref(board[13][4]), ref(board[13][1]), ref(board[10][1]), ref(board[10][4])}},
+		{Colour::HARA, {ref(board[4][1]), ref(board[1][1]), ref(board[1][4]), ref(board[4][4])}},
+		{Colour::PEELA, {ref(board[1][10]), ref(board[1][13]), ref(board[4][13]), ref(board[4][10])}},
+		{Colour::NEELA, {ref(board[10][13]), ref(board[13][13]), ref(board[13][10]), ref(board[10][10])}} };
 	//! Marking the LockedPositions
 	for( auto& lockArea : lockedPositions ){
 		for( auto& lock : lockArea.second )
-			lock.get().box_type = Box::LOCK;
+			lock.get().box_type = BoxType::LOCK;
 	}
 
 	coloursMap = {
-		{_colour::LAAL, Player::_1},
-		{_colour::HARA, Player::_1},
-		{_colour::PEELA, Player::_3},
-		{_colour::NEELA, Player::_4} };
+		{Colour::LAAL, Player::_1},
+		{Colour::HARA, Player::_1},
+		{Colour::PEELA, Player::_3},
+		{Colour::NEELA, Player::_4} };
 
 	curr_player = Player::_1;
-	curr_colour = _colour::LAAL;
+	curr_colour = Colour::LAAL;
 	number_of_GameRuns = 0;
 
 	for( auto&& stop : _ludo_coords.stops ){

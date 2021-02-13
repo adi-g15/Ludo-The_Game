@@ -19,13 +19,13 @@
 #include <set>
 
 class state_goti{
-	const _colour gotiColour;
+	const Colour gotiColour;
 	Direction currDir;
 	coord coords;
 	~state_goti();
 
 public:
-	state_goti(_colour, Direction, coord);
+	state_goti(Colour, Direction, coord);
 
 	friend class state_box;
 	friend class ludo_state;
@@ -36,10 +36,10 @@ public:
 class state_box{
 	std::vector<state_goti*> inBoxGotis;
 public:
-	Box type;
+	BoxType type;
 	bool appendGoti(state_goti*);
 	state_goti* removeGoti(state_goti*);	//It doesn't delete the goti pointer, delete it yourself, from returned pointer or use this pointer to append somewhere else
-	bool areOpponentsPresent(_colour) const;
+	bool areOpponentsPresent(Colour) const;
 
 	friend class ludo_state;
 	friend class thinker;
@@ -54,10 +54,10 @@ class ludo_state{
 	std::vector<std::vector<state_box>> board;
 
 	std::vector<coord> lockedPositions;
-	std::map<_colour, std::vector<coord>> movingColours;	//DONT UPDATE THIS, EVEN IF UPDATED THE BOARD, SINCE IT WILL LATER BE USED TO RESET THE BOARD
+	std::map<Colour, std::vector<coord>> movingColours;	//DONT UPDATE THIS, EVEN IF UPDATED THE BOARD, SINCE IT WILL LATER BE USED TO RESET THE BOARD
 
 	Player currPlayer;
-	_colour currColour;
+	Colour currColour;
 
 	void update(const game*);
 	state_box& getBox(const coord&);
