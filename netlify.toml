@@ -1,0 +1,8 @@
+[build]
+  base = "web/"
+  publish = "build/"
+  command = "yarn build"
+
+[dev]
+  publish = "dist/"
+  command = "yarn start"
