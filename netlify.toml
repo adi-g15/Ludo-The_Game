@@ -1,0 +1,9 @@
+[build]
+  base = "web/"
+  publish = "build/"
+  command = "yarn build"
+  environment = { CI = "false" }
+
+[dev]
+  publish = "dist/"
+  command = "yarn start"

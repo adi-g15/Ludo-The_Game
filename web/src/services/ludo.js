@@ -204,7 +204,7 @@ export function moveGoti(colour, coords, dist) {
   };
 }
 
-export function rollDice() {
+export function rollDiceOnce() {
   return random(1, 6);
 }
 
