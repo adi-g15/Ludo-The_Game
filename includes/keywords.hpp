@@ -5,7 +5,7 @@
 */
 #pragma once
 
-#include "enumerations.hpp"
+#include "enums.hpp"
 
 #include <string_view>
 #include <map>

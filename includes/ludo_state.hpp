@@ -1,6 +1,6 @@
 #pragma once
 
-#include "enumerations.hpp"
+#include "enums.hpp"
 #include "ludo_coords.hpp"
 #include "forward_decl.hpp"
 

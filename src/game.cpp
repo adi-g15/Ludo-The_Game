@@ -19,7 +19,7 @@
 using namespace std;
 
 //GAME_CLASS_DEFINTIONS START
-const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_goti>& the_goti, int dist) const{
+const std::optional<_smartMoveData> game::isMovePossible(shared_ptr<ludo_goti>& the_goti, int dist) const{
 	if( dist == 0 )
 		return {};
 
@@ -96,7 +96,7 @@ const std::optional<_smartMoveData> game::isMovePossible(std::shared_ptr<ludo_go
 				   0 : Normal
 				   1 : Goti pung gayi
 				   2 : Attacked (signifies signal to give extra diceRoll to player)*/
-short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, unsigned int dist){
+short game::moveGoti(shared_ptr<ludo_goti> the_goti, unsigned int dist){
 	auto movePossibility = this->isMovePossible(the_goti, dist);
 	if( movePossibility.has_value() )
 		return moveGoti(the_goti, movePossibility.value());
@@ -104,7 +104,7 @@ short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, unsigned int dist){
 }
 
 //For this function, the move will initially be considered 'possible', since it is meant to be called through the overloads
-short game::moveGoti(std::shared_ptr<ludo_goti> the_goti, _smartMoveData moveData){
+short game::moveGoti(shared_ptr<ludo_goti> the_goti, _smartMoveData moveData){
 	if( !isValid(moveData.finalCoord) || getBoardBox(moveData.finalCoord).box_type == Box::UNUSABLE ){
 		cout << "Passed coords " << moveData.finalCoord << " to moveGoti is invalid !";
 		endGame("Inalid goti to moveGoti");
@@ -195,7 +195,7 @@ bool game::handleMoveVal(short moveVal, vector<_dieVal>& dieNumbers, bool isRobo
 
 /*BUG - For example for a random_goti_index the goti isn't movable, then that diceNumber is being discarded. [For eg. in 6,1 only 1 is moved and 6 not] */
 bool game::autoMove(){ //! Return values same as the moveGoti_function
-	std::vector<_dieVal> dieNumbers{ Die::getDieResult() };
+	vector<_dieVal> dieNumbers{ Die::getDieResult() };
 	std::set<unsigned> triedGotis_indices; //! Stores the gotis that have been tried to move, FOR A SINGLE DIE_NUMBER
 	std::optional< _smartMoveData > moveObj;
 	bool wasSuccess = false;
@@ -275,7 +275,7 @@ bool game::autoMove(){ //! Return values same as the moveGoti_function
    **IMPORTANT_NOTE - For simplicity, an empty vector passed for coloursToRemove will be considered as 'Remove all except this gotiColour'
    FUTURE - If have used a vector of _colour, in favor of future scope of support of FRIEND GOTIS
 */
-void game::attack(std::vector<_colour> coloursToRemove, std::shared_ptr<ludo_goti> attacker){
+void game::attack(vector<_colour> coloursToRemove, shared_ptr<ludo_goti> attacker){
 	if( coloursToRemove.empty() ){ //Will consider all other _colour as opponents
 		coloursToRemove.insert(coloursToRemove.begin(), { _colour::NEELA, _colour::HARA, _colour::PEELA, _colour::LAAL });
 		coloursToRemove.erase(find(coloursToRemove.begin(), coloursToRemove.end(), curr_colour)); //Using currentGotiPlayer and not attacker's colour, since only the curr_player should be able to attack
@@ -385,7 +385,7 @@ unsigned game::getNumLockedGotis(_colour gotiColour){
 	return num;
 }
 
-bool game::lockGoti(std::shared_ptr<ludo_goti> goti_to_lock){ //wrong gotiColour goti called to be removed, curr_player was different
+bool game::lockGoti(shared_ptr<ludo_goti> goti_to_lock){ //wrong gotiColour goti called to be removed, curr_player was different
 	cout << "BEFORE MovingGotis -> ";
 	for( auto& i : movingGotis[curr_colour] )
 		cout << i->curr_coords << ' ';
@@ -485,7 +485,7 @@ void game::takeIntro(){
 	for( auto&& player : activePlayerMap ){
 		auto gotiColour = player.second.second;
 		for( auto&& lockedBox : lockedPositions[gotiColour] ){
-			lockedBox.get().appendGoti(std::shared_ptr<ludo_goti>(new ludo_goti(gotiColour, getEmptyLocks(gotiColour))));
+			lockedBox.get().appendGoti(shared_ptr<ludo_goti>(new ludo_goti(gotiColour, getEmptyLocks(gotiColour))));
 			lockedBox.get().box_type = Box::LOCK;
 		}
 		coloursMap.insert({ player.second.second, player.first });
@@ -512,10 +512,10 @@ bool game::isPlayerPlaying(Player p){
 	return activePlayerMap.find(p) != activePlayerMap.end();
 }
 
-vector<_dieVal>&& Die::getDieResult(){
-	std::vector<_dieVal> v;
+vector<_dieVal> Die::getDieResult(){
+	vector<_dieVal> v;
 	Die::getDieResult(v);
-	return std::move(v);
+	return v;
 }
 
 int Die::rollDie() {
@@ -541,7 +541,7 @@ void Die::getDieResult(vector<_dieVal>& currDieRolls){
 	currDieRolls.push_back(dieNum); //To insert the last left non-6
 
 		//! Main logic is above only, below is removing cases of 3 sixes (since not allowed in ludo)
-	std::vector<size_t> sixPos; //Temporary vector, used in 'Cleaning cases of 3 sixes'
+	vector<size_t> sixPos; //Temporary vector, used in 'Cleaning cases of 3 sixes'
 	for( size_t i = 0; i < currDieRolls.size(); ++i ){
 		if(currDieRolls[i] == 6 )
 			sixPos.push_back(i);
@@ -687,7 +687,7 @@ void game::play(bool boolVal){
 	curr_colour = colourOrder.front();
 	curr_player = coloursMap[curr_colour];
 
-	std::vector<_dieVal> dieNumbers;
+	vector<_dieVal> dieNumbers;
 
 	//Lambda Defintions
 	auto lambda_next = [&](){
@@ -854,7 +854,7 @@ void game::endGame(int n, ...) const{
 void game::settingsMenu(){
 	coord termDimen = util::getTerminalDimen();
 	unsigned choice = 11;
-	std::string inputStr;
+	string inputStr;
 
 	do{
 		_BoardPrinter::titleBar(termDimen.x);

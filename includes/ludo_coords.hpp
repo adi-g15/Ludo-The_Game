@@ -1,6 +1,6 @@
 #pragma once
 
-#include "enumerations.hpp"
+#include "enums.hpp"
 
 #include <utility>
 #include <map>

@@ -261,9 +261,9 @@ bool thinker::setBestMove()
 	}
 
 	std::vector<coord> movingPos, opponentsPos;
-	for (long i = 0; i < state->board.size(); ++i)
+	for (auto i = 0; i < state->board.size(); ++i)
 	{
-		for (long j = 0; j < state->board.at(i).size(); ++j)
+		for (auto j = 0; j < state->board.at(i).size(); ++j)
 		{
 			if (state->board[i][j].areOpponentsPresent(state->currColour))
 				opponentsPos.push_back({i, j});

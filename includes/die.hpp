@@ -1,7 +1,7 @@
 #pragma once
 
 #define USE_UNIFORM_DISTRIB true
-	// @note - By using a uniform distribution, the user can be assured that aall die outputs from 1 to 6 will be almost EQUAL PROBABILITY
+	// @note - By using a uniform distribution, the user can be assured that all die outputs from 1 to 6 will be almost EQUAL PROBABILITY
 	//		   Change this to FALSE, to be TRULY RANDOM
 
 #include <random>
@@ -16,7 +16,7 @@ namespace Die{
 	static std::uniform_int_distribution distrib{ 1, 6 };	// used when USE_UNIFORM_DISTRIB == true
 
 	int rollDie();	// returns a random number of 1-6
-	std::vector<_dieVal>&& getDieResult();	//! Undelete, if YOU like that version of rollDie
-	void getDieResult(std::vector<_dieVal>&);
+	std::vector<_dieVal> getDieResult();		// returns result of die roll, for eg. {6,6,1}
+	void getDieResult(std::vector<_dieVal>&);	// append to passed vector, used when you get extra chance if successfully attacked or goti pungne pe
 
 }
