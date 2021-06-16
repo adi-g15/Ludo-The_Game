@@ -2,10 +2,6 @@
 
 #include "game.hpp"
 
-static int numGamePlays = 0;
-
-using std::clog;
-
 int main(int argc, char const *argv[])
 {
 	game newGame;
@@ -24,8 +20,12 @@ int main(int argc, char const *argv[])
 
 			newGame.play();
 
-			std::cout << "Enter 1 if you want to play again and reset\nEnter 2 if you want to play with same players\nAnything else to say GoodBye :-)\nYour Consent : ";
-			playConsent = std::getchar();
+			std::cout << "Enter 1 if you want to play again and reset\n"
+				  << "Enter 2 if you want to play with same players\n"
+				  << "Anything else to say GoodBye :-)"
+				  << "\nYour Consent : ";
+			std::cin >> playConsent;
+
 		} while (playConsent == 1 || playConsent == 2);
 		std::cout << "Khelne ke liye Dhanyawaad :-D" << std::endl;
 	}

@@ -1,0 +1,11 @@
+name: pkgbuild
+
+on: push
+
+jobs:
+  pkgbuild_job:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: adig-pkgs/arch-pkgbuild-builder@v2.0
+
