@@ -49,6 +49,8 @@ class game
 	bool lockGoti(std::shared_ptr<ludo_goti>);
 	void takeIntro(); //! Initializes the PlayerMap
 
+	short moveGoti(std::shared_ptr<ludo_goti>, _smartMoveData moveData);			  //Moves goti to ENDPOINT 'DIRECTLY' (basic checks only)
+
 	void endGame() const; //Only for use by shortcutsMap
 	void endGame(std::string_view cause) const;
 	void endGame(int n, ...) const;
@@ -62,8 +64,9 @@ class game
 	std::map<Player, std::pair<std::string, _colour>> activePlayerMap;
 	std::map<Player, RobotKind> robotPlayers;
 
+	std::vector<_colour> ranking;	// 0th position is 1st winner
+
 	short moveGoti(std::shared_ptr<ludo_goti>, unsigned int dist);
-	short moveGoti(std::shared_ptr<ludo_goti>, _smartMoveData moveData);			  //Moves goti to ENDPOINT 'DIRECTLY' (basic checks only)
 	bool handleMoveVal(short, std::vector<_dieVal>& dieNumbers, bool isRobot = true); //Handles value returned by moveGoti() calls
 
 	const std::optional<_smartMoveData> isMovePossible(std::shared_ptr<ludo_goti>&, int dist) const;

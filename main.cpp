@@ -31,7 +31,7 @@ int main(int argc, char const *argv[])
 	}
 	catch (endApplication &e)
 	{
-		std::cerr << e.what() << std::endl;
+		std::cout << e.what() << std::endl;
 		return 0;
 	}
 	catch (std::exception &e)

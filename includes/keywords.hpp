@@ -7,21 +7,21 @@
 
 #include "enums.hpp"
 
-#include <string_view>
+#include <string>
 #include <map>
 
 static const char* robot_keyword = "ROBOT";
 
 static const char* thinker_keyword = "Jai Hind";
 
-static std::map<_colour, std::string_view> colourNames{
+static std::map<_colour, std::string> colourNames{
 	{_colour::LAAL, "RED"},
 	{_colour::HARA, "HARA"},
 	{_colour::PEELA, "PEELA"},
 	{_colour::NEELA, "BLUE"}
 };
 
-static std::map<Direction, std::string_view> dirNames{
+static std::map<Direction, std::string> dirNames{
 	{ Direction::NO_TURN, "No_Turn"},
 	{ Direction::UP, "UP" },
 	{ Direction::LEFT, "RIGHT" },
@@ -36,7 +36,7 @@ static std::map<_colour, char> colourCodes{
 	{_colour::NEELA, 'B'}
 };
 
-static std::map<Player, std::string_view> playerId{
+static std::map<Player, std::string> playerId{
 	{ Player::NotDefined, "NULL" },
 	{ Player::_1, "1" },
 	{ Player::_2, "2" },

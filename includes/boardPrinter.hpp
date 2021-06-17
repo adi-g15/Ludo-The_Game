@@ -16,19 +16,10 @@ class _BoardPrinter{ //! @info Only for use by updateDisplay() & takeIntro()
 
 	const std::vector<std::vector<ludo_box>>& board;	//board that this printer links to
 
-	static void titleBar(int width);
-	static void titleBar(); /*@brief Simply just calls titleBar with (terminalDimen().y)*/
-
 	static void msgScreen(std::string_view msg);
-	static void msgScreen(int n, ...);	//NOTE - The later arguments must be char*
-	static void msgScreen(va_list args, int n);
+	static void msgScreen(std::vector<std::string_view>);
 
 	static void errorScreen(std::string_view errMsg);
-	static void errorScreen(int n, ...);
-	static void errorScreen(va_list args, int n);
-
-	static void finishedScreen();
-	/*FUTURE - It can be modified to show who's the 1st and who's the 4th, BUT FOR NOW I WILL NOT IMPLEMENT IT HERE, SINCE I HAVE FURTHER PENDING PLANS FOR GUI*/
 
 	void row_type1(int nrow);
 	void row_type2(int nrow);
@@ -46,10 +37,15 @@ class _BoardPrinter{ //! @info Only for use by updateDisplay() & takeIntro()
 	friend class game;
 
 	public:
+	static void titleBar(int width);
+	static void titleBar(); /*@brief Simply just calls titleBar with (terminalDimen().x)*/
+
+	static void finishedScreen(const std::vector<std::string>& ranking);
+
 	unsigned int boxlen;
 	int termWidth;
-	explicit _BoardPrinter(const std::vector<std::vector<ludo_box>>&);	//! Links to the board
-	_BoardPrinter() = delete;
+
+	_BoardPrinter(const std::vector<std::vector<ludo_box>>&);	//! Links to the board
 };
 
 //Defintions Start
@@ -62,60 +58,49 @@ void _BoardPrinter::refresh_Dimensions(){
 	this->termWidth = util::getTerminalDimen().x;
 }
 
-//	DEFINITIONS	start//
 void _BoardPrinter::msgScreen(std::string_view msg){
-	return _BoardPrinter::msgScreen(1, msg.data());
+	std::vector<std::string_view> v{msg};
+	return _BoardPrinter::msgScreen(v);	// {msg} causes infinite recursion
 }
 
-void _BoardPrinter::msgScreen(va_list args, int n){
-	std::string msg;
-
-	while( n-- ){
-		try{
-			msg.append(va_arg(args, char*));
-		} catch( std::bad_alloc& e ){
-			return _BoardPrinter::errorScreen(e.what());
-		}
-	}
-	va_end(args);
-
+void _BoardPrinter::msgScreen(std::vector<std::string_view> args){
 	titleBar();
 	coord termDimen = util::getTerminalDimen();
 	std::cout << '\n';
 
-	for( auto i = 0; i < (termDimen.y - 3) / 2; ++i )	std::cout << '\n';
-	util::align_text_center(termDimen.x, msg);
-	for( auto i = 0; i < termDimen.y - (termDimen.y - 3) / 2; ++i )	std::cout << '\n';
-}
-
-void _BoardPrinter::msgScreen(int n, ...){
-	va_list args;
-	va_start(args, n);
-	_BoardPrinter::msgScreen(args, n);
-	va_end(args);
+	const auto num_lines = args.size();
+	for( auto i = 0; i < (termDimen.y - 2 - num_lines) / 2; ++i )	std::cout << '\n';
+	for (auto &&s : args)
+	{
+		util::align_text_center(termDimen.x, s);
+	}
+	for( auto i = 0; i < termDimen.y - (termDimen.y - 2 - num_lines) / 2; ++i )	std::cout << '\n';
 }
 
 void _BoardPrinter::errorScreen(std::string_view errMsg){
-	_BoardPrinter::errorScreen(1, errMsg.data());
-}
-
-void _BoardPrinter::errorScreen(va_list args, int n){
 	std::cout << rang::Fg::red << rang::Style::bold;
 
-	_BoardPrinter::msgScreen(args, n);
+	_BoardPrinter::msgScreen(errMsg);
 
 	std::cout << rang::Fg::reset << rang::Style::reset;
 }
 
-void _BoardPrinter::errorScreen(int n, ...){
-	va_list args;
-	va_start(args, n);
-	_BoardPrinter::errorScreen(args, n);
-	va_end(args);
-}
+void _BoardPrinter::finishedScreen(const std::vector<std::string>& ranking){
+	std::vector<std::string_view> messages{
+		"Khelne ke liye Dhanyawaad :D",
+	};
 
-void _BoardPrinter::finishedScreen(){
-	_BoardPrinter::msgScreen("Khelne ke liye Dhanyawaad :D ");
+	if (!ranking.empty()) {
+		messages.push_back("");
+		messages.push_back("Leaderboard: ");
+	}
+
+	int rank = 1;
+	for(const auto& name: ranking) {
+		messages.push_back( std::to_string(rank++) + ". " + name );
+	}
+
+	_BoardPrinter::msgScreen(messages);
 }
 
 void _BoardPrinter::titleBar(int width){	//Considering sufficient width, to be able to play the game

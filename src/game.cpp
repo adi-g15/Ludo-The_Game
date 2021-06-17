@@ -113,18 +113,6 @@ short game::moveGoti(shared_ptr<ludo_goti> the_goti, _smartMoveData moveData){
 
 	const auto [finalCoord, finalDir, moveProfit] = moveData;
 
-	// //DEBUG
-	// if( (movingGotis[curr_colour].size() + numfinished[curr_colour] + getNumLockedGotis(curr_colour)) > 4 ){
-	// 	cout << "inBoxGotis -> " << getBoardBox(_ludo_coords.start_coords[curr_colour]).inBoxGotis.size() << endl
-	// 		<< "Finished -> " << numfinished[curr_colour] << endl
-	// 		<< "LockedGotis -> " << getNumLockedGotis(curr_colour) << endl
-	// 		<< "movingGotis -> ";
-	// 	for( auto& i : movingGotis[curr_colour] )
-	// 		cout << i->curr_coords << ' ';
-	// 	cout << endl;
-	// 	throw endApplication("Multiple gotis at start");
-	// }
-
 	if( !isValid(the_goti) && !isValid(finalCoord) )
 		return -1;
 
@@ -149,20 +137,25 @@ short game::moveGoti(shared_ptr<ludo_goti> the_goti, _smartMoveData moveData){
 		lockBox.content = ":D";
 		lockBox.box_type = Box::UNUSABLE;
 
-		if( (movingGotis[curr_colour].size() + numfinished[curr_colour] + getNumLockedGotis(curr_colour)) > 4 ){	//debug
-			clog << "inBoxGotis -> ";
-			for( auto& i : getBoardBox(the_goti->curr_coords).inBoxGotis )
-				clog << i->curr_coords << " ";
-			clog << endl
-				<< "Finished -> " << numfinished[curr_colour] << endl
-				<< "LockedGotis -> " << getNumLockedGotis(curr_colour) << endl
-				<< "movingGotis -> ";
-			for( auto& i : movingGotis[curr_colour] )
-				clog << i->curr_coords << ' ';
-			this->endGame(3, "Extra Gotis of colour ", colourNames[curr_colour], " punGING");
-		}
+		// {	// DEBUG
+		// 	if( (movingGotis[curr_colour].size() + numfinished[curr_colour] + getNumLockedGotis(curr_colour)) > 4 ){	//debug
+		// 		clog << "inBoxGotis -> ";
+		// 		for( auto& i : getBoardBox(the_goti->curr_coords).inBoxGotis )
+		// 			clog << i->curr_coords << " ";
+		// 		clog << endl
+		// 			<< "Finished -> " << numfinished[curr_colour] << endl
+		// 			<< "LockedGotis -> " << getNumLockedGotis(curr_colour) << endl
+		// 			<< "movingGotis -> ";
+		// 		for( auto& i : movingGotis[curr_colour] )
+		// 			clog << i->curr_coords << ' ';
+		// 		this->endGame( "Extra Gotis of colour " + colourNames[curr_colour] + " punGiNG");
+		// 	}
+		// }
 
 		++numfinished.at(curr_colour);
+		if(numfinished[curr_colour] == goti_per_user) {
+			ranking.push_back(curr_colour);	// it has completed, add to ranking
+		}
 
 		return 1;
 	} else{
@@ -304,8 +297,7 @@ bool game::isValid(const shared_ptr<ludo_goti>& goti) const{
 	if( goti->gotiColour == curr_colour && isValid(goti->curr_coords) ){
 		return true;
 	}
-	cerr << "GOTI COLOUR DOESN'T RELATE TO CURRENT_PLAYER" << endl;
-	endGame();
+	endGame("GOTI COLOUR DOESN'T RELATE TO CURRENT_PLAYER");
 	return false;
 }
 
@@ -333,11 +325,12 @@ bool game::unlockGoti(){
 	}
 
 	//First std::find_if gives us the raw reference of box
-	auto box_iter = std::find_if(lockedPositions[curr_colour].begin(), lockedPositions[curr_colour].end(), [&](auto& lockedBox){
+	auto& locked_home = lockedPositions[curr_colour];
+	auto box_iter = std::find_if(locked_home.begin(), locked_home.end(), [&](auto& lockedBox){
 		return !lockedBox.get().inBoxGotis.empty() && !lockedBox.get().areOpponentsPresent(curr_colour);
 	});
 
-	if( box_iter == lockedPositions[curr_colour].end() ){	  //no locked goti present
+	if( box_iter == locked_home.end() ){	  //no locked goti present
 		{ //DEBUG block
 			clog << "No locked goti was present" << endl;
 			clog << "inBoxGotis -> " << getBoardBox(_ludo_coords.start_coords[curr_colour]).inBoxGotis.size() << endl
@@ -385,7 +378,7 @@ unsigned game::getNumLockedGotis(_colour gotiColour){
 	return num;
 }
 
-bool game::lockGoti(shared_ptr<ludo_goti> goti_to_lock){ //wrong gotiColour goti called to be removed, curr_player was different
+bool game::lockGoti(shared_ptr<ludo_goti> goti_to_lock){
 	cout << "BEFORE MovingGotis -> ";
 	for( auto& i : movingGotis[curr_colour] )
 		cout << i->curr_coords << ' ';
@@ -450,7 +443,7 @@ void game::takeIntro(){
 	colour = colourOrder.front();
 
 	for( auto i = 0;i < 4;++i ){	//Loop it 4 times (not mandatory to give details of all players though)
-		util::place_center(tmpDimen.x, string("Player").append(playerId[p]).append(" - "));
+		util::place_center(tmpDimen.x, "Player" + playerId[p] + " - ");
 
 		getline(cin, playerName);
 		util::trim(playerName);
@@ -477,8 +470,8 @@ void game::takeIntro(){
 			}
 		}
 
-		util_lamdas::nextPlayer(p);
-		util_lamdas::nextColour(colour, this->colourOrder);
+		util_lambdas::nextPlayer(p);
+		util_lambdas::nextColour(colour, this->colourOrder);
 	}
 
 	//Setting the board, on basis of given players
@@ -501,11 +494,17 @@ void game::takeIntro(){
 }
 
 bool game::gameisFinished(){
+	int finished_colours = 0;
+	auto total_colours = activePlayerMap.size();
 	for( auto& p : activePlayerMap ){
-		if( numfinished[p.second.second] != 4 )
-			return false;
+		if( numfinished[p.second.second] == 4 )	++finished_colours;
 	}
-	return true;
+
+	if( total_colours == 1 ) {	// special case: when you only play with one player
+		return finished_colours == 1;
+	}
+
+	return finished_colours >= (total_colours - 1);
 }
 
 bool game::isPlayerPlaying(Player p){
@@ -692,10 +691,10 @@ void game::play(bool boolVal){
 	//Lambda Defintions
 	auto lambda_next = [&](){
 		do{
-			util_lamdas::nextPlayer(this->curr_player);
-			util_lamdas::nextColour(this->curr_colour, this->colourOrder);
-		} while( (!gameisFinished() && (this->numfinished[this->curr_colour] == this->goti_per_user))
-			|| this->coloursMap.find(curr_colour) == this->coloursMap.end()	//ie. curr_colour is not playing, then keep looping, until a playing colour is chosen
+			util_lambdas::nextPlayer(this->curr_player);
+			util_lambdas::nextColour(this->curr_colour, this->colourOrder);
+		} while( (!gameisFinished() && activePlayerMap.size() != 1)	// if only player, then ignore gameIsFinished()
+			&& this->coloursMap.find(curr_colour) == this->coloursMap.end()	//ie. curr_colour is not playing, then keep looping, until a playing colour is chosen
 			);
 
 		dieNumbers.clear();
@@ -824,29 +823,25 @@ void game::play(bool boolVal){
 		//! dieNumbers is again Empty
 		lambda_next();
 	}
-	if( gameisFinished() )
-		_BoardPrinter::finishedScreen();
+	if( gameisFinished() ) {
+		vector<string> ranker_names;
+		for(auto col: this->ranking) {
+			ranker_names.push_back(
+				activePlayerMap[coloursMap[col]].first
+			);
+		}
+		_BoardPrinter::finishedScreen(ranker_names);
+	}
 }
 
 void game::endGame() const{
-	_BoardPrinter::finishedScreen();
-	// this->~game();	//Causes segFault
-	throw endApplication("A shortcut");
+	_BoardPrinter::msgScreen("Khelne ke liye Dhanyawaad :D");
+	throw endApplication("A shortcut caused this exit");
 }
 
 void game::endGame(string_view msg1) const{
 	_BoardPrinter::errorScreen(msg1);
-
 	throw endApplication("EndGame Called");
-}
-
-void game::endGame(int n, ...) const{
-	va_list	args;
-	va_start(args, n);
-	_BoardPrinter::errorScreen(args, n);
-	va_end(args);
-
-	throw endApplication("EndGame called, with multiple reasons");
 }
 
 //! Source is the name of function from which it was called

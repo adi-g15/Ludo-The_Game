@@ -67,7 +67,7 @@ enum class RobotKind{
 };
 
 
-namespace util_lamdas{	//the bool return values here, can simply be ignored
+namespace util_lambdas{	//the bool return values here, can simply be ignored
 	static auto nextColour = [](_colour &c, std::vector<_colour>& order) -> void{
 		auto iter = std::find(order.begin(), order.end(), c);
 

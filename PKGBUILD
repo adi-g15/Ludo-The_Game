@@ -1,5 +1,5 @@
 pkgname=ludo-the-game-git
-pkgver=r135.b6c73fc
+pkgver=r137.a030b16
 pkgrel=1
 pkgdesc="An implementation of the famous board game Ludo, using C++"
 arch=('x86_64')
