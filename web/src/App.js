@@ -72,11 +72,11 @@ function App() {
 					}, []);
 				}
 				newboard[updated_place].push(turn);										// Finally add current moved goti to the board
+				if (die < 6)
+					setTurn(turn => (turn + 1) % 4);												// If die value < 6, pass turn to next player
 			}
 			setPositions(position);														// Setstate of positions and board arrays
 			setBoard(newboard);
-			if (die < 6)
-				setTurn(turn => (turn + 1) % 4);												// If die value < 6, pass turn to next player
 			setChoice(true);
 		}
 		else {
@@ -143,7 +143,6 @@ function App() {
 			const possible = checkPossible(roll);
 			if (possible) {
 				const newplace = ['6-1', '1-8', '8-13', '13-6'];		// Unlock places for each color(according to turn)
-				// const newplace = [ '7-1', '1-7', '7-13', '13-7' ]
 				let newboard = { ...board };
 				if (roll === 6) {										// If the die rolls a 6:
 					let position = [...positions];
