@@ -138,7 +138,7 @@ function mover(colour, coord, dist) {
             break;
         }
       } else {
-        if (updated_coords == homeTurns[colour][0]) {
+        if (updated_coords === homeTurns[colour][0]) {
           currDirection = homeTurns[colour][1];
         }
 
